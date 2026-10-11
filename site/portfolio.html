@@ -61,6 +61,10 @@ findings that did not work out.</p>
 <td>4</td>
 </tr>
 <tr>
+<td>Upstream fix pull requests</td>
+<td>1 open</td>
+</tr>
+<tr>
 <td>Bounties received</td>
 <td><strong>$0</strong></td>
 </tr>
@@ -92,10 +96,10 @@ until each issue is fixed or publicly disclosed in line with program policy.</st
 </tr>
 <tr>
 <td>2</td>
-<td>Open-source desktop shell (QML / JavaScript)</td>
+<td>Open-source desktop shell — omarchy (QML / JavaScript)</td>
 <td>Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component</td>
 <td>High (CVSS 4.0 8.5)</td>
-<td>Submitted — <strong>closed as Not Applicable</strong>: "input comes from the same user who runs the code, so no security boundary was crossed" — accepted as hardening; a fix PR was invited</td>
+<td>Submitted — <strong>closed as Not Applicable</strong>: "input comes from the same user who runs the code, so no security boundary was crossed" — accepted as hardening. Fix submitted upstream: <a href="https://github.com/omacom/omarchy/pull/14966">omarchy PR #14966</a>, open</td>
 </tr>
 <tr>
 <td>3</td>
@@ -113,7 +117,7 @@ until each issue is fixed or publicly disclosed in line with program policy.</st
 <li><strong>Item 2</strong> was closed because the attacker and the victim are the same principal:
   the plugin is code the user chooses to install, at the user's own privilege level.
   By that trust model the finding is hardening, not a boundary crossing — the vendor
-  invited a pull request instead, which is the correct channel for it.</li>
+  invited a pull request instead, which is the correct channel for it — <a href="https://github.com/omacom/omarchy/pull/14966">PR #14966</a>.</li>
 </ul>
 <p>See <strong>Method</strong> below.</p>
 <hr />

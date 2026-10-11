@@ -18,6 +18,7 @@ findings that did not work out.
 | Findings documented end-to-end | 7 |
 | Public bounty programs scoped | 16 |
 | Lab write-ups published | 4 |
+| Upstream fix pull requests | 1 open |
 | Bounties received | **$0** |
 
 The last line is deliberate. A portfolio that only lists wins is a marketing page;
@@ -33,7 +34,7 @@ until each issue is fixed or publicly disclosed in line with program policy.**
 | # | Area | Class | Severity | Status |
 |---|---|---|---|---|
 | 1 | Go serialization library (cloud-native tooling) | Crafted input causes an unrecoverable runtime panic inside a public API | Medium (CVSS 3.1 4.3) | Reported — awaiting triage |
-| 2 | Open-source desktop shell (QML / JavaScript) | Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component | High (CVSS 4.0 8.5) | Submitted — **closed as Not Applicable**: "input comes from the same user who runs the code, so no security boundary was crossed" — accepted as hardening; a fix PR was invited |
+| 2 | Open-source desktop shell — omarchy (QML / JavaScript) | Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component | High (CVSS 4.0 8.5) | Submitted — **closed as Not Applicable**: "input comes from the same user who runs the code, so no security boundary was crossed" — accepted as hardening. Fix submitted upstream: [omarchy PR #14966](https://github.com/omacom/omarchy/pull/14966), open |
 | 3 | AI SDK (schema validation) | Validation bypass in untrusted-schema handling | Medium (CVSS 4.0 5.3) | Submitted — **closed as Informative** |
 
 Both closes are listed on purpose, and both changed how later work here is scoped:
@@ -43,7 +44,7 @@ Both closes are listed on purpose, and both changed how later work here is scope
 - **Item 2** was closed because the attacker and the victim are the same principal:
   the plugin is code the user chooses to install, at the user's own privilege level.
   By that trust model the finding is hardening, not a boundary crossing — the vendor
-  invited a pull request instead, which is the correct channel for it.
+  invited a pull request instead, which is the correct channel for it — [PR #14966](https://github.com/omacom/omarchy/pull/14966).
 
 See **Method** below.
 
