@@ -16,6 +16,7 @@ import markdown
 
 ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / "writeups-en"
+PORTFOLIO_SRC = ROOT / "PORTFOLIO-EN.md"
 OUT = ROOT / "site"
 ASSETS = OUT / "assets"
 
@@ -261,6 +262,7 @@ def page(title, body, depth=0, subtitle=""):
   <span class="brand">Twist<span class="dot">://</span>security</span>
   <nav>
     <a href="{up}index.html">Write-ups</a>
+    <a href="{up}portfolio.html">Portfolio</a>
     <a href="{up}index.html#about">About</a>
   </nav>
 </div></header>
@@ -310,6 +312,24 @@ def build_index(entries):
 <section class="list" id="reports"><div class="wrap">
   <h2 class="sec">Reports</h2>
   {''.join(cards)}
+</div></section>
+
+<section id="engagements"><div class="wrap">
+  <h2 class="sec">Engagements</h2>
+  <a class="card" href="portfolio.html">
+    <div class="top">
+      <span class="badge" style="color:var(--acc)">PORTFOLIO</span>
+      <span class="badge" style="color:var(--dim)">Methodology</span>
+    </div>
+    <h3>Portfolio &amp; Engagements</h3>
+    <p>What has been submitted, what is still in progress, and what was deliberately
+       held back — plus the eligibility and evidence rules every report had to pass.</p>
+    <div class="meta">
+      <span>disclosure items: 3</span>
+      <span>held findings: 4</span>
+      <span class="go">read →</span>
+    </div>
+  </a>
 </div></section>
 
 <section id="about"><div class="wrap">
@@ -367,6 +387,31 @@ def build_article(eid, meta, md_text):
     return page(f"{meta['short']} — Twist", head, depth=1)
 
 
+def build_portfolio():
+    """Render PORTFOLIO-EN.md -> site/portfolio.html"""
+    if not PORTFOLIO_SRC.exists():
+        print(f"  ! lewat: {PORTFOLIO_SRC.name} (gak ada)")
+        return None
+    body_html = md_to_html(PORTFOLIO_SRC.read_text(encoding="utf-8"))
+    body_html = re.sub(r"<h1[^>]*>.*?</h1>", "", body_html, count=1, flags=re.S)
+    body = f"""<article><div class="wrap">
+<div class="crumbs"><a href="index.html">portfolio</a> / engagements</div>
+<h1>Portfolio &amp; Engagements</h1>
+<div class="meta-box">
+  <div><b>Researcher</b> Twist &mdash; <code>twistti</code></div>
+  <div><b>Focus</b> source-code audit · broken authorization · web app pentesting</div>
+  <div><b>Status</b> work log &mdash; includes what was held back</div>
+</div>
+{body_html}
+</div></article>"""
+    dest = OUT / "portfolio.html"
+    dest.write_text(page("Portfolio & Engagements — Twist", body,
+        subtitle="Submissions, work in progress, held findings, and the method behind each report."),
+        encoding="utf-8")
+    print(f"  ok  {dest.relative_to(OUT)}  ({dest.stat().st_size:,} byte)")
+    return dest
+
+
 def main():
     ASSETS.mkdir(parents=True, exist_ok=True)
     (ASSETS / "style.css").write_text(CSS, encoding="utf-8")
@@ -386,6 +431,8 @@ def main():
         meta = dict(meta, id=eid)
         entries.append(meta)
         print(f"  ok  {dest.relative_to(OUT)}  ({dest.stat().st_size:,} byte)")
+
+    build_portfolio()
 
     (OUT / "index.html").write_text(build_index(entries), encoding="utf-8")
     total = sum(f.stat().st_size for f in OUT.rglob("*") if f.is_file())

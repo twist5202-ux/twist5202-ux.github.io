@@ -2,8 +2,9 @@
 
 Portofolio writeup penetration testing. Situs statis, dibangun dari markdown.
 
-**Isi:** 4 writeup dari pengujian lab legal (OWASP Juice Shop) — SQLi,
-broken access control, DOM XSS, kriptografi, recon menyeluruh.
+**Isi:** halaman [portfolio & engagements](https://twist5202-ux.github.io/portfolio.html)
+(log kerja: submission, temuan yang ditahan, metode) + 4 writeup dari pengujian lab
+legal (OWASP Juice Shop) — SQLi, broken access control, DOM XSS, kriptografi, recon menyeluruh.
 
 ---
 
@@ -12,13 +13,16 @@ broken access control, DOM XSS, kriptografi, recon menyeluruh.
 ```
 security-portfolio/
 ├── build.py                        # generator: markdown → HTML
-├── writeups/                       # sumber: file markdown
+├── PORTFOLIO-EN.md                 # sumber: halaman portfolio / engagements
+├── writeups-en/                    # sumber: markdown English (yang dipublikasikan)
+├── writeups/                       # arsip versi Indonesia
 │   ├── 001-juice-shop-sqli.md
 │   ├── 002-juice-shop-full-recon.md
 │   ├── 003-juice-shop-rsa-decrypt.md
 │   └── 004-juice-shop-broken-access-control-xss.md
 ├── site/                           # HASIL build (yang dipublikasikan)
 │   ├── index.html
+│   ├── portfolio.html
 │   ├── assets/style.css
 │   ├── writeups/*.html
 │   └── .nojekyll
@@ -41,7 +45,7 @@ cd site && python -m http.server 8899
 # buka http://localhost:8899
 ```
 
-Setiap kali markdown di `writeups/` diubah, jalankan `python build.py` lagi.
+Setiap kali markdown di `writeups-en/` atau `PORTFOLIO-EN.md` diubah, jalankan `python build.py` lagi.
 Metadata judul/severity diatur di dictionary `META` dalam `build.py`.
 
 ---

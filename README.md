@@ -2,9 +2,10 @@
 
 Penetration testing write-ups. Static site, generated from markdown.
 
-**Contents:** 4 write-ups from authorised lab testing (OWASP Juice Shop) —
-SQL injection, broken access control, DOM XSS, cryptography, and full
-reconnaissance.
+**Contents:** a [portfolio & engagements page](https://twist5202-ux.github.io/portfolio.html)
+(work log: submissions, held findings, method) plus 4 write-ups from authorised lab
+testing (OWASP Juice Shop) — SQL injection, broken access control, DOM XSS,
+cryptography, and full reconnaissance.
 
 ---
 
@@ -13,6 +14,7 @@ reconnaissance.
 ```
 security-portfolio/
 ├── build.py                        # generator: markdown → HTML
+├── PORTFOLIO-EN.md                 # SOURCE: portfolio / engagements page
 ├── writeups-en/                    # SOURCE: English markdown
 │   ├── 001-juice-shop-sqli.md
 │   ├── 002-juice-shop-full-recon.md
@@ -21,6 +23,7 @@ security-portfolio/
 ├── writeups/                       # Indonesian versions (archive, not published)
 ├── site/                           # BUILD OUTPUT (what gets published)
 │   ├── index.html
+│   ├── portfolio.html
 │   ├── assets/style.css
 │   ├── writeups/*.html
 │   └── .nojekyll
@@ -43,7 +46,7 @@ cd site && python -m http.server 8899
 # open http://localhost:8899
 ```
 
-Re-run `python build.py` whenever markdown in `writeups-en/` changes.
+Re-run `python build.py` whenever markdown in `writeups-en/` or `PORTFOLIO-EN.md` changes.
 Titles, severities and class labels are configured in the `META` dictionary
 inside `build.py`.
 
@@ -67,6 +70,7 @@ git push
 | | |
 |---|---|
 | **Site (root)** | https://twist5202-ux.github.io/ |
+| **Portfolio page** | https://twist5202-ux.github.io/portfolio.html |
 | **Mirror** | https://twist5202-ux.github.io/security-writeups/ |
 | **Repo (root)** | https://github.com/twist5202-ux/twist5202-ux.github.io |
 | **Repo (mirror)** | https://github.com/twist5202-ux/security-writeups |

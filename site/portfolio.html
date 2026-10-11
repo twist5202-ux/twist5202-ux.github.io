@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portfolio &amp; Engagements — Twist</title>
+<meta name="description" content="Submissions, work in progress, held findings, and the method behind each report.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <span class="brand">Twist<span class="dot">://</span>security</span>
+  <nav>
+    <a href="index.html">Write-ups</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="index.html#about">About</a>
+  </nav>
+</div></header>
+<article><div class="wrap">
+<div class="crumbs"><a href="index.html">portfolio</a> / engagements</div>
+<h1>Portfolio &amp; Engagements</h1>
+<div class="meta-box">
+  <div><b>Researcher</b> Twist &mdash; <code>twistti</code></div>
+  <div><b>Focus</b> source-code audit · broken authorization · web app pentesting</div>
+  <div><b>Status</b> work log &mdash; includes what was held back</div>
+</div>
+
+<p><strong>Twist</strong> — security researcher · HackerOne handle <a href="https://hackerone.com/twistti"><code>twistti</code></a></p>
+<p>Focus: <strong>source-code audit</strong>, <strong>broken authorization / trust boundaries</strong>, and web
+application penetration testing. This page tracks what has actually been submitted,
+what is still in progress, and what was deliberately held back — including the
+findings that did not work out.</p>
+<hr />
+<h2 id="snapshot">Snapshot</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reports submitted</td>
+<td>2 (1 closed, 1 awaiting triage)</td>
+</tr>
+<tr>
+<td>Reports ready to submit</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Findings documented end-to-end</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Public bounty programs scoped</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Lab write-ups published</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Bounties received</td>
+<td><strong>$0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The last line is deliberate. A portfolio that only lists wins is a marketing page;
+this one is a work log.</p>
+<hr />
+<h2 id="responsible-disclosure-work-in-progress">Responsible disclosure — work in progress</h2>
+<p>Reported to public bounty programs. <strong>Vendor names and technical detail are withheld
+until each issue is fixed or publicly disclosed in line with program policy.</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Area</th>
+<th>Class</th>
+<th>Severity</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Go serialization library (Kubernetes ecosystem)</td>
+<td>Crafted input causes an unrecoverable runtime panic inside a public API</td>
+<td>Medium (CVSS 3.1 4.3)</td>
+<td>Reported — awaiting triage</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Open-source desktop shell (QML / JavaScript)</td>
+<td>Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component</td>
+<td>High (CVSS 4.0 8.5)</td>
+<td>Report complete, PoC verified — being submitted</td>
+</tr>
+<tr>
+<td>3</td>
+<td>AI SDK (schema validation)</td>
+<td>Validation bypass in untrusted-schema handling</td>
+<td>Medium (CVSS 4.0 5.3)</td>
+<td>Submitted — <strong>closed as Informative</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Item 3 is listed on purpose. It was closed because the impact class (resource
+exhaustion) sits on the program's <em>Core Ineligible Findings</em> list — a lesson that
+changed how every later report here was scoped. See <strong>Method</strong> below.</p>
+<hr />
+<h2 id="held-back-evaluated-not-submitted">Held back (evaluated, not submitted)</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Class</th>
+<th>Why it was held</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fintech consumer API</td>
+<td>Cross-origin <code>postMessage</code> leak (<code>targetOrigin: "*"</code>, no frame protection)</td>
+<td>Real, but low-value data and the program was dropped before submission</td>
+</tr>
+<tr>
+<td>Cloud storage buckets</td>
+<td>Unauthenticated public listing / read</td>
+<td>Program requires asking before reporting on unscoped subdomains; read-only, no personal data → informational at best</td>
+</tr>
+<tr>
+<td>Blockchain bridge signer</td>
+<td>Signing API reachable without authentication</td>
+<td>Needs a working PoC before it is worth anyone's triage time</td>
+</tr>
+<tr>
+<td>Smart-contract fee path</td>
+<td>Accounting anomaly in fee handling</td>
+<td>Audited twice and reclassified as by-design</td>
+</tr>
+</tbody>
+</table>
+<p>Holding a finding is a decision, not an accident. Every one of these has a written
+reason and the evidence preserved locally.</p>
+<hr />
+<h2 id="reconnaissance-workstreams">Reconnaissance workstreams</h2>
+<p>Fingerprinting and scope analysis performed across public bounty programs covering
+fintech APIs, cloud infrastructure, a Linux distribution, a hardware company, and
+blockchain infrastructure — subdomain enumeration, technology fingerprinting, and
+policy/exclusion mapping. Output feeds the "held back" and "work in progress"
+sections above; work that produced no finding is not dressed up as one.</p>
+<hr />
+<h2 id="method-how-a-finding-becomes-a-report">Method — how a finding becomes a report</h2>
+<ol>
+<li><strong>Scope first, tooling second.</strong> Nothing is touched outside a program's written scope.</li>
+<li><strong>Eligibility gate before writing.</strong> Extract the program's exclusions verbatim —
+   <em>out of scope</em>, <em>in scope but not eligible</em>, <em>open scope</em> clauses, and its list of
+   always-rejected finding classes — then match the finding against them. A real bug
+   outside the rules is a rejected report.</li>
+<li><strong>Avoid the word that gets you rejected.</strong> A panic triggered by one crafted input is
+   an input-validation defect, not a denial of service.</li>
+<li><strong>Check for AI / automated-scanning prohibitions</strong> in the policy before running any
+   scanner.</li>
+<li><strong>Reputation is an asset.</strong> Rejected or duplicate reports cost submission privileges
+   on some platforms. Unverified findings are not submitted.</li>
+<li><strong>Pre-submission checklist is a gate, not advice.</strong> Required fields, asset in scope,
+   weakness mapping, severity consistent with the CVSS vector, reproducible steps, and a
+   PoC that actually runs — all green before submission.</li>
+<li><strong>Evidence standards.</strong> Executable PoC · <strong>negative controls that must fail and do
+   fail</strong> · code citation with file and line numbers · raw tool output, not a retelling.</li>
+<li><strong>Never overclaim.</strong> Severity is calculated, and where a score is arguable the
+   conservative variant is stated alongside it.</li>
+</ol>
+<hr />
+<h2 id="tooling">Tooling</h2>
+<div class="codehilite"><pre><span></span><code>recon      subfinder · httpx · nuclei · katana · ffuf · dnsx · naabu · waybackurls
+testing    Burp Suite · browser devtools · curl
+code       Go toolchain · Node.js · Python (markdown, cvss, requests) · ripgrep · git
+analysis   bytecode decompilation · RSA/crypto pitfalls · JS bundle review · CVSS 4.0 &amp; 3.1
+delivery   report writing to platform field structure · evidence packaging
+</code></pre></div>
+
+<hr />
+<h2 id="write-ups-authorised-labs">Write-ups (authorised labs)</h2>
+<ul>
+<li><a href="writeups/001.html">SQL injection → full database compromise</a> — CRITICAL</li>
+<li><a href="writeups/002.html">Full reconnaissance to exploitation</a> — MULTI</li>
+<li><a href="writeups/003.html">Decrypting a confidential document (unpadded RSA)</a> — HIGH</li>
+<li><a href="writeups/004.html">Broken access control + DOM XSS</a> — CRITICAL</li>
+</ul>
+<p>All lab testing was performed against intentionally vulnerable applications
+(primarily OWASP Juice Shop) built for this purpose.</p>
+<hr />
+<h2 id="disclosure-policy">Disclosure policy</h2>
+<ul>
+<li>Testing only against programs with published authorisation, and only within scope.</li>
+<li>Requests are identified with the researcher handle (<code>twistti</code>) and the platform's
+  research header where the program requires it.</li>
+<li>Findings are not published until the affected party has fixed the issue or the
+  program's disclosure timeline has elapsed.</li>
+<li>Contact: see the researcher profile linked at the top of this page.</li>
+</ul>
+</div></article>
+<footer class="site"><div class="wrap">
+  <span>Security research portfolio — testing performed in authorised training labs.</span>
+  <span class="mono">built 2026-10-11</span>
+</div></footer>
+</body>
+</html>
