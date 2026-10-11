@@ -42,11 +42,11 @@ findings that did not work out.</p>
 <tbody>
 <tr>
 <td>Reports submitted</td>
-<td>2 (1 closed, 1 awaiting triage)</td>
+<td>3 (2 closed, 1 awaiting triage)</td>
 </tr>
 <tr>
 <td>Reports ready to submit</td>
-<td>1</td>
+<td>0</td>
 </tr>
 <tr>
 <td>Findings documented end-to-end</td>
@@ -95,7 +95,7 @@ until each issue is fixed or publicly disclosed in line with program policy.</st
 <td>Open-source desktop shell (QML / JavaScript)</td>
 <td>Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component</td>
 <td>High (CVSS 4.0 8.5)</td>
-<td>Report complete, PoC verified — being submitted</td>
+<td>Submitted — <strong>closed as Not Applicable</strong>: "input comes from the same user who runs the code, so no security boundary was crossed" — accepted as hardening; a fix PR was invited</td>
 </tr>
 <tr>
 <td>3</td>
@@ -106,9 +106,16 @@ until each issue is fixed or publicly disclosed in line with program policy.</st
 </tr>
 </tbody>
 </table>
-<p>Item 3 is listed on purpose. It was closed because the impact class (resource
-exhaustion) sits on the program's <em>Core Ineligible Findings</em> list — a lesson that
-changed how every later report here was scoped. See <strong>Method</strong> below.</p>
+<p>Both closes are listed on purpose, and both changed how later work here is scoped:</p>
+<ul>
+<li><strong>Item 3</strong> was closed because the impact class (resource exhaustion) sits on the
+  program's <em>Core Ineligible Findings</em> list.</li>
+<li><strong>Item 2</strong> was closed because the attacker and the victim are the same principal:
+  the plugin is code the user chooses to install, at the user's own privilege level.
+  By that trust model the finding is hardening, not a boundary crossing — the vendor
+  invited a pull request instead, which is the correct channel for it.</li>
+</ul>
+<p>See <strong>Method</strong> below.</p>
 <hr />
 <h2 id="held-back-evaluated-not-submitted">Held back (evaluated, not submitted)</h2>
 <table>
@@ -172,6 +179,12 @@ sections above; work that produced no finding is not dressed up as one.</p>
    fail</strong> · code citation with file and line numbers · raw tool output, not a retelling.</li>
 <li><strong>Never overclaim.</strong> Severity is calculated, and where a score is arguable the
    conservative variant is stated alongside it.</li>
+<li><strong>Name the attacker and the victim first.</strong> If the "victim" is the same principal
+   who voluntarily installs the attacker's code at the same privilege level, an
+   escalation of what that code can reach is hardening, not a vulnerability — it
+   belongs in a pull request, not a report. Real boundary crossings need an
+   unauthorised attacker (network-facing, missing authorization) or a different
+   victim (another user, tenant, or server).</li>
 </ol>
 <hr />
 <h2 id="tooling">Tooling</h2>

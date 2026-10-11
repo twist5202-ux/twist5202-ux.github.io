@@ -13,8 +13,8 @@ findings that did not work out.
 
 | Metric | Value |
 |---|---|
-| Reports submitted | 2 (1 closed, 1 awaiting triage) |
-| Reports ready to submit | 1 |
+| Reports submitted | 3 (2 closed, 1 awaiting triage) |
+| Reports ready to submit | 0 |
 | Findings documented end-to-end | 7 |
 | Public bounty programs scoped | 16 |
 | Lab write-ups published | 4 |
@@ -33,12 +33,19 @@ until each issue is fixed or publicly disclosed in line with program policy.**
 | # | Area | Class | Severity | Status |
 |---|---|---|---|---|
 | 1 | Go serialization library (cloud-native tooling) | Crafted input causes an unrecoverable runtime panic inside a public API | Medium (CVSS 3.1 4.3) | Reported — awaiting triage |
-| 2 | Open-source desktop shell (QML / JavaScript) | Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component | High (CVSS 4.0 8.5) | Report complete, PoC verified — being submitted |
+| 2 | Open-source desktop shell (QML / JavaScript) | Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component | High (CVSS 4.0 8.5) | Submitted — **closed as Not Applicable**: "input comes from the same user who runs the code, so no security boundary was crossed" — accepted as hardening; a fix PR was invited |
 | 3 | AI SDK (schema validation) | Validation bypass in untrusted-schema handling | Medium (CVSS 4.0 5.3) | Submitted — **closed as Informative** |
 
-Item 3 is listed on purpose. It was closed because the impact class (resource
-exhaustion) sits on the program's *Core Ineligible Findings* list — a lesson that
-changed how every later report here was scoped. See **Method** below.
+Both closes are listed on purpose, and both changed how later work here is scoped:
+
+- **Item 3** was closed because the impact class (resource exhaustion) sits on the
+  program's *Core Ineligible Findings* list.
+- **Item 2** was closed because the attacker and the victim are the same principal:
+  the plugin is code the user chooses to install, at the user's own privilege level.
+  By that trust model the finding is hardening, not a boundary crossing — the vendor
+  invited a pull request instead, which is the correct channel for it.
+
+See **Method** below.
 
 ---
 
@@ -86,6 +93,12 @@ sections above; work that produced no finding is not dressed up as one.
    fail** · code citation with file and line numbers · raw tool output, not a retelling.
 8. **Never overclaim.** Severity is calculated, and where a score is arguable the
    conservative variant is stated alongside it.
+9. **Name the attacker and the victim first.** If the "victim" is the same principal
+   who voluntarily installs the attacker's code at the same privilege level, an
+   escalation of what that code can reach is hardening, not a vulnerability — it
+   belongs in a pull request, not a report. Real boundary crossings need an
+   unauthorised attacker (network-facing, missing authorization) or a different
+   victim (another user, tenant, or server).
 
 ---
 
