@@ -32,7 +32,7 @@ until each issue is fixed or publicly disclosed in line with program policy.**
 
 | # | Area | Class | Severity | Status |
 |---|---|---|---|---|
-| 1 | Go serialization library (Kubernetes ecosystem) | Crafted input causes an unrecoverable runtime panic inside a public API | Medium (CVSS 3.1 4.3) | Reported — awaiting triage |
+| 1 | Go serialization library (cloud-native tooling) | Crafted input causes an unrecoverable runtime panic inside a public API | Medium (CVSS 3.1 4.3) | Reported — awaiting triage |
 | 2 | Open-source desktop shell (QML / JavaScript) | Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component | High (CVSS 4.0 8.5) | Report complete, PoC verified — being submitted |
 | 3 | AI SDK (schema validation) | Validation bypass in untrusted-schema handling | Medium (CVSS 4.0 5.3) | Submitted — **closed as Informative** |
 
