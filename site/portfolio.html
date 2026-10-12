@@ -42,7 +42,7 @@ findings that did not work out.</p>
 <tbody>
 <tr>
 <td>Reports submitted</td>
-<td>3 (2 closed, 1 awaiting triage)</td>
+<td>4 (2 closed, 2 awaiting triage)</td>
 </tr>
 <tr>
 <td>Reports ready to submit</td>
@@ -50,7 +50,7 @@ findings that did not work out.</p>
 </tr>
 <tr>
 <td>Findings documented end-to-end</td>
-<td>7</td>
+<td>8</td>
 </tr>
 <tr>
 <td>Public bounty programs scoped</td>
@@ -107,6 +107,13 @@ until each issue is fixed or publicly disclosed in line with program policy.</st
 <td>Validation bypass in untrusted-schema handling</td>
 <td>Medium (CVSS 4.0 5.3)</td>
 <td>Submitted — <strong>closed as Informative</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Rust serialization library (blockchain VM tooling)</td>
+<td>Algorithmic-complexity amplification in the language binding: a ~51-byte blob expands into a shared-subtree DAG whose Python-side traversal costs O(2^N) time and space (seconds at N=20, hours at N=30) while the package's own native Rust path over the identical data stays at O(N)</td>
+<td>High (CVSS 3.1 7.5)</td>
+<td>Submitted — awaiting triage</td>
 </tr>
 </tbody>
 </table>
@@ -222,7 +229,7 @@ delivery   report writing to platform field structure · evidence packaging
 </div></article>
 <footer class="site"><div class="wrap">
   <span>Security research portfolio — testing performed in authorised training labs.</span>
-  <span class="mono">built 2026-10-11</span>
+  <span class="mono">built 2026-10-12</span>
 </div></footer>
 </body>
 </html>

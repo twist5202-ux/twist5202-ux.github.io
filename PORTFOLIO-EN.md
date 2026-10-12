@@ -13,9 +13,9 @@ findings that did not work out.
 
 | Metric | Value |
 |---|---|
-| Reports submitted | 3 (2 closed, 1 awaiting triage) |
+| Reports submitted | 4 (2 closed, 2 awaiting triage) |
 | Reports ready to submit | 0 |
-| Findings documented end-to-end | 7 |
+| Findings documented end-to-end | 8 |
 | Public bounty programs scoped | 16 |
 | Lab write-ups published | 4 |
 | Upstream fix pull requests | 1 open |
@@ -36,6 +36,7 @@ until each issue is fixed or publicly disclosed in line with program policy.**
 | 1 | Go serialization library (cloud-native tooling) | Crafted input causes an unrecoverable runtime panic inside a public API | Medium (CVSS 3.1 4.3) | Reported — awaiting triage |
 | 2 | Open-source desktop shell — omarchy (QML / JavaScript) | Insufficient verification of plugin provenance: an untrusted plugin can inherit a capability reserved for first-party code and displace a built-in security component | High (CVSS 4.0 8.5) | Submitted — **closed as Not Applicable**: "input comes from the same user who runs the code, so no security boundary was crossed" — accepted as hardening. Fix submitted upstream: [omarchy PR #14966](https://github.com/omacom/omarchy/pull/14966), open |
 | 3 | AI SDK (schema validation) | Validation bypass in untrusted-schema handling | Medium (CVSS 4.0 5.3) | Submitted — **closed as Informative** |
+| 4 | Rust serialization library (blockchain VM tooling) | Algorithmic-complexity amplification in the language binding: a ~51-byte blob expands into a shared-subtree DAG whose Python-side traversal costs O(2^N) time and space (seconds at N=20, hours at N=30) while the package's own native Rust path over the identical data stays at O(N) | High (CVSS 3.1 7.5) | Submitted — awaiting triage |
 
 Both closes are listed on purpose, and both changed how later work here is scoped:
 
