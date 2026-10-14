@@ -263,6 +263,7 @@ def page(title, body, depth=0, subtitle=""):
   <nav>
     <a href="{up}index.html">Write-ups</a>
     <a href="{up}portfolio.html">Portfolio</a>
+    <a href="{up}jasa-keamanan.html">Jasa Keamanan</a>
     <a href="{up}index.html#about">About</a>
   </nav>
 </div></header>
