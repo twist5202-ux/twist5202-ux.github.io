@@ -206,6 +206,22 @@
 </section>
 
 <section class="wrap">
+  <h2>Rekam jejak riset</h2>
+  <p class="sub">Bukan klaim — semuanya bisa diverifikasi. Portofolio lengkap: <a href="https://twist5202-ux.github.io/portfolio.html" target="_blank" rel="noopener">twist5202-ux.github.io/portfolio.html</a></p>
+  <table>
+    <thead><tr><th>Area</th><th>Yang dikerjakan</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Keamanan aplikasi mobile</td><td>Analisis statis APK eero (Amazon): token sesi SSO dikirim lewat skema <code>eero://</code> tanpa validasi host — dua arah serangan (pencurian sesi dan injeksi sesi), plus audit 12 komponen <code>exported</code></td><td>Dilaporkan ke HackerOne — ditutup sebagai duplikat (orang lain lapor lebih dulu)</td></tr>
+      <tr><td>Kontrak pintar</td><td>Audit Avail Bridge (Immunefi): <code>SP1Vector.commitHeaderRange</code> memakai <code>&amp;&amp;</code> bukan <code>||</code> di validasi header tepercaya, memungkinkan relayer yang disetujui memalsukan pesan bridge. Bukti dengan PoC Foundry</td><td>Dikirim ke Immunefi</td></tr>
+      <tr><td>Riset &amp; penulisan teknis</td><td>Analisis on-chain Kintara ($KINS) 1.430 kata, diterbitkan di dev.to — setiap angka bersumber dan bertanggal observasi</td><td>Terbit · diserahkan ke Taskmarket</td></tr>
+      <tr><td>Lab terotorisasi</td><td>4 write-up: SQL injection sampai kompromi database, broken access control + DOM XSS, dekripsi RSA tanpa padding, rekonstruksi penuh dari recon ke eksploitasi</td><td>Terbit</td></tr>
+      <tr><td>Kontribusi upstream</td><td>Pull request perbaikan keamanan di omarchy (QML/JavaScript) — plugin tidak tepercaya bisa mewarisi kapabilitas kode first-party</td><td>PR terbuka</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Saya juga mencatat temuan yang <strong>tidak</strong> dilaporkan dan alasannya — portofolio yang cuma menampilkan kemenangan adalah halaman iklan, bukan catatan kerja.</div>
+</section>
+
+<section class="wrap">
   <h2>Pertanyaan yang sering muncul</h2>
   <details><summary>Apakah ini legal? Sistemnya punya saya.</summary><p>Selama Anda pemilik atau pihak berwenang atas asetnya, dan menandatangani surat izin ruang lingkup, pengujian ini sah. Karena itu saya selalu mulai dengan dokumen, bukan dengan alat.</p></details>
   <details><summary>Situs saya jadi down atau lambat?</summary><p>Tidak, karena pengujian dirancang tidak membebani: batas laju ketat, tanpa uji beban, dan dijalankan di jam yang Anda pilih. Kalau ada indikasi gangguan, pengujian dihentikan dan saya hubungi Anda.</p></details>
@@ -226,6 +242,8 @@
     <div><b>OWASP</b><span>kerangka pengujian</span></div>
     <div><b>1×</b><span>retest gratis di Paket B</span></div>
     <div><b>100%</b><span>temuan diverifikasi manual</span></div>
+    <div><b>5</b><span>laporan dikirim ke program bounty</span></div>
+    <div><b>3</b><span>domain riset: web · mobile · kontrak pintar</span></div>
   </div>
 </section>
 
