@@ -9,6 +9,7 @@ Desain: dark theme, tanpa dependensi JS eksternal, siap GitHub Pages.
 """
 import re
 import html
+import shutil
 import pathlib
 import datetime
 
@@ -435,9 +436,19 @@ def main():
 
     build_portfolio()
 
+    # Copy the n8n template storefront (static, hand-maintained)
+    n8n_src = ROOT / "n8n"
+    if n8n_src.is_dir():
+        n8n_dst = OUT / "n8n"
+        if n8n_dst.exists():
+            shutil.rmtree(n8n_dst)
+        shutil.copytree(n8n_src, n8n_dst)
+        n = sum(1 for f in n8n_dst.rglob("*") if f.is_file())
+        print(f"  ok  n8n/  ({n} file disalin)")
+
     (OUT / "index.html").write_text(build_index(entries), encoding="utf-8")
     total = sum(f.stat().st_size for f in OUT.rglob("*") if f.is_file())
-    print(f"\n  index.html + {len(entries)} writeup + assets/style.css")
+    print(f"\n  index.html + {len(entries)} writeup + portfolio + n8n + assets/style.css")
     print(f"  total situs: {total:,} byte")
     print(f"  output: {OUT}")
 
