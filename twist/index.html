@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,11 +44,6 @@
   .nav-links a:hover{color:var(--txt)}
   .nav-links a:hover::after{width:100%}
   @media(max-width:900px){.nav-links{display:none}}
-
-  .lang-toggle{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;font-family:var(--mono);font-size:11.5px;flex-shrink:0}
-  .lang-toggle button{background:transparent;border:none;color:var(--dim);padding:5px 12px;cursor:pointer;transition:.15s;font-family:var(--mono);font-size:11.5px;font-weight:600}
-  .lang-toggle button.on{background:var(--acc);color:#0a0e14}
-  .lang-toggle button:hover:not(.on){color:var(--txt)}
 
   #prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--acc),var(--acc2));z-index:101;width:0}
 
@@ -162,7 +157,7 @@
   footer a{color:var(--dim)}
 
   @media print{
-    nav,.cta-row,.c-row,.lang-toggle,#stars,#glow,#prog,#curtain{display:none}
+    nav,.cta-row,.c-row,#stars,#glow,#prog,#curtain{display:none}
     body{background:#fff;color:#111}
     .work,.skill-box,.note,.contact-box{background:#fff;border:1px solid #ddd;transform:none!important}
     .dim,.work p,.about-txt p,.tl-p{color:#444}
@@ -192,57 +187,53 @@
   <div class="nav-in">
     <div class="logo">twist<span>.dev</span></div>
     <div class="nav-links">
-      <a href="#tentang" data-i="nav-about">Tentang</a>
-      <a href="#kerjaan" data-i="nav-work">Kerjaan</a>
-      <a href="#skill" data-i="nav-skill">Skill</a>
-      <a href="#perjalanan" data-i="nav-journey">Perjalanan</a>
-      <a href="#kontak" data-i="nav-contact">Kontak</a>
-      <div class="lang-toggle">
-        <button id="btn-id" class="on" onclick="setLang('id')">ID</button>
-        <button id="btn-en" onclick="setLang('en')">EN</button>
-      </div>
+      <a href="#tentang">About</a>
+      <a href="#kerjaan">Work</a>
+      <a href="#skill">Skills</a>
+      <a href="#perjalanan">Journey</a>
+      <a href="#kontak">Contact</a>
     </div>
   </div>
 </nav>
 
 <header class="hero">
   <div class="wrap">
-    <div class="badge rv" data-i="hero-badge">PORTFOLIO · TWIST · INDONESIA</div>
-    <h1 class="rv rv-d1"><span data-i="hero-title">Gue bikin, audit, dan<br><em>otomatisiin</em> — lalu tulis soal itu.</span><span class="cursor"></span></h1>
-    <p class="sub rv rv-d2" data-i="hero-sub">Riset keamanan aplikasi, automation n8n, riset Web3, dan desain grafis. Self-taught, no degree. Semua yang gue klaim bisa dicek — ada link, ada bukti on-chain, ada kode.</p>
+    <div class="badge rv">PORTFOLIO · TWIST · INDONESIA</div>
+    <h1 class="rv rv-d1"><span>I build, audit, and<br><em>automate</em> — then write about it.</span><span class="cursor"></span></h1>
+    <p class="sub rv rv-d2">Application security research, n8n automation, Web3 research, and graphic design. Self-taught, no degree. Everything I claim is verifiable — there are links, on-chain proof, and code.</p>
     <div class="cta-row rv rv-d3">
-      <a href="#kerjaan" class="btn btn-p" data-i="hero-cta1">Lihat Kerjaan</a>
-      <a href="#kontak" class="btn btn-s" data-i="hero-cta2">Hubungi Gue</a>
+      <a href="#kerjaan" class="btn btn-p">View Work</a>
+      <a href="#kontak" class="btn btn-s">Get in Touch</a>
     </div>
     <div class="hero-stats rv rv-d4">
-      <div class="hs"><b data-count="5">0</b><span data-i="stat1">laporan ke program bounty</span></div>
-      <div class="hs"><b data-count="12">0</b><span data-i="stat2">template automation n8n</span></div>
-      <div class="hs"><b data-count="4">0</b><span data-i="stat3">write-up lab terbit</span></div>
-      <div class="hs"><b data-count="2">0</b><span data-i="stat4">NFT on-chain minted</span></div>
-      <div class="hs"><b data-count="1">0</b><span data-i="stat5">artikel dev.to terbit</span></div>
+      <div class="hs"><b data-count="5">0</b><span>reports to bounty programs</span></div>
+      <div class="hs"><b data-count="12">0</b><span>n8n automation templates</span></div>
+      <div class="hs"><b data-count="4">0</b><span>published lab write-ups</span></div>
+      <div class="hs"><b data-count="2">0</b><span>NFTs minted on-chain</span></div>
+      <div class="hs"><b data-count="1">0</b><span>published dev.to article</span></div>
     </div>
   </div>
 </header>
 
 <section id="tentang" class="sec-in">
   <div class="wrap">
-    <h2 class="sec-h rv" data-i="about-h">Tentang gue</h2>
-    <p class="sec-p rv rv-d1" data-i="about-p">Bukan "ahli segalanya" — spesialis di beberapa hal, dan jujur soal batasnya.</p>
+    <h2 class="sec-h rv">About me</h2>
+    <p class="sec-p rv rv-d1">Not a "jack of all trades" — a specialist in a few things, and honest about the limits.</p>
     <div class="about-grid">
       <div class="about-txt rv rv-d2">
-        <p data-i="about-1">Gue <b>Twist</b>, based in Indonesia, kerja remote di <b>keamanan aplikasi</b>, <b>automation</b>, dan <b>riset Web3</b>. Pola kerjanya sama terus: bongkar sesuatu, pahami cara kerjanya, lalu bikin versi yang lebih rapi — entah itu laporan bug, workflow automation, atau halaman web.</p>
-        <p data-i="about-2">Gue mulai dari rasa penasaran: bongkar APK, baca smali, cari celah. Dari situ tumbuh ke audit kontrak pintar, riset token on-chain, dan terakhir automation n8n buat UMKM dan trader. <b>Self-taught, tanpa degree</b> — gue peduli hasil kerjaan, bukan asal-usulnya.</p>
-        <p data-i="about-3">Di luar teknis, gue juga bikin <b>aset visual</b>: infografis, cover gambar, dan halaman web ber-desain gelap. Gue percau produk yang bagus harus enak dilihat juga, bukan cuma bener di belakang layar.</p>
+        <p>I am <b>Twist</b>, based in Indonesia, working remotely in <b>application security</b>, <b>automation</b>, and <b>Web3 research</b>. The pattern is always the same: take something apart, understand how it works, then build a cleaner version — whether that is a bug report, an automation workflow, or a web page.</p>
+        <p>I started from curiosity: decompile APKs, read smali, look for gaps. That grew into smart-contract auditing, on-chain token research, and finally n8n automation for small businesses and traders. <b>Self-taught, no degree</b> — I care about the output, not where the training came from.</p>
+        <p>Beyond the technical side, I also build <b>visual assets</b>: infographics, cover images, and dark-themed web pages. I believe a good product has to look good too, not just work behind the scenes.</p>
       </div>
       <div class="skill-box rv rv-d3">
-        <h3 data-i="skill-h">SKILL</h3>
-        <div class="sk"><div class="sk-h"><span data-i="sk1">Keamanan aplikasi</span><span>Advanced</span></div><div class="bar"><i data-w="85"></i></div></div>
-        <div class="sk"><div class="sk-h"><span data-i="sk2">Automation (n8n)</span><span>Advanced</span></div><div class="bar"><i data-w="80"></i></div></div>
-        <div class="sk"><div class="sk-h"><span data-i="sk3">Riset Web3 / on-chain</span><span>Intermediate+</span></div><div class="bar"><i data-w="75"></i></div></div>
-        <div class="sk"><div class="sk-h"><span data-i="sk4">Penulisan teknis</span><span>Advanced</span></div><div class="bar"><i data-w="85"></i></div></div>
-        <div class="sk"><div class="sk-h"><span data-i="sk5">Desain grafis / UI</span><span>Intermediate</span></div><div class="bar"><i data-w="65"></i></div></div>
-        <div class="sk"><div class="sk-h"><span data-i="sk6">3D / modeling</span><span data-i="sk6l">Belajar</span></div><div class="bar"><i data-w="35"></i></div></div>
-        <div class="sk"><div class="sk-h"><span data-i="sk7">Front-end (HTML/CSS/JS)</span><span>Intermediate+</span></div><div class="bar"><i data-w="70"></i></div></div>
+        <h3>SKILLS</h3>
+        <div class="sk"><div class="sk-h"><span>Application security</span><span>Advanced</span></div><div class="bar"><i data-w="85"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Automation (n8n)</span><span>Advanced</span></div><div class="bar"><i data-w="80"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Web3 / on-chain research</span><span>Intermediate+</span></div><div class="bar"><i data-w="75"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Technical writing</span><span>Advanced</span></div><div class="bar"><i data-w="85"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Graphic design / UI</span><span>Intermediate</span></div><div class="bar"><i data-w="65"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>3D / modeling</span><span>Learning</span></div><div class="bar"><i data-w="35"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Front-end (HTML/CSS/JS)</span><span>Intermediate+</span></div><div class="bar"><i data-w="70"></i></div></div>
       </div>
     </div>
   </div>
@@ -250,92 +241,92 @@
 
 <section id="kerjaan" class="sec-in" style="background:var(--bg2)">
   <div class="wrap">
-    <h2 class="sec-h rv" data-i="work-h">Kerjaan</h2>
-    <p class="sec-p rv rv-d1" data-i="work-p">Semua yang ada di sini punya bukti — link, transaksi on-chain, atau kode. Status ditulis apa adanya, termasuk yang gagal.</p>
+    <h2 class="sec-h rv">Work</h2>
+    <p class="sec-p rv rv-d1">Everything here has proof — a link, an on-chain transaction, or code. Status is written as-is, including the failures.</p>
     <div class="work-grid tilt-wrap">
 
       <div class="work rv">
-        <div class="work-top"><div class="work-ico">🔒</div><span class="work-st st-dup" data-i="w1s">CLOSED — DUPLICATE</span></div>
-        <h3 data-i="w1t">Analisis Keamanan Mobile — eero (Amazon)</h3>
-        <p data-i="w1d">Analisis statis APK eero: token sesi SSO dikirim lewat skema <code>eero://</code> tanpa validasi host — dua arah serangan (pencurian sesi dan injeksi sesi). Plus audit 12 komponen <code>exported</code> di AndroidManifest. Dilaporkan ke HackerOne #4141935, ditutup sebagai duplikat karena orang lain lapor lebih dulu.</p>
+        <div class="work-top"><div class="work-ico">🔒</div><span class="work-st st-dup">CLOSED — DUPLICATE</span></div>
+        <h3>Mobile Security Analysis — eero (Amazon)</h3>
+        <p>Static analysis of the eero APK: SSO session token sent through an <code>eero://</code> scheme without host validation — two attack directions (session theft and session injection). Plus an audit of 12 <code>exported</code> components in the AndroidManifest. Reported to HackerOne #4141935, closed as a duplicate because someone else reported it first.</p>
         <div class="work-tags"><span class="tag">APK</span><span class="tag">smali</span><span class="tag">Deep link</span><span class="tag">HackerOne</span></div>
-        <div class="work-link"><a href="https://twist5202-ux.github.io/portfolio.html" data-i="w1l">Portfolio lengkap →</a></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/portfolio.html">Full portfolio →</a></div>
       </div>
 
       <div class="work rv rv-d1">
-        <div class="work-top"><div class="work-ico">⛓️</div><span class="work-st st-sub" data-i="w2s">SUBMITTED</span></div>
-        <h3 data-i="w2t">Audit Smart Contract — Avail Bridge</h3>
-        <p data-i="w2d"><code>SP1Vector.commitHeaderRange</code> pakai <code>&amp;&amp;</code> bukan <code>||</code> di validasi header tepercaya — relayer yang disetujui bisa memalsukan pesan bridge. Severity Critical, dilengkapi bukti PoC Foundry. Dikirim ke Immunefi.</p>
+        <div class="work-top"><div class="work-ico">⛓️</div><span class="work-st st-sub">SUBMITTED</span></div>
+        <h3>Smart Contract Audit — Avail Bridge</h3>
+        <p><code>SP1Vector.commitHeaderRange</code> uses <code>&amp;&amp;</code> instead of <code>||</code> in trusted-header validation — an approved relayer can forge bridge messages. Critical severity, backed by a Foundry PoC. Submitted to Immunefi.</p>
         <div class="work-tags"><span class="tag">Solidity</span><span class="tag">Foundry</span><span class="tag">Immunefi</span><span class="tag">Critical</span></div>
-        <div class="work-link"><a href="https://twist5202-ux.github.io/portfolio.html" data-i="w2l">Portfolio lengkap →</a></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/portfolio.html">Full portfolio →</a></div>
       </div>
 
       <div class="work rv rv-d2">
-        <div class="work-top"><div class="work-ico">🧪</div><span class="work-st st-done" data-i="w3s">PUBLISHED</span></div>
-        <h3 data-i="w3t">4 Write-up Lab Keamanan</h3>
-        <p data-i="w3d">SQL injection sampai kompromi database, broken access control + DOM XSS, dekripsi RSA tanpa padding, dan rekonstruksi penuh dari recon ke eksploitasi. Ditulis end-to-end dengan langkah reproduksi.</p>
+        <div class="work-top"><div class="work-ico">🧪</div><span class="work-st st-done">PUBLISHED</span></div>
+        <h3>4 Security Lab Write-ups</h3>
+        <p>SQL injection through to full database compromise, broken access control plus DOM XSS, RSA decryption without padding, and a complete reconstruction from recon to exploitation. Written end-to-end with reproduction steps.</p>
         <div class="work-tags"><span class="tag">SQLi</span><span class="tag">XSS</span><span class="tag">Crypto</span><span class="tag">Recon</span></div>
-        <div class="work-link"><a href="https://twist5202-ux.github.io/" data-i="w3l">Baca write-up →</a></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/">Read write-up →</a></div>
       </div>
 
       <div class="work rv rv-d3">
-        <div class="work-top"><div class="work-ico">⚙️</div><span class="work-st st-live" data-i="w4s">LIVE</span></div>
-        <h3 data-i="w4t">12 Template Automation n8n</h3>
-        <p data-i="w4d">Paket workflow siap pakai: 6 untuk UMKM (auto-reply, invoice, laporan harian, minta review) dan 6 untuk crypto (price alert, wallet monitor, token scanner, gas alert, portfolio report, NFT watcher). Total 87 node, semua pakai API publik gratis.</p>
+        <div class="work-top"><div class="work-ico">⚙️</div><span class="work-st st-live">LIVE</span></div>
+        <h3>12 n8n Automation Templates</h3>
+        <p>Ready-to-use workflow pack: 6 for small businesses (auto-reply, invoice, daily report, review request) and 6 for crypto (price alert, wallet monitor, token scanner, gas alert, portfolio report, NFT watcher). 87 nodes total, all on free public APIs.</p>
         <div class="work-tags"><span class="tag">n8n</span><span class="tag">UMKM</span><span class="tag">Crypto</span><span class="tag">87 nodes</span></div>
-        <div class="work-link"><a href="https://twist5202-ux.github.io/automation/" data-i="w4l">Lihat template →</a></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/automation/">View templates →</a></div>
       </div>
 
       <div class="work rv rv-d4">
-        <div class="work-top"><div class="work-ico">📝</div><span class="work-st st-done" data-i="w5s">PUBLISHED</span></div>
-        <h3 data-i="w5t">Riset On-chain — Kintara ($KINS)</h3>
-        <p data-i="w5d">Analisis 1.430 kata tentang Kintara, browser MMO di Solana di mana $KINS berfungsi sebagai "pintu" bukan mata uang. Setiap angka bersumber dan bertanggal observasi. Terbit di dev.to, diserahkan ke Taskmarket.</p>
+        <div class="work-top"><div class="work-ico">📝</div><span class="work-st st-done">PUBLISHED</span></div>
+        <h3>On-chain Research — Kintara ($KINS)</h3>
+        <p>A 1,430-word analysis of Kintara, a browser MMO on Solana where $KINS works as a "door" rather than a currency. Every figure is sourced and dated. Published on dev.to, submitted to Taskmarket.</p>
         <div class="work-tags"><span class="tag">Solana</span><span class="tag">dev.to</span><span class="tag">Taskmarket</span><span class="tag">Riset</span></div>
-        <div class="work-link"><a href="https://dev.to/twist5202ux/kintara-kins-a-browser-mmo-where-the-token-is-a-door-not-a-currency-2j65" data-i="w5l">Baca artikel →</a></div>
+        <div class="work-link"><a href="https://dev.to/twist5202ux/kintara-kins-a-browser-mmo-where-the-token-is-a-door-not-a-currency-2j65">Read article →</a></div>
       </div>
 
       <div class="work rv rv-d5">
-        <div class="work-top"><div class="work-ico">🎨</div><span class="work-st st-live" data-i="w6s">LIVE</span></div>
-        <h3 data-i="w6t">Desain Web &amp; Aset Visual</h3>
-        <p data-i="w6d">Membangun dan mendesain beberapa halaman web bertema gelap: portfolio keamanan, halaman jasa audit, dan dua halaman jualan template automation. Plus infografis dan cover gambar untuk konten Web3.</p>
+        <div class="work-top"><div class="work-ico">🎨</div><span class="work-st st-live">LIVE</span></div>
+        <h3>Web Design &amp; Visual Assets</h3>
+        <p>Built and designed several dark-themed web pages: a security portfolio, an audit service page, and two template storefronts. Plus infographics and cover images for Web3 content.</p>
         <div class="work-tags"><span class="tag">HTML/CSS</span><span class="tag">UI gelap</span><span class="tag">Infografis</span><span class="tag">Cover</span></div>
-        <div class="work-link"><a href="https://twist5202-ux.github.io/" data-i="w6l">Lihat desain →</a></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/">View design →</a></div>
       </div>
 
       <div class="work rv rv-d6">
-        <div class="work-top"><div class="work-ico">🐴</div><span class="work-st st-done" data-i="w7s">MINTED</span></div>
-        <h3 data-i="w7t">Ptah Proof of Agent — Kartu #14676</h3>
-        <p data-i="w7d">Mint NFT soulbound "Proof of Agent" series Satellite Network (#530) di BNB Chain, terikat ke Binance Agent ID <code>twistti.ai</code>. Terverifikasi on-chain melalui <code>ownerOf(14676)</code>.</p>
+        <div class="work-top"><div class="work-ico">🐴</div><span class="work-st st-done">MINTED</span></div>
+        <h3>Ptah Proof of Agent — Card #14676</h3>
+        <p>Minted the soulbound "Proof of Agent" NFT, Satellite Network series (#530) on BNB Chain, bound to Binance Agent ID <code>twistti.ai</code>. Verified on-chain via <code>ownerOf(14676)</code>.</p>
         <div class="work-tags"><span class="tag">BNB Chain</span><span class="tag">NFT</span><span class="tag">On-chain</span><span class="tag">Verified</span></div>
-        <div class="work-link"><a href="https://bscscan.com/token/0xD87ADb2E47979d6cb323896B1A9320E0dd132213" data-i="w7l">Cek di BscScan →</a></div>
+        <div class="work-link"><a href="https://bscscan.com/token/0xD87ADb2E47979d6cb323896B1A9320E0dd132213">Check on BscScan →</a></div>
       </div>
 
       <div class="work rv">
-        <div class="work-top"><div class="work-ico">🤖</div><span class="work-st st-live" data-i="w8s">ACTIVE</span></div>
-        <h3 data-i="w8t">Agent On-Chain &amp; Marketplace</h3>
-        <p data-i="w8d">Mendaftarkan agent <code>twistscrape.agent</code> di TermiX (BSC) kategori Data &amp; Research, serta agent ID <code>twistti.ai</code> di Binance Agentic Wallet. Aktif di Taskmarket (agent ID 1130728) dengan submission karya.</p>
+        <div class="work-top"><div class="work-ico">🤖</div><span class="work-st st-live">ACTIVE</span></div>
+        <h3>On-chain Agent &amp; Marketplace</h3>
+        <p>Registered the agent <code>twistscrape.agent</code> on TermiX (BSC) under Data &amp; Research, plus agent ID <code>twistti.ai</code> on Binance Agentic Wallet. Active on Taskmarket (agent ID 1130728) with submitted work.</p>
         <div class="work-tags"><span class="tag">TermiX</span><span class="tag">Taskmarket</span><span class="tag">Agent ID</span><span class="tag">BSC</span></div>
-        <div class="work-link"><a href="https://github.com/twist5202-ux" data-i="w8l">GitHub →</a></div>
+        <div class="work-link"><a href="https://github.com/twist5202-ux">GitHub →</a></div>
       </div>
 
       <div class="work rv rv-d1">
-        <div class="work-top"><div class="work-ico">🔧</div><span class="work-st st-done" data-i="w9s">CONTRIBUTED</span></div>
-        <h3 data-i="w9t">Kontribusi Upstream &amp; Toolkit</h3>
-        <p data-i="w9d">Pull request perbaikan keamanan di omarchy (plugin tidak tepercaya bisa mewarisi kapabilitas kode first-party). Juga memelihara toolkit bug hunting agentik sendiri dengan 15 alat recon dan scan.</p>
+        <div class="work-top"><div class="work-ico">🔧</div><span class="work-st st-done">CONTRIBUTED</span></div>
+        <h3>Upstream Contribution &amp; Toolkit</h3>
+        <p>Security fix pull request on omarchy (untrusted plugins could inherit first-party code capabilities). Also maintain my own agentic bug-hunting toolkit with 15 recon and scanning tools.</p>
         <div class="work-tags"><span class="tag">Open source</span><span class="tag">Pull request</span><span class="tag">Tooling</span></div>
-        <div class="work-link"><a href="https://github.com/twist5202-ux" data-i="w9l">GitHub →</a></div>
+        <div class="work-link"><a href="https://github.com/twist5202-ux">GitHub →</a></div>
       </div>
 
     </div>
 
     <div class="note rv">
-      <h4 data-i="note-h">YANG BELUM ADA (jujur)</h4>
-      <p data-i="note-p">Portofolio ini sengaja tidak menampilkan:</p>
+      <h4>WHAT IS NOT HERE YET (honest)</h4>
+      <p>This portfolio deliberately does not show:</p>
       <ul>
-        <li data-i="note-1"><b>Bounty yang sudah dibayar</b> — eero ditutup duplikat, Avail masih menunggu triase. Total bounty diterima: <b>$0</b>.</li>
-        <li data-i="note-2"><b>Portofolio 3D yang jadi</b> — gue masih belajar. Belum ada karya 3D yang layak dipajang di sini.</li>
-        <li data-i="note-3"><b>Klien jasa automation</b> — template sudah jadi dan halaman jualan live, tapi belum ada klien bayar. Angka penjualan: <b>0</b>.</li>
-        <li data-i="note-4"><b>Sertifikat formal</b> — gue self-taught, tanpa degree. Yang gue punya bukti kerja, bukan ijazah.</li>
+        <li><b>Paid bounties</b> — eero closed as duplicate, Avail still awaiting triage. Total bounties received: <b>$0</b>.</li>
+        <li><b>A finished 3D portfolio</b> — still learning. No 3D work worth displaying here yet.</li>
+        <li><b>Paying automation clients</b> — templates are built and the storefront is live, but no client has paid yet. Sales: <b>0</b>.</li>
+        <li><b>Formal certificates</b> — self-taught, no degree. What I have is proof of work, not a diploma.</li>
       </ul>
     </div>
   </div>
@@ -343,50 +334,50 @@
 
 <section id="skill" class="sec-in">
   <div class="wrap">
-    <h2 class="sec-h rv" data-i="sk-h2">Skill detail</h2>
-    <p class="sec-p rv rv-d1" data-i="sk-p">Dikelompokkan berdasarkan bukti kerja, bukan klaim.</p>
+    <h2 class="sec-h rv">Skills in detail</h2>
+    <p class="sec-p rv rv-d1">Grouped by evidence of work, not by claim.</p>
     <div class="work-grid tilt-wrap">
 
       <div class="work rv">
         <div class="work-top"><div class="work-ico">🔒</div></div>
-        <h3 data-i="sd1t">Keamanan Aplikasi</h3>
-        <p data-i="sd1d">Analisis statis APK, review smali, audit AndroidManifest, identifikasi deep-link flaw, analisis kebocoran token sesi. Audit kontrak pintar Solidity dengan Foundry. Penulisan laporan terstruktur untuk triage engineer.</p>
+        <h3>Application Security</h3>
+        <p>Static APK analysis, smali review, AndroidManifest auditing, deep-link flaw identification, session token leakage analysis. Solidity smart-contract auditing with Foundry. Structured report writing for triage engineers.</p>
         <div class="work-tags"><span class="tag">APK</span><span class="tag">smali</span><span class="tag">Solidity</span><span class="tag">Foundry</span><span class="tag">CVSS</span></div>
       </div>
 
       <div class="work rv rv-d1">
         <div class="work-top"><div class="work-ico">⚙️</div></div>
-        <h3 data-i="sd2t">Automation &amp; Scripting</h3>
-        <p data-i="sd2d">Membangun 12 workflow n8n produksi (87 node) untuk UMKM dan crypto. Python scripting, web scraping, output data terstruktur JSON/CSV. Self-hosted n8n di Windows dengan SQLite.</p>
+        <h3>Automation &amp; Scripting</h3>
+        <p>Built 12 production n8n workflows (87 nodes) for small business and crypto. Python scripting, web scraping, structured JSON/CSV output. Self-hosted n8n on Windows with SQLite.</p>
         <div class="work-tags"><span class="tag">n8n</span><span class="tag">Python</span><span class="tag">Scraping</span><span class="tag">JSON/CSV</span></div>
       </div>
 
       <div class="work rv rv-d2">
         <div class="work-top"><div class="work-ico">⛓️</div></div>
-        <h3 data-i="sd3t">Web3 &amp; On-chain</h3>
-        <p data-i="sd3d">Riset token dan tokenomics, analisis likuiditas dan pasar via DexScreener, interaksi RPC langsung (eth_call, eth_getLogs), mint NFT on-chain, dan operasi wallet burner.</p>
+        <h3>Web3 &amp; On-chain</h3>
+        <p>Token and tokenomics research, liquidity and market analysis via DexScreener, direct RPC interaction (eth_call, eth_getLogs), on-chain NFT minting, and burner wallet operations.</p>
         <div class="work-tags"><span class="tag">BSC</span><span class="tag">Solana</span><span class="tag">RPC</span><span class="tag">DexScreener</span></div>
       </div>
 
       <div class="work rv rv-d3">
         <div class="work-top"><div class="work-ico">✍️</div></div>
-        <h3 data-i="sd4t">Penulisan Teknis</h3>
-        <p data-i="sd4d">Laporan vulnerability lengkap dengan langkah reproduksi, artikel explainer 1.400+ kata dengan setiap angka bersumber, dokumentasi workflow Bahasa Indonesia, dan thread teknis untuk X.</p>
+        <h3>Technical Writing</h3>
+        <p>Full vulnerability reports with reproduction steps, 1,400+ word explainers with every figure sourced, Indonesian-language workflow documentation, and technical threads for X.</p>
         <div class="work-tags"><span class="tag">Laporan</span><span class="tag">Artikel</span><span class="tag">Dokumentasi</span><span class="tag">Thread</span></div>
       </div>
 
       <div class="work rv rv-d4">
         <div class="work-top"><div class="work-ico">🎨</div></div>
-        <h3 data-i="sd5t">Desain Grafis &amp; UI</h3>
-        <p data-i="sd5d">Mendesain halaman web bertema gelap dari nol (HTML/CSS vanilla, tanpa framework), infografis data dengan Python, serta cover gambar untuk konten sosial media. Memahami hierarki visual, tipografi, dan konsistensi warna.</p>
+        <h3>Graphic Design &amp; UI</h3>
+        <p>Designing dark-themed web pages from scratch (vanilla HTML/CSS, no framework), data infographics with Python, and cover images for social content. Understanding visual hierarchy, typography, and colour consistency.</p>
         <div class="work-tags"><span class="tag">HTML/CSS</span><span class="tag">Infografis</span><span class="tag">Cover</span><span class="tag">UI gelap</span></div>
       </div>
 
       <div class="work rv rv-d5">
         <div class="work-top"><div class="work-ico">🧊</div></div>
-        <h3 data-i="sd6t">3D — Sedang Belajar</h3>
-        <p data-i="sd6d">Gue sedang mendalami 3D modeling dan rendering. Belum ada karya yang layak dipajang, jadi gue taruh di sini apa adanya: <b>skill dalam proses</b>, bukan klaim jadi. Kalau lo butuh kerjaan 3D serius, gue belum orangnya — tapi gue terbuka untuk proyek latihan.</p>
-        <div class="work-tags"><span class="tag" data-i="sd6t1">Belajar</span><span class="tag">Modeling</span><span class="tag">Rendering</span></div>
+        <h3>3D — Still Learning</h3>
+        <p>I am currently working through 3D modeling and rendering. Nothing is worth displaying yet, so it is listed here as-is: <b>a skill in progress</b>, not a finished claim. If you need serious 3D work, I am not there yet — but I am open to practice projects.</p>
+        <div class="work-tags"><span class="tag">Learning</span><span class="tag">Modeling</span><span class="tag">Rendering</span></div>
       </div>
 
     </div>
@@ -395,38 +386,38 @@
 
 <section id="perjalanan" class="sec-in" style="background:var(--bg2)">
   <div class="wrap">
-    <h2 class="sec-h rv" data-i="tl-h">Perjalanan</h2>
-    <p class="sec-p rv rv-d1" data-i="tl-p">Urutan waktu berdasarkan yang benar-benar dikerjakan.</p>
+    <h2 class="sec-h rv">Journey</h2>
+    <p class="sec-p rv rv-d1">Ordered by what was actually done.</p>
     <div class="tl">
       <div class="tl-i rv">
-        <div class="tl-d" data-i="t1d">FASE 1 — DASAR</div>
-        <div class="tl-t" data-i="t1t">Belajar sendiri, bongkar APK, baca kode</div>
-        <div class="tl-p" data-i="t1p">Mulai dari rasa penasaran: gimana cara kerja aplikasi di balik layar. Belajar decompile APK, baca smali, cari komponen yang terekspos. Tanpa kursus, tanpa degree — coba-nyoba sampai paham.</div>
+        <div class="tl-d">PHASE 1 — FOUNDATION</div>
+        <div class="tl-t">Self-taught, decompiling APKs, reading code</div>
+        <div class="tl-p">Started from curiosity: how do apps actually work behind the screen. Learned APK decompilation, read smali, looked for exposed components. No courses, no degree — trial and error until it clicked.</div>
       </div>
       <div class="tl-i rv rv-d1">
-        <div class="tl-d" data-i="t2d">FASE 2 — LAPORAN</div>
-        <div class="tl-t" data-i="t2t">Laporan bug bounty pertama</div>
-        <div class="tl-p" data-i="t2p">Menemukan celah deep-link di aplikasi eero (Amazon) yang membocorkan token sesi SSO. Menulis laporan lengkap 286 baris untuk HackerOne. Hasil: ditutup duplikat — pelajaran berharga soal kecepatan lapor.</div>
+        <div class="tl-d">PHASE 2 — REPORTING</div>
+        <div class="tl-t">First bug bounty report</div>
+        <div class="tl-p">Found a deep-link flaw in the eero (Amazon) app leaking the SSO session token. Wrote a full 286-line report for HackerOne. Result: closed as duplicate — a valuable lesson in reporting speed.</div>
       </div>
       <div class="tl-i rv rv-d2">
-        <div class="tl-d" data-i="t3d">FASE 3 — KONTRAK</div>
-        <div class="tl-t" data-i="t3t">Audit smart contract, kirim ke Immunefi</div>
-        <div class="tl-p" data-i="t3p">Beralih dari aplikasi ke kontrak pintar. Menemukan bug logika <code>&amp;&amp;</code> vs <code>||</code> di Avail Bridge yang bisa dipakai relayer untuk memalsukan pesan. Membuat PoC Foundry, mengirim ke Immunefi dengan severity Critical.</div>
+        <div class="tl-d">PHASE 3 — CONTRACTS</div>
+        <div class="tl-t">Smart contract audit, submitted to Immunefi</div>
+        <div class="tl-p">Moved from applications to smart contracts. Found an <code>&amp;&amp;</code> vs <code>||</code> logic bug in Avail Bridge that a relayer could use to forge messages. Built a Foundry PoC, submitted to Immunefi at Critical severity.</div>
       </div>
       <div class="tl-i rv rv-d3">
-        <div class="tl-d" data-i="t4d">FASE 4 — RISET</div>
-        <div class="tl-t" data-i="t4t">Riset on-chain dan penulisan terbit</div>
-        <div class="tl-p" data-i="t4p">Menganalisis Kintara ($KINS) di Solana — token sebagai "pintu" bukan mata uang. Artikel 1.430 kata terbit di dev.to, diserahkan ke Taskmarket. Belajar bahwa angka tanpa sumber itu sampah.</div>
+        <div class="tl-d">PHASE 4 — RESEARCH</div>
+        <div class="tl-t">On-chain research and published writing</div>
+        <div class="tl-p">Analysed Kintara ($KINS) on Solana — a token as a "door" rather than a currency. A 1,430-word article published on dev.to, submitted to Taskmarket. Learned that a number without a source is garbage.</div>
       </div>
       <div class="tl-i rv rv-d4">
-        <div class="tl-d" data-i="t5d">FASE 5 — BANGUN</div>
-        <div class="tl-t" data-i="t5t">Automation n8n dan agent on-chain</div>
-        <div class="tl-p" data-i="t5p">Membangun 12 template automation (87 node) untuk UMKM dan crypto. Mendaftarkan agent <code>twistscrape.agent</code> di TermiX dan <code>twistti.ai</code> di Binance. Mint NFT Proof of Agent #14676.</div>
+        <div class="tl-d">PHASE 5 — BUILDING</div>
+        <div class="tl-t">n8n automation and on-chain agents</div>
+        <div class="tl-p">Built 12 automation templates (87 nodes) for small business and crypto. Registered the agent <code>twistscrape.agent</code> on TermiX and <code>twistti.ai</code> on Binance. Minted Proof of Agent NFT #14676.</div>
       </div>
       <div class="tl-i rv rv-d5">
-        <div class="tl-d" data-i="t6d">FASE 6 — SEKARANG</div>
-        <div class="tl-t" data-i="t6t">Desain, jualan, dan belajar 3D</div>
-        <div class="tl-p" data-i="t6p">Mendesain halaman web portfolio, jasa keamanan, dan dua halaman jualan template. Mulai belajar 3D. Fokus: mengubah skill jadi produk yang orang mau bayar.</div>
+        <div class="tl-d">PHASE 6 — NOW</div>
+        <div class="tl-t">Design, selling, and learning 3D</div>
+        <div class="tl-p">Designed the portfolio, security service, and two template storefront pages. Started learning 3D. Focus: turning skill into a product people will pay for.</div>
       </div>
     </div>
   </div>
@@ -435,14 +426,14 @@
 <section id="kontak" class="contact sec-in">
   <div class="wrap">
     <div class="contact-box rv">
-      <h2 data-i="c-h">Mau kerja sama?</h2>
-      <p data-i="c-p">Audit keamanan, automation n8n, riset Web3, atau desain — chat aja. Konsultasi awal gratis.</p>
+      <h2>Want to work together?</h2>
+      <p>Security audit, n8n automation, Web3 research, or design — just message me. First consultation is free.</p>
       <div class="c-row">
-        <a href="https://t.me/twistti_bot" class="btn btn-p" data-i="c-b1">Chat Telegram</a>
-        <a href="https://x.com/Twistti1" class="btn btn-s" data-i="c-b2">DM di X</a>
+        <a href="https://t.me/twistti_bot" class="btn btn-p">Chat on Telegram</a>
+        <a href="https://x.com/Twistti1" class="btn btn-s">DM on X</a>
       </div>
       <p style="margin-top:18px;font-size:12.5px;color:#5a6675">
-        <span data-i="c-email">Email</span>: <a href="mailto:twist5202@gmail.com">twist5202@gmail.com</a> ·
+        <span>Email</span>: <a href="mailto:twist5202@gmail.com">twist5202@gmail.com</a> ·
         GitHub: <a href="https://github.com/twist5202-ux">@twist5202-ux</a>
       </p>
     </div>
@@ -451,169 +442,17 @@
 
 <footer>
   <div class="wrap">
-    <p data-i="f-1">twist.dev — riset keamanan, automation, dan desain. Dibangun dari Indonesia.</p>
+    <p>twist.dev — security research, automation, and design. Built from Indonesia.</p>
     <p style="margin-top:6px">
-      <a href="https://twist5202-ux.github.io/portfolio.html" data-i="f-l1">Portfolio keamanan</a> ·
-      <a href="https://twist5202-ux.github.io/jasa-keamanan.html" data-i="f-l2">Jasa audit</a> ·
-      <a href="https://twist5202-ux.github.io/automation/" data-i="f-l3">Template n8n</a>
+      <a href="https://twist5202-ux.github.io/portfolio.html">Security portfolio</a> ·
+      <a href="https://twist5202-ux.github.io/jasa-keamanan.html">Audit service</a> ·
+      <a href="https://twist5202-ux.github.io/automation/">n8n templates</a>
     </p>
   </div>
 </footer>
 
 <script>
 /* ============ I18N ============ */
-const I18N = {
-  id: {
-    "nav-about":"Tentang","nav-work":"Kerjaan","nav-skill":"Skill","nav-journey":"Perjalanan","nav-contact":"Kontak",
-    "hero-badge":"PORTFOLIO · TWIST · INDONESIA",
-    "hero-title":'Gue bikin, audit, dan<br><em>otomatisiin</em> — lalu tulis soal itu.',
-    "hero-sub":"Riset keamanan aplikasi, automation n8n, riset Web3, dan desain grafis. Self-taught, no degree. Semua yang gue klaim bisa dicek — ada link, ada bukti on-chain, ada kode.",
-    "hero-cta1":"Lihat Kerjaan","hero-cta2":"Hubungi Gue",
-    "stat1":"laporan ke program bounty","stat2":"template automation n8n","stat3":"write-up lab terbit","stat4":"NFT on-chain minted","stat5":"artikel dev.to terbit",
-    "about-h":"Tentang gue","about-p":'Bukan "ahli segalanya" — spesialis di beberapa hal, dan jujur soal batasnya.',
-    "about-1":'Gue <b>Twist</b>, based in Indonesia, kerja remote di <b>keamanan aplikasi</b>, <b>automation</b>, dan <b>riset Web3</b>. Pola kerjanya sama terus: bongkar sesuatu, pahami cara kerjanya, lalu bikin versi yang lebih rapi — entah itu laporan bug, workflow automation, atau halaman web.',
-    "about-2":'Gue mulai dari rasa penasaran: bongkar APK, baca smali, cari celah. Dari situ tumbuh ke audit kontrak pintar, riset token on-chain, dan terakhir automation n8n buat UMKM dan trader. <b>Self-taught, tanpa degree</b> — gue peduli hasil kerjaan, bukan asal-usulnya.',
-    "about-3":'Di luar teknis, gue juga bikin <b>aset visual</b>: infografis, cover gambar, dan halaman web ber-desain gelap. Gue percau produk yang bagus harus enak dilihat juga, bukan cuma bener di belakang layar.',
-    "skill-h":"SKILL",
-    "sk1":"Keamanan aplikasi","sk2":"Automation (n8n)","sk3":"Riset Web3 / on-chain","sk4":"Penulisan teknis","sk5":"Desain grafis / UI","sk6":"3D / modeling","sk6l":"Belajar","sk7":"Front-end (HTML/CSS/JS)",
-    "work-h":"Kerjaan","work-p":"Semua yang ada di sini punya bukti — link, transaksi on-chain, atau kode. Status ditulis apa adanya, termasuk yang gagal.",
-    "w1s":"CLOSED — DUPLICATE","w1t":"Analisis Keamanan Mobile — eero (Amazon)",
-    "w1d":'Analisis statis APK eero: token sesi SSO dikirim lewat skema <code>eero://</code> tanpa validasi host — dua arah serangan (pencurian sesi dan injeksi sesi). Plus audit 12 komponen <code>exported</code> di AndroidManifest. Dilaporkan ke HackerOne #4141935, ditutup sebagai duplikat karena orang lain lapor lebih dulu.',
-    "w1l":"Portfolio lengkap →",
-    "w2s":"SUBMITTED","w2t":"Audit Smart Contract — Avail Bridge",
-    "w2d":'<code>SP1Vector.commitHeaderRange</code> pakai <code>&amp;&amp;</code> bukan <code>||</code> di validasi header tepercaya — relayer yang disetujui bisa memalsukan pesan bridge. Severity Critical, dilengkapi bukti PoC Foundry. Dikirim ke Immunefi.',
-    "w2l":"Portfolio lengkap →",
-    "w3s":"PUBLISHED","w3t":"4 Write-up Lab Keamanan",
-    "w3d":"SQL injection sampai kompromi database, broken access control + DOM XSS, dekripsi RSA tanpa padding, dan rekonstruksi penuh dari recon ke eksploitasi. Ditulis end-to-end dengan langkah reproduksi.",
-    "w3l":"Baca write-up →",
-    "w4s":"LIVE","w4t":"12 Template Automation n8n",
-    "w4d":"Paket workflow siap pakai: 6 untuk UMKM (auto-reply, invoice, laporan harian, minta review) dan 6 untuk crypto (price alert, wallet monitor, token scanner, gas alert, portfolio report, NFT watcher). Total 87 node, semua pakai API publik gratis.",
-    "w4l":"Lihat template →",
-    "w5s":"PUBLISHED","w5t":"Riset On-chain — Kintara ($KINS)",
-    "w5d":'Analisis 1.430 kata tentang Kintara, browser MMO di Solana di mana $KINS berfungsi sebagai "pintu" bukan mata uang. Setiap angka bersumber dan bertanggal observasi. Terbit di dev.to, diserahkan ke Taskmarket.',
-    "w5l":"Baca artikel →",
-    "w6s":"LIVE","w6t":"Desain Web &amp; Aset Visual",
-    "w6d":"Membangun dan mendesain beberapa halaman web bertema gelap: portfolio keamanan, halaman jasa audit, dan dua halaman jualan template automation. Plus infografis dan cover gambar untuk konten Web3.",
-    "w6l":"Lihat desain →",
-    "w7s":"MINTED","w7t":"Ptah Proof of Agent — Kartu #14676",
-    "w7d":'Mint NFT soulbound "Proof of Agent" series Satellite Network (#530) di BNB Chain, terikat ke Binance Agent ID <code>twistti.ai</code>. Terverifikasi on-chain melalui <code>ownerOf(14676)</code>.',
-    "w7l":"Cek di BscScan →",
-    "w8s":"ACTIVE","w8t":"Agent On-Chain &amp; Marketplace",
-    "w8d":'Mendaftarkan agent <code>twistscrape.agent</code> di TermiX (BSC) kategori Data &amp; Research, serta agent ID <code>twistti.ai</code> di Binance Agentic Wallet. Aktif di Taskmarket (agent ID 1130728) dengan submission karya.',
-    "w8l":"GitHub →",
-    "w9s":"CONTRIBUTED","w9t":"Kontribusi Upstream &amp; Toolkit",
-    "w9d":"Pull request perbaikan keamanan di omarchy (plugin tidak tepercaya bisa mewarisi kapabilitas kode first-party). Juga memelihara toolkit bug hunting agentik sendiri dengan 15 alat recon dan scan.",
-    "w9l":"GitHub →",
-    "note-h":"YANG BELUM ADA (jujur)","note-p":"Portofolio ini sengaja tidak menampilkan:",
-    "note-1":'<b>Bounty yang sudah dibayar</b> — eero ditutup duplikat, Avail masih menunggu triase. Total bounty diterima: <b>$0</b>.',
-    "note-2":'<b>Portofolio 3D yang jadi</b> — gue masih belajar. Belum ada karya 3D yang layak dipajang di sini.',
-    "note-3":'<b>Klien jasa automation</b> — template sudah jadi dan halaman jualan live, tapi belum ada klien bayar. Angka penjualan: <b>0</b>.',
-    "note-4":'<b>Sertifikat formal</b> — gue self-taught, tanpa degree. Yang gue punya bukti kerja, bukan ijazah.',
-    "sk-h2":"Skill detail","sk-p":"Dikelompokkan berdasarkan bukti kerja, bukan klaim.",
-    "sd1t":"Keamanan Aplikasi","sd1d":"Analisis statis APK, review smali, audit AndroidManifest, identifikasi deep-link flaw, analisis kebocoran token sesi. Audit kontrak pintar Solidity dengan Foundry. Penulisan laporan terstruktur untuk triage engineer.",
-    "sd2t":"Automation &amp; Scripting","sd2d":"Membangun 12 workflow n8n produksi (87 node) untuk UMKM dan crypto. Python scripting, web scraping, output data terstruktur JSON/CSV. Self-hosted n8n di Windows dengan SQLite.",
-    "sd3t":"Web3 &amp; On-chain","sd3d":"Riset token dan tokenomics, analisis likuiditas dan pasar via DexScreener, interaksi RPC langsung (eth_call, eth_getLogs), mint NFT on-chain, dan operasi wallet burner.",
-    "sd4t":"Penulisan Teknis","sd4d":"Laporan vulnerability lengkap dengan langkah reproduksi, artikel explainer 1.400+ kata dengan setiap angka bersumber, dokumentasi workflow Bahasa Indonesia, dan thread teknis untuk X.",
-    "sd5t":"Desain Grafis &amp; UI","sd5d":"Mendesain halaman web bertema gelap dari nol (HTML/CSS vanilla, tanpa framework), infografis data dengan Python, serta cover gambar untuk konten sosial media. Memahami hierarki visual, tipografi, dan konsistensi warna.",
-    "sd6t":"3D — Sedang Belajar","sd6d":'Gue sedang mendalami 3D modeling dan rendering. Belum ada karya yang layak dipajang, jadi gue taruh di sini apa adanya: <b>skill dalam proses</b>, bukan klaim jadi. Kalau lo butuh kerjaan 3D serius, gue belum orangnya — tapi gue terbuka untuk proyek latihan.',"sd6t1":"Belajar",
-    "tl-h":"Perjalanan","tl-p":"Urutan waktu berdasarkan yang benar-benar dikerjakan.",
-    "t1d":"FASE 1 — DASAR","t1t":"Belajar sendiri, bongkar APK, baca kode","t1p":"Mulai dari rasa penasaran: gimana cara kerja aplikasi di balik layar. Belajar decompile APK, baca smali, cari komponen yang terekspos. Tanpa kursus, tanpa degree — coba-nyoba sampai paham.",
-    "t2d":"FASE 2 — LAPORAN","t2t":"Laporan bug bounty pertama","t2p":"Menemukan celah deep-link di aplikasi eero (Amazon) yang membocorkan token sesi SSO. Menulis laporan lengkap 286 baris untuk HackerOne. Hasil: ditutup duplikat — pelajaran berharga soal kecepatan lapor.",
-    "t3d":"FASE 3 — KONTRAK","t3t":"Audit smart contract, kirim ke Immunefi","t3p":'Beralih dari aplikasi ke kontrak pintar. Menemukan bug logika <code>&amp;&amp;</code> vs <code>||</code> di Avail Bridge yang bisa dipakai relayer untuk memalsukan pesan. Membuat PoC Foundry, mengirim ke Immunefi dengan severity Critical.',
-    "t4d":"FASE 4 — RISET","t4t":"Riset on-chain dan penulisan terbit","t4p":'Menganalisis Kintara ($KINS) di Solana — token sebagai "pintu" bukan mata uang. Artikel 1.430 kata terbit di dev.to, diserahkan ke Taskmarket. Belajar bahwa angka tanpa sumber itu sampah.',
-    "t5d":"FASE 5 — BANGUN","t5t":"Automation n8n dan agent on-chain","t5p":'Membangun 12 template automation (87 node) untuk UMKM dan crypto. Mendaftarkan agent <code>twistscrape.agent</code> di TermiX dan <code>twistti.ai</code> di Binance. Mint NFT Proof of Agent #14676.',
-    "t6d":"FASE 6 — SEKARANG","t6t":"Desain, jualan, dan belajar 3D","t6p":"Mendesain halaman web portfolio, jasa keamanan, dan dua halaman jualan template. Mulai belajar 3D. Fokus: mengubah skill jadi produk yang orang mau bayar.",
-    "c-h":"Mau kerja sama?","c-p":"Audit keamanan, automation n8n, riset Web3, atau desain — chat aja. Konsultasi awal gratis.",
-    "c-b1":"Chat Telegram","c-b2":"DM di X","c-email":"Email",
-    "f-1":"twist.dev — riset keamanan, automation, dan desain. Dibangun dari Indonesia.",
-    "f-l1":"Portfolio keamanan","f-l2":"Jasa audit","f-l3":"Template n8n"
-  },
-  en: {
-    "nav-about":"About","nav-work":"Work","nav-skill":"Skills","nav-journey":"Journey","nav-contact":"Contact",
-    "hero-badge":"PORTFOLIO · TWIST · INDONESIA",
-    "hero-title":'I build, audit, and<br><em>automate</em> — then write about it.',
-    "hero-sub":"Application security research, n8n automation, Web3 research, and graphic design. Self-taught, no degree. Everything I claim is verifiable — there are links, on-chain proof, and code.",
-    "hero-cta1":"View Work","hero-cta2":"Get in Touch",
-    "stat1":"reports to bounty programs","stat2":"n8n automation templates","stat3":"published lab write-ups","stat4":"NFTs minted on-chain","stat5":"published dev.to article",
-    "about-h":"About me","about-p":'Not a "jack of all trades" — a specialist in a few things, and honest about the limits.',
-    "about-1":'I am <b>Twist</b>, based in Indonesia, working remotely in <b>application security</b>, <b>automation</b>, and <b>Web3 research</b>. The pattern is always the same: take something apart, understand how it works, then build a cleaner version — whether that is a bug report, an automation workflow, or a web page.',
-    "about-2":'I started from curiosity: decompile APKs, read smali, look for gaps. That grew into smart-contract auditing, on-chain token research, and finally n8n automation for small businesses and traders. <b>Self-taught, no degree</b> — I care about the output, not where the training came from.',
-    "about-3":'Beyond the technical side, I also build <b>visual assets</b>: infographics, cover images, and dark-themed web pages. I believe a good product has to look good too, not just work behind the scenes.',
-    "skill-h":"SKILLS",
-    "sk1":"Application security","sk2":"Automation (n8n)","sk3":"Web3 / on-chain research","sk4":"Technical writing","sk5":"Graphic design / UI","sk6":"3D / modeling","sk6l":"Learning","sk7":"Front-end (HTML/CSS/JS)",
-    "work-h":"Work","work-p":"Everything here has proof — a link, an on-chain transaction, or code. Status is written as-is, including the failures.",
-    "w1s":"CLOSED — DUPLICATE","w1t":"Mobile Security Analysis — eero (Amazon)",
-    "w1d":'Static analysis of the eero APK: SSO session token sent through an <code>eero://</code> scheme without host validation — two attack directions (session theft and session injection). Plus an audit of 12 <code>exported</code> components in the AndroidManifest. Reported to HackerOne #4141935, closed as a duplicate because someone else reported it first.',
-    "w1l":"Full portfolio →",
-    "w2s":"SUBMITTED","w2t":"Smart Contract Audit — Avail Bridge",
-    "w2d":'<code>SP1Vector.commitHeaderRange</code> uses <code>&amp;&amp;</code> instead of <code>||</code> in trusted-header validation — an approved relayer can forge bridge messages. Critical severity, backed by a Foundry PoC. Submitted to Immunefi.',
-    "w2l":"Full portfolio →",
-    "w3s":"PUBLISHED","w3t":"4 Security Lab Write-ups",
-    "w3d":"SQL injection through to full database compromise, broken access control plus DOM XSS, RSA decryption without padding, and a complete reconstruction from recon to exploitation. Written end-to-end with reproduction steps.",
-    "w3l":"Read write-up →",
-    "w4s":"LIVE","w4t":"12 n8n Automation Templates",
-    "w4d":"Ready-to-use workflow pack: 6 for small businesses (auto-reply, invoice, daily report, review request) and 6 for crypto (price alert, wallet monitor, token scanner, gas alert, portfolio report, NFT watcher). 87 nodes total, all on free public APIs.",
-    "w4l":"View templates →",
-    "w5s":"PUBLISHED","w5t":"On-chain Research — Kintara ($KINS)",
-    "w5d":'A 1,430-word analysis of Kintara, a browser MMO on Solana where $KINS works as a "door" rather than a currency. Every figure is sourced and dated. Published on dev.to, submitted to Taskmarket.',
-    "w5l":"Read article →",
-    "w6s":"LIVE","w6t":"Web Design &amp; Visual Assets",
-    "w6d":"Built and designed several dark-themed web pages: a security portfolio, an audit service page, and two template storefronts. Plus infographics and cover images for Web3 content.",
-    "w6l":"View design →",
-    "w7s":"MINTED","w7t":"Ptah Proof of Agent — Card #14676",
-    "w7d":'Minted the soulbound "Proof of Agent" NFT, Satellite Network series (#530) on BNB Chain, bound to Binance Agent ID <code>twistti.ai</code>. Verified on-chain via <code>ownerOf(14676)</code>.',
-    "w7l":"Check on BscScan →",
-    "w8s":"ACTIVE","w8t":"On-chain Agent &amp; Marketplace",
-    "w8d":'Registered the agent <code>twistscrape.agent</code> on TermiX (BSC) under Data &amp; Research, plus agent ID <code>twistti.ai</code> on Binance Agentic Wallet. Active on Taskmarket (agent ID 1130728) with submitted work.',
-    "w8l":"GitHub →",
-    "w9s":"CONTRIBUTED","w9t":"Upstream Contribution &amp; Toolkit",
-    "w9d":"Security fix pull request on omarchy (untrusted plugins could inherit first-party code capabilities). Also maintain my own agentic bug-hunting toolkit with 15 recon and scanning tools.",
-    "w9l":"GitHub →",
-    "note-h":"WHAT IS NOT HERE YET (honest)","note-p":"This portfolio deliberately does not show:",
-    "note-1":'<b>Paid bounties</b> — eero closed as duplicate, Avail still awaiting triage. Total bounties received: <b>$0</b>.',
-    "note-2":'<b>A finished 3D portfolio</b> — still learning. No 3D work worth displaying here yet.',
-    "note-3":'<b>Paying automation clients</b> — templates are built and the storefront is live, but no client has paid yet. Sales: <b>0</b>.',
-    "note-4":'<b>Formal certificates</b> — self-taught, no degree. What I have is proof of work, not a diploma.',
-    "sk-h2":"Skills in detail","sk-p":"Grouped by evidence of work, not by claim.",
-    "sd1t":"Application Security","sd1d":"Static APK analysis, smali review, AndroidManifest auditing, deep-link flaw identification, session token leakage analysis. Solidity smart-contract auditing with Foundry. Structured report writing for triage engineers.",
-    "sd2t":"Automation &amp; Scripting","sd2d":"Built 12 production n8n workflows (87 nodes) for small business and crypto. Python scripting, web scraping, structured JSON/CSV output. Self-hosted n8n on Windows with SQLite.",
-    "sd3t":"Web3 &amp; On-chain","sd3d":"Token and tokenomics research, liquidity and market analysis via DexScreener, direct RPC interaction (eth_call, eth_getLogs), on-chain NFT minting, and burner wallet operations.",
-    "sd4t":"Technical Writing","sd4d":"Full vulnerability reports with reproduction steps, 1,400+ word explainers with every figure sourced, Indonesian-language workflow documentation, and technical threads for X.",
-    "sd5t":"Graphic Design &amp; UI","sd5d":"Designing dark-themed web pages from scratch (vanilla HTML/CSS, no framework), data infographics with Python, and cover images for social content. Understanding visual hierarchy, typography, and colour consistency.",
-    "sd6t":"3D — Still Learning","sd6d":'I am currently working through 3D modeling and rendering. Nothing is worth displaying yet, so it is listed here as-is: <b>a skill in progress</b>, not a finished claim. If you need serious 3D work, I am not there yet — but I am open to practice projects.',"sd6t1":"Learning",
-    "tl-h":"Journey","tl-p":"Ordered by what was actually done.",
-    "t1d":"PHASE 1 — FOUNDATION","t1t":"Self-taught, decompiling APKs, reading code","t1p":"Started from curiosity: how do apps actually work behind the screen. Learned APK decompilation, read smali, looked for exposed components. No courses, no degree — trial and error until it clicked.",
-    "t2d":"PHASE 2 — REPORTING","t2t":"First bug bounty report","t2p":"Found a deep-link flaw in the eero (Amazon) app leaking the SSO session token. Wrote a full 286-line report for HackerOne. Result: closed as duplicate — a valuable lesson in reporting speed.",
-    "t3d":"PHASE 3 — CONTRACTS","t3t":"Smart contract audit, submitted to Immunefi","t3p":'Moved from applications to smart contracts. Found an <code>&amp;&amp;</code> vs <code>||</code> logic bug in Avail Bridge that a relayer could use to forge messages. Built a Foundry PoC, submitted to Immunefi at Critical severity.',
-    "t4d":"PHASE 4 — RESEARCH","t4t":"On-chain research and published writing","t4p":'Analysed Kintara ($KINS) on Solana — a token as a "door" rather than a currency. A 1,430-word article published on dev.to, submitted to Taskmarket. Learned that a number without a source is garbage.',
-    "t5d":"PHASE 5 — BUILDING","t5t":"n8n automation and on-chain agents","t5p":'Built 12 automation templates (87 nodes) for small business and crypto. Registered the agent <code>twistscrape.agent</code> on TermiX and <code>twistti.ai</code> on Binance. Minted Proof of Agent NFT #14676.',
-    "t6d":"PHASE 6 — NOW","t6t":"Design, selling, and learning 3D","t6p":"Designed the portfolio, security service, and two template storefront pages. Started learning 3D. Focus: turning skill into a product people will pay for.",
-    "c-h":"Want to work together?","c-p":"Security audit, n8n automation, Web3 research, or design — just message me. First consultation is free.",
-    "c-b1":"Chat on Telegram","c-b2":"DM on X","c-email":"Email",
-    "f-1":"twist.dev — security research, automation, and design. Built from Indonesia.",
-    "f-l1":"Security portfolio","f-l2":"Audit service","f-l3":"n8n templates"
-  }
-};
-
-let curLang = localStorage.getItem('twist-lang') || 'id';
-
-function setLang(lang) {
-  curLang = lang;
-  localStorage.setItem('twist-lang', lang);
-  document.documentElement.lang = lang;
-  document.getElementById('btn-id').classList.toggle('on', lang === 'id');
-  document.getElementById('btn-en').classList.toggle('on', lang === 'en');
-  const dict = I18N[lang];
-  document.querySelectorAll('[data-i]').forEach(el => {
-    const key = el.dataset.i;
-    if (dict[key] !== undefined) el.innerHTML = dict[key];
-  });
-  document.title = lang === 'id'
-    ? 'Twist — Security Researcher, Automation Builder & Designer'
-    : 'Twist — Riset Keamanan, Automation Builder & Desainer';
-}
-setLang(curLang);
-
 /* ============ PAGE LOAD CURTAIN ============ */
 window.addEventListener('load', () => {
   requestAnimationFrame(() => {
