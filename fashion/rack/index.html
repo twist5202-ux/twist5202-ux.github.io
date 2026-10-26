@@ -86,6 +86,11 @@
   .g-slot.active .g-body{box-shadow:0 30px 54px -22px rgba(17,17,16,.5),inset 0 0 0 1px rgba(0,0,0,.09)}
   .g-art{position:absolute;inset:0;display:grid;place-items:center;padding:7% 5% 3%}
   .g-art svg{width:100%;height:100%;overflow:visible}
+  /* photo layer — sits on top of the SVG, hides itself if the file is missing */
+  .g-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;
+    opacity:0;transition:opacity .45s ease;z-index:2}
+  .g-photo:not(.failed){opacity:1}
+  .g-photo.failed{display:none}
   .g-shadow{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);width:112%;height:22px;
     background:radial-gradient(ellipse at center,rgba(17,17,16,.24),transparent 68%);z-index:-1;filter:blur(3px)}
   .g-slot.active .g-shadow{width:126%;height:28px;bottom:-22px;opacity:.85}
@@ -337,7 +342,7 @@
 /* ================= GARMENTS ================= */
 const G = [
   { n:'Tee Sky',      cn:'Dusty sky',  p:38,  s:'tee',   pat:'f-jersey',
-    g:'linear-gradient(160deg,#a8c4d8,#8fb0cc 58%,#7a9dbd)', col:'#8fb0cc',
+    g:'linear-gradient(160deg,#a8c4d8,#8fb0cc 58%,#7a9dbd)', col:'#8fb0cc', img:'img/tee-sky.jpg',
     d:'Boxy crew in mid-weight jersey, garment-dyed for a soft, lived-in tone from the first wear.',
     det:'260 GSM combed cotton · garment dyed · boxy fit · ribbed crew neck',
     fab:'Machine wash cold, hang dry. Expect gentle fading — that is the dye doing its job.',
@@ -345,7 +350,7 @@ const G = [
     ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
   { n:'Hood Cream',   cn:'Bone',       p:84,  s:'hoodie',pat:'f-fleece',
-    g:'linear-gradient(160deg,#efe9dd,#ddd3c1 58%,#c9bda6)', col:'#ddd3c1',
+    g:'linear-gradient(160deg,#efe9dd,#ddd3c1 58%,#c9bda6)', col:'#ddd3c1', img:'img/hood-cream.jpg',
     d:'The heavyweight hoodie in bone. Double-layer hood, kangaroo pocket, ribbed everything.',
     det:'430 GSM loopback fleece · double-layer hood · kangaroo pocket · ribbed cuffs and hem',
     fab:'Wash cold inside out. Do not bleach. Tumble low.',
@@ -353,7 +358,7 @@ const G = [
     ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
   { n:'Hood Coal',    cn:'Washed coal',p:84,  s:'hoodie',pat:'f-fleece',
-    g:'linear-gradient(160deg,#4a4844,#33312e 58%,#232220)', col:'#33312e',
+    g:'linear-gradient(160deg,#4a4844,#33312e 58%,#232220)', col:'#33312e', img:'img/hood-coal.jpg',
     d:'Our flagship hoodie in washed coal. Heavyweight fleece, dyed after construction so the colour sits deep.',
     det:'430 GSM loopback fleece · double-layer hood · kangaroo pocket · ribbed cuffs and hem',
     fab:'Wash cold inside out. Do not bleach. Tumble low.',
@@ -361,7 +366,7 @@ const G = [
     ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
   { n:'LS Bone',      cn:'Raw cream',  p:52,  s:'ls',    pat:'f-jersey',
-    g:'linear-gradient(160deg,#f0ebe1,#ddd6c7 58%,#c6bda9)', col:'#ddd6c7',
+    g:'linear-gradient(160deg,#f0ebe1,#ddd6c7 58%,#c6bda9)', col:'#ddd6c7', img:'img/ls-bone.jpg',
     d:'Long-sleeve crew in raw cream. Heavy enough to wear alone, light enough to layer.',
     det:'300 GSM slub jersey · long-sleeve crew · garment dyed · slightly heavier hand',
     fab:'Machine wash cold. Dry flat to keep the shape.',
@@ -369,7 +374,7 @@ const G = [
     ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
   { n:'LS Forest',    cn:'Deep forest',p:52,  s:'ls',    pat:'f-twill',
-    g:'linear-gradient(160deg,#3f5d4a,#2f4a39 58%,#22382b)', col:'#2f4a39',
+    g:'linear-gradient(160deg,#3f5d4a,#2f4a39 58%,#22382b)', col:'#2f4a39', img:'img/ls-forest.jpg',
     d:'Long-sleeve crew in deep forest, cut from a slub twill that reads almost solid at distance.',
     det:'300 GSM slub twill · long-sleeve crew · garment dyed · textured face',
     fab:'Machine wash cold. Dry flat to keep the shape.',
@@ -442,6 +447,7 @@ rail.innerHTML = G.map((g, i) =>
         '<div class="hanger"><svg viewBox="0 0 100 31" preserveAspectRatio="xMidYMid meet">' + HW + '</svg></div>' +
         '<div class="g-body" style="background:' + g.g + '">' +
           '<div class="g-art">' + art(g.s, g.pat) + '</div>' +
+          '<img class="g-photo" src="' + g.img + '" alt="' + g.n + '" loading="eager" onerror="this.classList.add(\'failed\')">' +
         '</div>' +
         '<div class="g-shadow"></div>' +
       '</div>' +
@@ -492,6 +498,7 @@ function openPDP(){
   document.getElementById('pdpArt').innerHTML =
     '<div class="g-body" style="background:' + g.g + ';box-shadow:0 24px 44px -20px rgba(17,17,16,.45)">' +
       '<div class="g-art">' + art(g.s, g.pat) + '</div>' +
+      '<img class="g-photo" src="' + g.img + '" alt="' + g.n + '" onerror="this.classList.add(\'failed\')">' +
     '</div><div class="g-shadow"></div>';
 
   // colours — the garment's own colour first, then the rest
