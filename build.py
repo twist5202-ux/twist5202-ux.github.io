@@ -265,6 +265,7 @@ def page(title, body, depth=0, subtitle=""):
     <a href="{up}index.html">Write-ups</a>
     <a href="{up}portfolio.html">Portfolio</a>
     <a href="{up}jasa-keamanan.html">Jasa Keamanan</a>
+    <a href="{up}automation/">Template n8n</a>
     <a href="{up}index.html#about">About</a>
   </nav>
 </div></header>
@@ -437,7 +438,7 @@ def main():
     build_portfolio()
 
     # Copy the n8n template storefronts (static, hand-maintained)
-    for store in ("n8n", "n8n-crypto"):
+    for store in ("n8n", "n8n-crypto", "automation"):
         src = ROOT / store
         if not src.is_dir():
             continue
