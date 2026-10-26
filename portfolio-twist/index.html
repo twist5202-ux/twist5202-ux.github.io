@@ -20,10 +20,15 @@
   a:hover{color:var(--acc2)}
   .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 
-  /* PARTICLE CANVAS */
-  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  /* PAGE TRANSITION CURTAIN */
+  #curtain{position:fixed;inset:0;background:var(--bg);z-index:9999;pointer-events:none;
+    transform:translateY(0);transition:transform .55s cubic-bezier(.76,0,.24,1)}
+  #curtain.up{transform:translateY(-100%)}
+  #curtain .cw{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    font-family:var(--mono);font-size:13px;color:var(--acc);letter-spacing:3px;opacity:.85;transition:opacity .3s}
+  #curtain.up .cw{opacity:0}
 
-  /* CURSOR GLOW */
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
   #glow{position:fixed;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:1;
     background:radial-gradient(circle,rgba(232,179,57,.055) 0%,transparent 65%);
     transform:translate(-50%,-50%);transition:opacity .3s}
@@ -45,7 +50,6 @@
   .lang-toggle button.on{background:var(--acc);color:#0a0e14}
   .lang-toggle button:hover:not(.on){color:var(--txt)}
 
-  /* SCROLL PROGRESS */
   #prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--acc),var(--acc2));z-index:101;width:0}
 
   .hero{padding:140px 0 70px;position:relative;z-index:2}
@@ -61,16 +65,26 @@
   .btn-p:hover{background:var(--acc2);color:#0a0e14;transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,179,57,.22)}
   .btn-s{background:transparent;color:var(--txt);border-color:var(--line)}
   .btn-s:hover{border-color:var(--dim);transform:translateY(-2px)}
+  /* shine sweep on primary buttons */
+  .btn-p::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.32),transparent);
+    transform:skewX(-18deg);transition:left .55s ease}
+  .btn-p:hover::after{left:130%}
 
   .hero-stats{display:flex;gap:34px;margin-top:48px;flex-wrap:wrap}
   .hs b{display:block;font-size:34px;font-weight:800;color:var(--acc);font-family:var(--mono);line-height:1}
   .hs span{font-size:12px;color:var(--dim);display:block;margin-top:4px}
 
   section{padding:60px 0;position:relative;z-index:2}
+
+  /* SECTION ENTER (page-transition feel per section) */
+  .sec-in{opacity:0;transform:translateY(34px) scale(.985);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+  .sec-in.on{opacity:1;transform:none}
+
   .sec-h{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.7px;margin-bottom:10px}
   .sec-p{color:var(--dim);margin-bottom:32px;max-width:640px;font-size:14.5px}
 
-  /* REVEAL ON SCROLL */
   .rv{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
   .rv.in{opacity:1;transform:none}
   .rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}
@@ -86,13 +100,24 @@
   .sk-h{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;gap:8px}
   .sk-h span:last-child{font-family:var(--mono);color:var(--dim);font-size:11px;white-space:nowrap}
   .bar{height:6px;background:var(--bg2);border-radius:100px;overflow:hidden}
-  .bar i{display:block;height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+  .bar i{display:block;height:100%;width:0;border-radius:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width 1.2s cubic-bezier(.16,1,.3,1)}
 
-  .work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
-  .work{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;transition:.22s;display:flex;flex-direction:column;position:relative;overflow:hidden}
-  .work::before{content:"";position:absolute;inset:0;background:radial-gradient(600px circle at var(--mx,50%) var(--my,50%),rgba(232,179,57,.06),transparent 40%);opacity:0;transition:opacity .3s;pointer-events:none}
-  .work:hover{border-color:rgba(232,179,57,.4);transform:translateY(-4px)}
+  /* ===== 3D TILT CARDS ===== */
+  .tilt-wrap{perspective:900px}
+  .work{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;
+    transition:border-color .25s,box-shadow .25s;display:flex;flex-direction:column;position:relative;overflow:hidden;
+    transform-style:preserve-3d;will-change:transform}
+  .work::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(600px circle at var(--mx,50%) var(--my,50%),rgba(232,179,57,.07),transparent 40%);
+    opacity:0;transition:opacity .3s;pointer-events:none}
+  .work:hover{border-color:rgba(232,179,57,.4);box-shadow:0 18px 40px -18px rgba(0,0,0,.75)}
   .work:hover::before{opacity:1}
+  /* glare streak that sweeps across on hover */
+  .work::after{content:"";position:absolute;top:0;left:-130%;width:70%;height:100%;pointer-events:none;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.06),transparent);
+    transform:skewX(-16deg);transition:left .7s ease}
+  .work:hover::after{left:140%}
+  .work>*{transform:translateZ(28px)}
   .work-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}
   .work-ico{font-size:26px;flex-shrink:0;transition:transform .3s}
   .work:hover .work-ico{transform:scale(1.18) rotate(-6deg)}
@@ -109,6 +134,8 @@
   .work-link{font-size:12.5px;font-family:var(--mono);padding-top:12px;border-top:1px solid var(--line)}
   .work-link a{display:inline-flex;align-items:center;gap:5px;transition:gap .2s}
   .work-link a:hover{gap:10px}
+
+  .work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
 
   .tl{position:relative;padding-left:30px}
   .tl::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:1px;background:var(--line)}
@@ -135,25 +162,28 @@
   footer a{color:var(--dim)}
 
   @media print{
-    nav,.cta-row,.c-row,.lang-toggle,#stars,#glow,#prog{display:none}
+    nav,.cta-row,.c-row,.lang-toggle,#stars,#glow,#prog,#curtain{display:none}
     body{background:#fff;color:#111}
-    .work,.skill-box,.note,.contact-box{background:#fff;border:1px solid #ddd}
+    .work,.skill-box,.note,.contact-box{background:#fff;border:1px solid #ddd;transform:none!important}
     .dim,.work p,.about-txt p,.tl-p{color:#444}
     h1,h2,h3,.work h3,.tl-t{color:#111}
     .hs b,.tl-d,.badge{color:#8a6d1f}
-    .rv{opacity:1;transform:none}
+    .rv,.sec-in{opacity:1;transform:none}
     .bar i{width:inherit!important}
     section{padding:24px 0;page-break-inside:avoid}
   }
   @media (prefers-reduced-motion:reduce){
-    .rv{opacity:1;transform:none;transition:none}
+    .rv,.sec-in{opacity:1;transform:none;transition:none}
     .bar i{transition:none}
     h1 .cursor{animation:none}
+    #curtain{display:none}
+    .work{transition:none}
   }
 </style>
 </head>
 <body>
 
+<div id="curtain"><div class="cw">twist.portfolio</div></div>
 <canvas id="stars"></canvas>
 <div id="glow"></div>
 <div id="prog"></div>
@@ -194,7 +224,7 @@
   </div>
 </header>
 
-<section id="tentang">
+<section id="tentang" class="sec-in">
   <div class="wrap">
     <h2 class="sec-h rv" data-i="about-h">Tentang gue</h2>
     <p class="sec-p rv rv-d1" data-i="about-p">Bukan "ahli segalanya" — spesialis di beberapa hal, dan jujur soal batasnya.</p>
@@ -218,11 +248,11 @@
   </div>
 </section>
 
-<section id="kerjaan" style="background:var(--bg2)">
+<section id="kerjaan" class="sec-in" style="background:var(--bg2)">
   <div class="wrap">
     <h2 class="sec-h rv" data-i="work-h">Kerjaan</h2>
     <p class="sec-p rv rv-d1" data-i="work-p">Semua yang ada di sini punya bukti — link, transaksi on-chain, atau kode. Status ditulis apa adanya, termasuk yang gagal.</p>
-    <div class="work-grid">
+    <div class="work-grid tilt-wrap">
 
       <div class="work rv">
         <div class="work-top"><div class="work-ico">🔒</div><span class="work-st st-dup" data-i="w1s">CLOSED — DUPLICATE</span></div>
@@ -311,11 +341,11 @@
   </div>
 </section>
 
-<section id="skill">
+<section id="skill" class="sec-in">
   <div class="wrap">
     <h2 class="sec-h rv" data-i="sk-h2">Skill detail</h2>
     <p class="sec-p rv rv-d1" data-i="sk-p">Dikelompokkan berdasarkan bukti kerja, bukan klaim.</p>
-    <div class="work-grid">
+    <div class="work-grid tilt-wrap">
 
       <div class="work rv">
         <div class="work-top"><div class="work-ico">🔒</div></div>
@@ -363,7 +393,7 @@
   </div>
 </section>
 
-<section id="perjalanan" style="background:var(--bg2)">
+<section id="perjalanan" class="sec-in" style="background:var(--bg2)">
   <div class="wrap">
     <h2 class="sec-h rv" data-i="tl-h">Perjalanan</h2>
     <p class="sec-p rv rv-d1" data-i="tl-p">Urutan waktu berdasarkan yang benar-benar dikerjakan.</p>
@@ -402,7 +432,7 @@
   </div>
 </section>
 
-<section id="kontak" class="contact">
+<section id="kontak" class="contact sec-in">
   <div class="wrap">
     <div class="contact-box rv">
       <h2 data-i="c-h">Mau kerja sama?</h2>
@@ -534,7 +564,7 @@ const I18N = {
     "w7d":'Minted the soulbound "Proof of Agent" NFT, Satellite Network series (#530) on BNB Chain, bound to Binance Agent ID <code>twistti.ai</code>. Verified on-chain via <code>ownerOf(14676)</code>.',
     "w7l":"Check on BscScan →",
     "w8s":"ACTIVE","w8t":"On-chain Agent &amp; Marketplace",
-    "w8d":'Registered the agent <code>twistscrape.agent</code> on TermiX (BSC) under Data &amp; Research, plus agent ID <code>twistti.ai</code> on Binance Agentic Wallet. Active on Taskmarket (agent ID 1130728) with submitted work.",
+    "w8d":'Registered the agent <code>twistscrape.agent</code> on TermiX (BSC) under Data &amp; Research, plus agent ID <code>twistti.ai</code> on Binance Agentic Wallet. Active on Taskmarket (agent ID 1130728) with submitted work.',
     "w8l":"GitHub →",
     "w9s":"CONTRIBUTED","w9t":"Upstream Contribution &amp; Toolkit",
     "w9d":"Security fix pull request on omarchy (untrusted plugins could inherit first-party code capabilities). Also maintain my own agentic bug-hunting toolkit with 15 recon and scanning tools.",
@@ -584,44 +614,36 @@ function setLang(lang) {
 }
 setLang(curLang);
 
+/* ============ PAGE LOAD CURTAIN ============ */
+window.addEventListener('load', () => {
+  requestAnimationFrame(() => {
+    document.getElementById('curtain').classList.add('up');
+  });
+});
+
 /* ============ STARFIELD ============ */
 (function(){
   const c = document.getElementById('stars');
   const ctx = c.getContext('2d');
   let w, h, stars = [], shooting = [];
   const N = 130;
-
-  function resize(){
-    w = c.width = innerWidth;
-    h = c.height = innerHeight;
-  }
+  function resize(){ w = c.width = innerWidth; h = c.height = innerHeight; }
   resize();
   addEventListener('resize', resize);
-
   for (let i = 0; i < N; i++){
     stars.push({
       x: Math.random()*w, y: Math.random()*h,
-      r: Math.random()*1.3 + .3,
-      s: Math.random()*.25 + .05,
-      o: Math.random()*.5 + .2,
-      tw: Math.random()*.02 + .005,
+      r: Math.random()*1.3 + .3, s: Math.random()*.25 + .05,
+      o: Math.random()*.5 + .2, tw: Math.random()*.02 + .005,
       ph: Math.random()*Math.PI*2
     });
   }
-
-  function shoot(){
-    if (shooting.length < 2 && Math.random() < .004){
-      shooting.push({
-        x: Math.random()*w*.7, y: Math.random()*h*.4,
-        vx: 5 + Math.random()*4, vy: 2 + Math.random()*2,
-        life: 1
-      });
-    }
-  }
-
   function frame(){
     ctx.clearRect(0,0,w,h);
-    shoot();
+    if (shooting.length < 2 && Math.random() < .004){
+      shooting.push({ x: Math.random()*w*.7, y: Math.random()*h*.4,
+        vx: 5 + Math.random()*4, vy: 2 + Math.random()*2, life: 1 });
+    }
     for (const st of stars){
       st.y += st.s;
       if (st.y > h) { st.y = -2; st.x = Math.random()*w; }
@@ -642,9 +664,7 @@ setLang(curLang);
       ctx.beginPath();
       ctx.moveTo(s.x, s.y);
       ctx.lineTo(s.x - s.vx*8, s.y - s.vy*8);
-      ctx.strokeStyle = g;
-      ctx.lineWidth = 1.4;
-      ctx.stroke();
+      ctx.strokeStyle = g; ctx.lineWidth = 1.4; ctx.stroke();
     }
     requestAnimationFrame(frame);
   }
@@ -657,22 +677,11 @@ setLang(curLang);
   let tx = 0, ty = 0, cx = 0, cy = 0;
   addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
   (function loop(){
-    cx += (tx - cx) * .12;
-    cy += (ty - cy) * .12;
-    g.style.left = cx + 'px';
-    g.style.top = cy + 'px';
+    cx += (tx - cx) * .12; cy += (ty - cy) * .12;
+    g.style.left = cx + 'px'; g.style.top = cy + 'px';
     requestAnimationFrame(loop);
   })();
 })();
-
-/* ============ CARD SPOTLIGHT ============ */
-document.querySelectorAll('.work').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-    card.style.setProperty('--my', (e.clientY - r.top) + 'px');
-  });
-});
 
 /* ============ SCROLL PROGRESS ============ */
 (function(){
@@ -687,13 +696,20 @@ document.querySelectorAll('.work').forEach(card => {
 (function(){
   const io = new IntersectionObserver(entries => {
     entries.forEach(en => {
-      if (en.isIntersecting){
-        en.target.classList.add('in');
-        io.unobserve(en.target);
-      }
+      if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
     });
   }, { threshold: .12, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
+})();
+
+/* ============ SECTION TRANSITION ============ */
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting){ en.target.classList.add('on'); io.unobserve(en.target); }
+    });
+  }, { threshold: .06 });
+  document.querySelectorAll('.sec-in').forEach(el => io.observe(el));
 })();
 
 /* ============ COUNT UP ============ */
@@ -701,15 +717,11 @@ document.querySelectorAll('.work').forEach(card => {
   const io = new IntersectionObserver(entries => {
     entries.forEach(en => {
       if (!en.isIntersecting) return;
-      const el = en.target;
-      io.unobserve(el);
-      const target = +el.dataset.count;
-      const dur = 1100;
-      const t0 = performance.now();
+      const el = en.target; io.unobserve(el);
+      const target = +el.dataset.count, dur = 1100, t0 = performance.now();
       (function tick(t){
         const p = Math.min((t - t0) / dur, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(target * eased);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
         if (p < 1) requestAnimationFrame(tick);
       })(t0);
     });
@@ -722,12 +734,58 @@ document.querySelectorAll('.work').forEach(card => {
   const io = new IntersectionObserver(entries => {
     entries.forEach(en => {
       if (!en.isIntersecting) return;
-      const bar = en.target;
-      io.unobserve(bar);
+      const bar = en.target; io.unobserve(bar);
       setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 180);
     });
   }, { threshold: .4 });
   document.querySelectorAll('.bar i').forEach(el => io.observe(el));
+})();
+
+/* ============ 3D TILT CARDS ============ */
+(function(){
+  const MAX = 9;            // max degrees
+  const SCALE = 1.025;      // hover scale
+  const cards = document.querySelectorAll('.work');
+
+  cards.forEach(card => {
+    let raf = null, rx = 0, ry = 0, trx = 0, try_ = 0, sc = 1, tsc = 1;
+
+    function onMove(e){
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;   // 0..1
+      const py = (e.clientY - r.top) / r.height;   // 0..1
+      card.style.setProperty('--mx', (px * 100) + '%');
+      card.style.setProperty('--my', (py * 100) + '%');
+      // rotateY follows horizontal, rotateX is inverted vertical
+      try_ = (px - .5) * 2 * MAX;
+      trx = -(py - .5) * 2 * MAX;
+      tsc = SCALE;
+      if (!raf) raf = requestAnimationFrame(loop);
+    }
+
+    function onLeave(){
+      trx = 0; try_ = 0; tsc = 1;
+      if (!raf) raf = requestAnimationFrame(loop);
+    }
+
+    function loop(){
+      rx += (trx - rx) * .14;
+      ry += (try_ - ry) * .14;
+      sc += (tsc - sc) * .14;
+      card.style.transform =
+        'rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')';
+      if (Math.abs(trx - rx) > .02 || Math.abs(try_ - ry) > .02 || Math.abs(tsc - sc) > .0004){
+        raf = requestAnimationFrame(loop);
+      } else {
+        card.style.transform =
+          'rotateX(' + trx.toFixed(2) + 'deg) rotateY(' + try_.toFixed(2) + 'deg) scale(' + tsc.toFixed(4) + ')';
+        raf = null;
+      }
+    }
+
+    card.addEventListener('mousemove', onMove);
+    card.addEventListener('mouseleave', onLeave);
+  });
 })();
 
 /* ============ SMOOTH SCROLL ============ */
