@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Twist Automation — Template n8n untuk UMKM Indonesia</title>
-<meta name="description" content="Template automation n8n siap pakai untuk UMKM. Auto-reply, invoice otomatis, laporan harian, minta review. Self-hosted, sekali bayar.">
+<title>Twist Automation — Template n8n untuk UMKM &amp; Crypto</title>
+<meta name="description" content="Template automation n8n siap pakai untuk UMKM dan crypto. Auto-reply, invoice, laporan harian, price alert, wallet monitor, token scanner. Self-hosted, sekali bayar.">
 <style>
   :root{
     --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --line:#1f2a38;
@@ -32,7 +32,6 @@
   .nav-links a{color:var(--dim)}
   .nav-links a:hover{color:var(--txt)}
   @media(max-width:760px){.nav-links{display:none}}
-  @media(max-width:700px){.crypto-box{grid-template-columns:1fr!important}}
 
   /* HERO */
   .hero{padding:clamp(104px,16vw,130px) 0 clamp(44px,7vw,70px);text-align:center;position:relative;overflow:hidden}
@@ -62,6 +61,15 @@
   .pain .ico{font-size:22px;margin-bottom:10px}
   .pain h3{font-size:15px;margin-bottom:6px}
   .pain p{font-size:13.5px;color:var(--dim);line-height:1.55}
+
+
+  /* filter chips */
+  .filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:clamp(18px,3vw,28px)}
+  .chip{padding:9px 18px;border-radius:100px;border:1px solid var(--line);font-size:13px;font-weight:600;
+    color:var(--dim);transition:.25s var(--ease-back);background:var(--card)}
+  .chip:hover{border-color:var(--dim);color:var(--txt);transform:translateY(-2px)}
+  .chip.on{background:var(--acc);color:#0a0e14;border-color:var(--acc)}
+  .tpl.hide{display:none}
 
   /* TEMPLATES */
   .tpl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(12px,2.4vw,16px)}
@@ -265,8 +273,6 @@
   <div class="nav-in">
     <div class="logo">twist<span>.automation</span></div>
     <div class="nav-links">
-      <a href="/automation/" class="on">UMKM</a>
-      <a href="/automation/crypto/">Crypto</a>
       <a href="#masalah">Masalah</a>
       <a href="#template">Template</a>
       <a href="#harga">Harga</a>
@@ -279,16 +285,16 @@
 <!-- HERO -->
 <header class="hero">
   <div class="wrap">
-    <div class="badge">AUTOMATION N8N · UNTUK UMKM INDONESIA</div>
+    <div class="badge">AUTOMATION N8N · UNTUK UMKM &amp; TRADER CRYPTO</div>
     <h1><span class="ln"><i>Stop kerja manual.</i></span><span class="ln"><i><em>Biarkan robot</em> yang bantu.</i></span></h1>
-    <p class="sub">Template automation siap pakai untuk toko online, jasa, dan bisnis kecil. Auto-reply chat, invoice otomatis, laporan harian — tanpa perlu ngerti coding. Ada juga paket khusus crypto.</p>
+    <p class="sub">Dua belas template siap pakai: enam untuk UMKM (auto-reply, invoice, laporan harian) dan enam untuk crypto (price alert, wallet monitor, token scanner). Tanpa perlu ngerti coding.</p>
     <div class="cta-row">
       <a href="#template" class="btn btn-p">Lihat Template</a>
       <a href="#harga" class="btn btn-s">Lihat Harga</a>
     </div>
     <div class="hero-stats">
-      <div class="hs"><b>6</b><span>template siap pakai</span></div>
-      <div class="hs"><b>41</b><span>node terpasang</span></div>
+      <div class="hs"><b>12</b><span>template siap pakai</span></div>
+      <div class="hs"><b>87</b><span>node terpasang</span></div>
       <div class="hs"><b>24/7</b><span>jalan nonstop</span></div>
       <div class="hs"><b>1x</b><span>bayar, bukan langganan</span></div>
     </div>
@@ -328,11 +334,17 @@
 <!-- TEMPLATE -->
 <section id="template" class="sec-in" style="background:var(--bg2)">
   <div class="wrap">
-    <h2 class="sec-h rv">6 template, siap pakai</h2>
-    <p class="sec-p rv rv-d1">Semua pakai node bawaan n8n. Tinggal import, ganti nama toko lo, aktifkan.</p>
-    <div class="tpl-grid">
+    <h2 class="sec-h rv">12 template, siap pakai</h2>
+    <p class="sec-p rv rv-d1">Semua pakai node bawaan n8n dan API publik gratis. Tinggal import, isi kredensial, aktifkan.</p>
+    <div class="filters rv" id="filters">
+      <button class="chip on" data-c="all">Semua (12)</button>
+      <button class="chip" data-c="umkm">UMKM (6)</button>
+      <button class="chip" data-c="crypto">Crypto (6)</button>
+    </div>
 
-      <div class="tpl rv rv-d1">
+    <div class="tpl-grid" id="tplGrid">
+
+      <div class="tpl rv" data-cat="umkm">
         <div class="hot">PALING LAKU</div>
         <div class="tpl-num">TEMPLATE 01</div>
         <h3>Auto-Reply Chat Bot</h3>
@@ -341,7 +353,7 @@
         <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">12 nodes</span></div>
       </div>
 
-      <div class="tpl rv rv-d2">
+      <div class="tpl rv rv-d2"> data-cat="umkm"
         <div class="tpl-num">TEMPLATE 02</div>
         <h3>Order → Notifikasi + Sheets</h3>
         <p>Order masuk langsung tercatat di Google Sheets dan lo dapat notifikasi Telegram. Pembeli dapat konfirmasi otomatis.</p>
@@ -349,7 +361,7 @@
         <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">6 nodes</span></div>
       </div>
 
-      <div class="tpl rv rv-d3">
+      <div class="tpl rv rv-d3"> data-cat="umkm"
         <div class="tpl-num">TEMPLATE 03</div>
         <h3>Invoice PDF Otomatis</h3>
         <p>Pembayaran masuk → invoice PDF rapi langsung terkirim ke Telegram. Nggak perlu bikin invoice manual pakai Word lagi.</p>
@@ -357,7 +369,7 @@
         <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
       </div>
 
-      <div class="tpl rv rv-d4">
+      <div class="tpl rv rv-d4"> data-cat="umkm"
         <div class="tpl-num">TEMPLATE 04</div>
         <h3>Laporan Penjualan Harian</h3>
         <p>Setiap jam 8 malam, laporan otomatis masuk: total order, total pendapatan, produk terlaris. Nggak perlu rekap manual.</p>
@@ -365,7 +377,7 @@
         <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">5 nodes</span></div>
       </div>
 
-      <div class="tpl rv rv-d5">
+      <div class="tpl rv rv-d5"> data-cat="umkm"
         <div class="tpl-num">TEMPLATE 05</div>
         <h3>Form Order → Notifikasi</h3>
         <p>Pakai Google Form gratis sebagai form order. Ada yang isi → lo dapat kabar dalam 1 menit. Nggak perlu website.</p>
@@ -373,7 +385,7 @@
         <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">5 nodes</span></div>
       </div>
 
-      <div class="tpl rv rv-d6">
+      <div class="tpl rv rv-d6"> data-cat="umkm"
         <div class="hot">ROI PALING JELAS</div>
         <div class="tpl-num">TEMPLATE 06</div>
         <h3>Minta Review Otomatis</h3>
@@ -382,24 +394,60 @@
         <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">6 nodes</span></div>
       </div>
 
-    </div>
-  </div>
-</section>
-
-
-<!-- CRYPTO BANNER -->
-<section id="crypto" class="sec-in" style="background:var(--bg2)">
-  <div class="wrap">
-    <div style="background:linear-gradient(135deg,var(--card),var(--bg2));border:1px solid var(--line);border-radius:18px;padding:clamp(26px,5vw,44px);display:grid;grid-template-columns:1fr auto;gap:26px;align-items:center" class="crypto-box">
-      <div class="rv">
-        <div style="font-family:var(--mono);font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--acc);margin-bottom:12px">Paket lain</div>
-        <h2 style="font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.9px;margin-bottom:10px">Bukan UMKM? Lo trader crypto?</h2>
-        <p style="color:var(--dim);font-size:14.5px;max-width:520px;line-height:1.7">Enam template khusus crypto: price alert, wallet monitor, token scanner, gas alert, portfolio report, NFT watcher. Semua pakai API publik gratis.</p>
+      <div class="tpl rv" data-cat="crypto">
+        <div class="hot">PALING LAKU</div>
+        <div class="tpl-num">CRYPTO 01</div>
+        <h3>Price Alert</h3>
+        <p>Set harga target lo (misal BTC di atas $70K). Begitu tercapai, notifikasi langsung masuk Telegram. Nggak perlu buka exchange tiap 5 menit.</p>
+        <div class="tpl-tags"><span class="tag">CoinGecko</span><span class="tag">Telegram</span><span class="tag">Trigger</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">8 nodes</span></div>
       </div>
-      <a href="/automation/crypto/" class="btn btn-p rv rv-d1" style="white-space:nowrap">Lihat Paket Crypto <span class="arw">→</span></a>
+
+      <div class="tpl rv rv-d1" data-cat="crypto">
+        <div class="tpl-num">CRYPTO 02</div>
+        <h3>Wallet Monitor</h3>
+        <p>Pantau alamat wallet lo 24 jam. Ada token masuk, keluar, atau swap — lo dapat kabar dalam 1 menit. Berguna buat wallet farming dan cold wallet.</p>
+        <div class="tpl-tags"><span class="tag">BscScan</span><span class="tag">Etherscan</span><span class="tag">Webhook</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
+      </div>
+
+      <div class="tpl rv rv-d2" data-cat="crypto">
+        <div class="tpl-num">CRYPTO 03</div>
+        <h3>Token Scanner</h3>
+        <p>Scan token baru yang baru listing: likuiditas, holder, umur kontrak. Dapat skor otomatis dan alert kalau ada yang lolos filter lo.</p>
+        <div class="tpl-tags"><span class="tag">DexScreener</span><span class="tag">Filter</span><span class="tag">Skor</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
+      </div>
+
+      <div class="tpl rv rv-d3" data-cat="crypto">
+        <div class="tpl-num">CRYPTO 04</div>
+        <h3>Gas Alert</h3>
+        <p>Gas BSC atau Ethereum turun ke angka lo tentukan → alert masuk. Swap dan mint pas gas murah, bukan pas lagi puncak.</p>
+        <div class="tpl-tags"><span class="tag">Gas Tracker</span><span class="tag">Telegram</span><span class="tag">Hemat biaya</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">8 nodes</span></div>
+      </div>
+
+      <div class="tpl rv rv-d4" data-cat="crypto">
+        <div class="tpl-num">CRYPTO 05</div>
+        <h3>Portfolio Report</h3>
+        <p>Laporan harian portfolio: nilai total, perubahan 24 jam, komposisi aset. Langsung masuk chat lo tiap pagi. Nggak perlu hitung manual.</p>
+        <div class="tpl-tags"><span class="tag">CoinGecko</span><span class="tag">Rekap</span><span class="tag">Telegram</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">9 nodes</span></div>
+      </div>
+
+      <div class="tpl rv rv-d5" data-cat="crypto">
+        <div class="hot">BUAT COLLECTOR</div>
+        <div class="tpl-num">CRYPTO 06</div>
+        <h3>NFT Watcher</h3>
+        <p>Pantau koleksi NFT: floor price, volume, listing baru. Dapat alert kalau floor turun atau ada rare trait yang listing murah.</p>
+        <div class="tpl-tags"><span class="tag">OpenSea</span><span class="tag">Floor</span><span class="tag">Alert</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
+      </div>
+
     </div>
   </div>
 </section>
+
 
 <!-- HARGA -->
 <section id="harga" class="sec-in">
@@ -413,7 +461,7 @@
         <div class="pk-amt">Rp 500rb</div>
         <div class="pk-note">coba dulu, 1 template</div>
         <ul>
-          <li>1 template pilihan lo</li>
+          <li>1 template pilihan lo (UMKM atau crypto)</li>
           <li>Setup + konfigurasi</li>
           <li>Dokumentasi Bahasa Indonesia</li>
           <li>1x revisi</li>
@@ -429,7 +477,7 @@
         <div class="pk-amt">Rp 1jt</div>
         <div class="pk-note">3 template, hemat Rp 500rb</div>
         <ul>
-          <li>3 template pilihan lo</li>
+          <li>3 template pilihan lo (campur UMKM + crypto boleh)</li>
           <li>Setup + konfigurasi semua</li>
           <li>Dokumentasi Bahasa Indonesia</li>
           <li>2x revisi</li>
@@ -443,9 +491,9 @@
         <div class="pk-badge" style="background:var(--grn)">HEMAT Rp 1JT</div>
         <h3>Premium</h3>
         <div class="pk-amt">Rp 2jt</div>
-        <div class="pk-note">semua 6 template + bonus</div>
+        <div class="pk-note">semua 12 template + bonus</div>
         <ul>
-          <li>Semua 6 template</li>
+          <li>Semua 12 template (6 UMKM + 6 crypto)</li>
           <li>Setup + konfigurasi semua</li>
           <li>Dokumentasi Bahasa Indonesia</li>
           <li>Revisi tanpa batas (30 hari)</li>
@@ -560,8 +608,8 @@
 
 <footer>
   <div class="wrap">
-    <p>twist.automation — template n8n untuk UMKM Indonesia.</p>
-    <p style="margin-top:6px"><a href="/automation/crypto/">Paket Crypto</a> · Portfolio: <a href="https://twist5202-ux.github.io">twist5202-ux.github.io</a> · GitHub: <a href="https://github.com/twist5202-ux">@twist5202-ux</a></p>
+    <p>twist.automation — template n8n untuk UMKM &amp; crypto.</p>
+    <p style="margin-top:6px">Portfolio: <a href="https://twist5202-ux.github.io">twist5202-ux.github.io</a> · GitHub: <a href="https://github.com/twist5202-ux">@twist5202-ux</a></p>
   </div>
 </footer>
 
@@ -673,6 +721,31 @@
     });
   }, { threshold: .5 });
   document.querySelectorAll('.hs b').forEach(function(el){ io3.observe(el); });
+
+
+  /* ============ TEMPLATE FILTER ============ */
+  (function(){
+    var chips = document.querySelectorAll('.chip');
+    var cards = document.querySelectorAll('#tplGrid .tpl');
+    chips.forEach(function(ch){
+      ch.addEventListener('click', function(){
+        chips.forEach(function(x){ x.classList.remove('on'); });
+        ch.classList.add('on');
+        var cat = ch.dataset.c;
+        cards.forEach(function(card){
+          var show = cat === 'all' || card.dataset.cat === cat;
+          card.classList.toggle('hide', !show);
+          if (show){
+            card.classList.remove('in');
+            // re-trigger the reveal
+            requestAnimationFrame(function(){
+              requestAnimationFrame(function(){ card.classList.add('in'); });
+            });
+          }
+        });
+      });
+    });
+  })();
 
   /* ============ CARD SPOTLIGHT ============ */
   document.querySelectorAll('.pain,.tpl,.why,.pk').forEach(function(c){
