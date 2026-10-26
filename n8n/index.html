@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twist Automation — Template n8n untuk UMKM Indonesia</title>
+<meta name="description" content="Template automation n8n siap pakai untuk UMKM. Auto-reply, invoice otomatis, laporan harian, minta review. Self-hosted, sekali bayar.">
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --line:#1f2a38;
+    --txt:#e6edf3; --dim:#8b98a8; --acc:#e8b339; --acc2:#f5d076;
+    --grn:#3fb950; --blue:#58a6ff;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--acc);text-decoration:none}
+  a:hover{color:var(--acc2)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;background:rgba(10,14,20,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:100}
+  .nav-in{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:700;font-size:17px;letter-spacing:-.3px}
+  .logo span{color:var(--acc)}
+  .nav-links{display:flex;gap:22px;font-size:14px;color:var(--dim)}
+  .nav-links a{color:var(--dim)}
+  .nav-links a:hover{color:var(--txt)}
+  @media(max-width:640px){.nav-links{display:none}}
+
+  /* HERO */
+  .hero{padding:130px 0 70px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(232,179,57,.07) 0%,transparent 60%);pointer-events:none}
+  .badge{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--acc);border:1px solid rgba(232,179,57,.3);background:rgba(232,179,57,.08);padding:5px 14px;border-radius:100px;margin-bottom:22px}
+  h1{font-size:clamp(30px,5.2vw,50px);font-weight:800;letter-spacing:-1.5px;line-height:1.12;margin-bottom:18px}
+  h1 em{font-style:normal;color:var(--acc)}
+  .sub{font-size:clamp(15px,2.2vw,18px);color:var(--dim);max-width:600px;margin:0 auto 32px}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:12px 26px;border-radius:8px;font-weight:600;font-size:15px;border:1px solid transparent;cursor:pointer;transition:.15s}
+  .btn-p{background:var(--acc);color:#0a0e14}
+  .btn-p:hover{background:var(--acc2);color:#0a0e14;transform:translateY(-1px)}
+  .btn-s{background:transparent;color:var(--txt);border-color:var(--line)}
+  .btn-s:hover{border-color:var(--dim)}
+  .hero-stats{display:flex;gap:36px;justify-content:center;margin-top:48px;flex-wrap:wrap}
+  .hs b{display:block;font-size:26px;font-weight:800;color:var(--acc);font-family:var(--mono)}
+  .hs span{font-size:13px;color:var(--dim)}
+
+  /* SECTION */
+  section{padding:64px 0}
+  .sec-h{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.7px;margin-bottom:10px}
+  .sec-p{color:var(--dim);margin-bottom:34px;max-width:620px}
+
+  /* PAIN */
+  .pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .pain{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .pain .ico{font-size:22px;margin-bottom:10px}
+  .pain h3{font-size:15px;margin-bottom:6px}
+  .pain p{font-size:13.5px;color:var(--dim);line-height:1.55}
+
+  /* TEMPLATES */
+  .tpl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .tpl{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;position:relative;transition:.18s;display:flex;flex-direction:column}
+  .tpl:hover{border-color:rgba(232,179,57,.35);transform:translateY(-2px)}
+  .tpl-num{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:1px;margin-bottom:10px}
+  .tpl h3{font-size:17px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+  .tpl p{font-size:13.5px;color:var(--dim);margin-bottom:14px;flex:1;line-height:1.6}
+  .tpl-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .tag{font-family:var(--mono);font-size:10.5px;color:var(--dim);background:var(--bg2);border:1px solid var(--line);padding:3px 8px;border-radius:5px}
+  .tpl-meta{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--line)}
+  .tpl-price{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--grn)}
+  .tpl-nodes{font-size:11.5px;color:var(--dim);font-family:var(--mono)}
+  .hot{position:absolute;top:-9px;right:16px;background:var(--acc);color:#0a0e14;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.5px}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:stretch}
+  .pk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;position:relative}
+  .pk-best{border-color:var(--acc);background:linear-gradient(160deg,rgba(232,179,57,.06),var(--card))}
+  .pk-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--acc);color:#0a0e14;font-size:10.5px;font-weight:700;padding:4px 14px;border-radius:100px;letter-spacing:.5px;white-space:nowrap}
+  .pk h3{font-size:15px;color:var(--dim);font-weight:600;margin-bottom:6px}
+  .pk-amt{font-family:var(--mono);font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+  .pk-amt small{font-size:14px;color:var(--dim);font-weight:400}
+  .pk-note{font-size:12px;color:var(--dim);margin-bottom:20px}
+  .pk ul{list-style:none;margin-bottom:24px;flex:1}
+  .pk li{font-size:13.5px;color:var(--dim);padding:6px 0;border-bottom:1px solid rgba(31,42,56,.5);display:flex;gap:9px}
+  .pk li::before{content:"✓";color:var(--grn);font-weight:700;flex-shrink:0}
+  .pk li.no{color:#5a6675}
+  .pk li.no::before{content:"—";color:#5a6675}
+  .pk .btn{text-align:center;width:100%}
+
+  /* WHY */
+  .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .why{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .why .ico{font-size:24px;margin-bottom:12px}
+  .why h3{font-size:15px;margin-bottom:6px}
+  .why p{font-size:13px;color:var(--dim);line-height:1.6}
+
+  /* FAQ */
+  .faq-item{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--card);overflow:hidden}
+  .faq-q{padding:16px 20px;font-weight:600;font-size:14.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none}
+  .faq-q::after{content:"+";font-family:var(--mono);color:var(--acc);font-size:18px;flex-shrink:0}
+  .faq-item.open .faq-q::after{content:"−"}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease}
+  .faq-a-in{padding:0 20px 16px;font-size:13.5px;color:var(--dim);line-height:1.7}
+  .faq-item.open .faq-a{max-height:400px}
+
+  /* CONTACT */
+  .contact{background:var(--bg2);border-top:1px solid var(--line)}
+  .contact-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px;text-align:center;max-width:560px;margin:0 auto}
+  .contact-box h2{font-size:24px;font-weight:800;letter-spacing:-.6px;margin-bottom:10px}
+  .contact-box p{color:var(--dim);font-size:14.5px;margin-bottom:22px}
+  .c-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  footer{border-top:1px solid var(--line);padding:28px 0;text-align:center;font-size:12.5px;color:#5a6675}
+  footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo">twist<span>.automation</span></div>
+    <div class="nav-links">
+      <a href="#masalah">Masalah</a>
+      <a href="#template">Template</a>
+      <a href="#harga">Harga</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">AUTOMATION N8N · UNTUK UMKM INDONESIA</div>
+    <h1>Stop kerja manual.<br><em>Biarkan robot</em> yang bantu.</h1>
+    <p class="sub">Template automation siap pakai untuk toko online, jasa, dan bisnis kecil. Auto-reply chat, invoice otomatis, laporan harian — tanpa perlu ngerti coding.</p>
+    <div class="cta-row">
+      <a href="#template" class="btn btn-p">Lihat Template</a>
+      <a href="#harga" class="btn btn-s">Lihat Harga</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><b>6</b><span>template siap pakai</span></div>
+      <div class="hs"><b>41</b><span>node terpasang</span></div>
+      <div class="hs"><b>24/7</b><span>jalan nonstop</span></div>
+      <div class="hs"><b>1x</b><span>bayar, bukan langganan</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- MASALAH -->
+<section id="masalah">
+  <div class="wrap">
+    <h2 class="sec-h">Kenapa masih kerja manual?</h2>
+    <p class="sec-p">Kalau lo masih ngelakuin ini tiap hari, lo buang waktu yang bisa dipakai jualan.</p>
+    <div class="pain-grid">
+      <div class="pain">
+        <div class="ico">💬</div>
+        <h3>Balas chat satu-satu</h3>
+        <p>"Berapa harga?" "Jam buka?" "Alamat dimana?" — pertanyaan yang sama, diulang tiap hari. 3 jam hilang percuma.</p>
+      </div>
+      <div class="pain">
+        <div class="ico">🧾</div>
+        <h3>Bikin invoice manual</h3>
+        <p>Ketik nama, hitung total, bikin PDF, kirim. Setiap order. Padahal bisa otomatis dalam 2 detik.</p>
+      </div>
+      <div class="pain">
+        <div class="ico">📊</div>
+        <h3>Gak tau untung rugi</h3>
+        <p>Order masuk tapi gak direkap. Akhir bulan bingung: untung berapa? Produk apa yang laris?</p>
+      </div>
+      <div class="pain">
+        <div class="ico">⭐</div>
+        <h3>Lupa minta review</h3>
+        <p>Customer puas tapi gak ada review Google. Padahal review = pelanggan baru percaya = penjualan naik.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATE -->
+<section id="template" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="sec-h">6 template, siap pakai</h2>
+    <p class="sec-p">Semua pakai node bawaan n8n. Tinggal import, ganti nama toko lo, aktifkan.</p>
+    <div class="tpl-grid">
+
+      <div class="tpl">
+        <div class="hot">PALING LAKU</div>
+        <div class="tpl-num">TEMPLATE 01</div>
+        <h3>Auto-Reply Chat Bot</h3>
+        <p>Bot jawab pertanyaan pelanggan otomatis 24 jam — harga, jam buka, alamat, cara order. Nggak perlu CS lagi kalau lagi sibuk.</p>
+        <div class="tpl-tags"><span class="tag">Telegram</span><span class="tag">Keyword Bot</span><span class="tag">UMKM</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">12 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="tpl-num">TEMPLATE 02</div>
+        <h3>Order → Notifikasi + Sheets</h3>
+        <p>Order masuk langsung tercatat di Google Sheets dan lo dapat notifikasi Telegram. Pembeli dapat konfirmasi otomatis.</p>
+        <div class="tpl-tags"><span class="tag">Webhook</span><span class="tag">Google Sheets</span><span class="tag">Telegram</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">6 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="tpl-num">TEMPLATE 03</div>
+        <h3>Invoice PDF Otomatis</h3>
+        <p>Pembayaran masuk → invoice PDF rapi langsung terkirim ke Telegram. Nggak perlu bikin invoice manual pakai Word lagi.</p>
+        <div class="tpl-tags"><span class="tag">PDF</span><span class="tag">Invoice</span><span class="tag">Auto-send</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="tpl-num">TEMPLATE 04</div>
+        <h3>Laporan Penjualan Harian</h3>
+        <p>Setiap jam 8 malam, laporan otomatis masuk: total order, total pendapatan, produk terlaris. Nggak perlu rekap manual.</p>
+        <div class="tpl-tags"><span class="tag">Rekap</span><span class="tag">Google Sheets</span><span class="tag">Telegram</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">5 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="tpl-num">TEMPLATE 05</div>
+        <h3>Form Order → Notifikasi</h3>
+        <p>Pakai Google Form gratis sebagai form order. Ada yang isi → lo dapat kabar dalam 1 menit. Nggak perlu website.</p>
+        <div class="tpl-tags"><span class="tag">Google Form</span><span class="tag">Notifikasi</span><span class="tag">Gratis</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">5 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="hot">ROI PALING JELAS</div>
+        <div class="tpl-num">TEMPLATE 06</div>
+        <h3>Minta Review Otomatis</h3>
+        <p>Order selesai +24 jam → pesan minta review Google otomatis terkirim. Review naik = pelanggan baru percaya = penjualan naik.</p>
+        <div class="tpl-tags"><span class="tag">Google Review</span><span class="tag">Auto-timing</span><span class="tag">Growth</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">6 nodes</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HARGA -->
+<section id="harga">
+  <div class="wrap">
+    <h2 class="sec-h">Pilih paket</h2>
+    <p class="sec-p">Sekali bayar. Bukan langganan bulanan. Bisa dicicil kalau perlu.</p>
+    <div class="price-grid">
+
+      <div class="pk">
+        <h3>Basic</h3>
+        <div class="pk-amt">Rp 500rb</div>
+        <div class="pk-note">coba dulu, 1 template</div>
+        <ul>
+          <li>1 template pilihan lo</li>
+          <li>Setup + konfigurasi</li>
+          <li>Dokumentasi Bahasa Indonesia</li>
+          <li>1x revisi</li>
+          <li class="no">Training</li>
+          <li class="no">Support berkelanjutan</li>
+        </ul>
+        <a href="#kontak" class="btn btn-s">Pilih Basic</a>
+      </div>
+
+      <div class="pk pk-best">
+        <div class="pk-badge">PALING WORTH</div>
+        <h3>Standard</h3>
+        <div class="pk-amt">Rp 1jt</div>
+        <div class="pk-note">3 template, hemat Rp 500rb</div>
+        <ul>
+          <li>3 template pilihan lo</li>
+          <li>Setup + konfigurasi semua</li>
+          <li>Dokumentasi Bahasa Indonesia</li>
+          <li>2x revisi</li>
+          <li>Training 1 jam (via call)</li>
+          <li class="no">Support berkelanjutan</li>
+        </ul>
+        <a href="#kontak" class="btn btn-p">Pilih Standard</a>
+      </div>
+
+      <div class="pk pk-best" style="border-color:var(--grn);background:linear-gradient(160deg,rgba(63,185,80,.06),var(--card))">
+        <div class="pk-badge" style="background:var(--grn)">HEMAT Rp 1JT</div>
+        <h3>Premium</h3>
+        <div class="pk-amt">Rp 2jt</div>
+        <div class="pk-note">semua 6 template + bonus</div>
+        <ul>
+          <li>Semua 6 template</li>
+          <li>Setup + konfigurasi semua</li>
+          <li>Dokumentasi Bahasa Indonesia</li>
+          <li>Revisi tanpa batas (30 hari)</li>
+          <li>Training 2 jam (via call)</li>
+          <li>Support 1 bulan penuh</li>
+        </ul>
+        <a href="#kontak" class="btn btn-p">Pilih Premium</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--dim)">
+      Butuh custom? <a href="#kontak">Chat aja</a> — workflow khusus sesuai kebutuhan bisnis lo.
+    </p>
+  </div>
+</section>
+
+<!-- WHY -->
+<section style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="sec-h">Kenapa beli di sini?</h2>
+    <p class="sec-p">Banyak yang jual bot. Ini bedanya.</p>
+    <div class="why-grid">
+      <div class="why">
+        <div class="ico">🔒</div>
+        <h3>Data lo aman</h3>
+        <p>Self-hosted. Data pelanggan lo gak dikirim ke server orang lain. Lo pegang kendali penuh.</p>
+      </div>
+      <div class="why">
+        <div class="ico">💸</div>
+        <h3>Sekali bayar</h3>
+        <p>Bukan langganan bulanan kayak Zapier. Bayar sekali, pakai selamanya. Nggak ada biaya tersembunyi.</p>
+      </div>
+      <div class="why">
+        <div class="ico">🛠️</div>
+        <h3>Bisa dikembangin</h3>
+        <p>n8n open-source. Nggak ada batasan platform. Mau nambah fitur? Bisa.</p>
+      </div>
+      <div class="why">
+        <div class="ico">🛡️</div>
+        <h3>Dibangun orang security</h3>
+        <p>Gue riset keamanan aplikasi. Jadi gue ngerti pentingnya data lo gak bocor.</p>
+      </div>
+      <div class="why">
+        <div class="ico">🇮🇩</div>
+        <h3>Bahasa Indonesia</h3>
+        <p>Dokumentasi, training, support — semua Bahasa Indonesia. Nggak pakai bahasa robot.</p>
+      </div>
+      <div class="why">
+        <div class="ico">⚡</div>
+        <h3>Setup cepat</h3>
+        <p>Template tinggal import. Ganti nama toko, aktifkan. Selesai dalam hitungan menit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <h2 class="sec-h">Pertanyaan yang sering masuk</h2>
+    <p class="sec-p">Kalau masih ada yang mau ditanya, langsung chat aja.</p>
+
+    <div class="faq-item">
+      <div class="faq-q">Saya gak ngerti coding. Bisa pakai?</div>
+      <div class="faq-a"><div class="faq-a-in">Bisa. Gue yang setup semuanya. Lo tinggal pakai. Kalau ada yang perlu diubah (harga, alamat, nama toko), gue ajarin lewat training.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">n8n itu apa? Harus install apa?</div>
+      <div class="faq-a"><div class="faq-a-in">n8n itu aplikasi automation gratis. Gue yang install dan setup — bisa di komputer lo atau di server (VPS). Kalau mau yang paling simpel, gue setup di VPS biar jalan 24 jam tanpa perlu nyalain komputer.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Beda sama Zapier / Make?</div>
+      <div class="faq-a"><div class="faq-a-in">Zapier bayar bulanan dan makin mahal kalau makin banyak. n8n sekali setup, gak ada biaya bulanan ke platform. Plus data lo tetap di server lo sendiri.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Kalau mau nambah workflow sendiri?</div>
+      <div class="faq-a"><div class="faq-a-in">Bisa. Template bisa diedit bebas. Kalau butuh workflow khusus (misal: integrasi ke aplikasi kasir lo), chat aja — gue bikin custom.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Bayar gimana?</div>
+      <div class="faq-a"><div class="faq-a-in">Transfer bank, e-wallet (DANA/GoPay/OVO), atau USDC. Bisa DP 50% dulu, pelunasan setelah setup jalan.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Kalau rusak setelah jadi?</div>
+      <div class="faq-a"><div class="faq-a-in">Paket Premium dapat support 1 bulan penuh. Kalau ada masalah, chat aja — gue benerin gratis selama masa support.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- KONTAK -->
+<section id="kontak" class="contact">
+  <div class="wrap">
+    <div class="contact-box">
+      <h2>Siap berhenti kerja manual?</h2>
+      <p>Chat aja, gue bantu pilih template yang paling cocok buat bisnis lo. Konsultasi gratis.</p>
+      <div class="c-row">
+        <a href="https://t.me/twistti_bot" class="btn btn-p">Chat Telegram</a>
+        <a href="https://x.com/Twistti1" class="btn btn-s">DM di X</a>
+      </div>
+      <p style="margin-top:18px;font-size:12.5px;color:#5a6675">
+        Atau email: <a href="mailto:twist5202@gmail.com">twist5202@gmail.com</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>twist.automation — template n8n untuk UMKM Indonesia.</p>
+    <p style="margin-top:6px">Portfolio: <a href="https://twist5202-ux.github.io">twist5202-ux.github.io</a> · GitHub: <a href="https://github.com/twist5202-ux">@twist5202-ux</a></p>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+
+  // Smooth scroll offset for fixed nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length < 2) return;
+      const el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      const top = el.getBoundingClientRect().top + window.pageYOffset - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
