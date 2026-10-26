@@ -1,0 +1,114 @@
+{
+  "name": "CRYPTO 06 — NFT Mint Watcher (Eligibility + Alert)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 15 }] }
+      },
+      "id": "sched",
+      "name": "Pantau Tiap 15 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "n1", "name": "kontrak", "value": "0xD87ADb2E47979d6cb323896B1A9320E0dd132213", "type": "string" },
+            { "id": "n2", "name": "wallet", "value": "0xb5424C7Fe94A63929922Fa64876C2Ef42DA1a102", "type": "string" },
+            { "id": "n3", "name": "rpc", "value": "https://bsc.publicnode.com/", "type": "string" },
+            { "id": "n4", "name": "nama_koleksi", "value": "Proof of Agent (Ptah)", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cfg",
+      "name": "Target NFT",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.rpc }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"eth_call\",\n  \"params\": [\n    { \"to\": \"{{ $json.kontrak }}\", \"data\": \"0x6352211e0000000000000000000000000000000000000000000000000000000000000000\" },\n    \"latest\"\n  ]\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "rpc",
+      "name": "Cek ownerOf tokenId 0",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const wallet = $('Target NFT').item.json.wallet.toLowerCase();\nconst hasil = $json.result || '0x';\nconst owner = '0x' + hasil.slice(26).toLowerCase();\nconst punya = owner === wallet;\n\nlet pesan = '';\nif (punya) {\n  pesan = 'SUDAH PUNYA NFT\\n\\n';\n  pesan += 'Koleksi: ' + $('Target NFT').item.json.nama_koleksi + '\\n';\n  pesan += 'Wallet: ' + wallet.slice(0,10) + '...' + wallet.slice(-6) + '\\n\\n';\n  pesan += 'Tidak perlu mint lagi.';\n}\n\nreturn [{ json: { punya, owner, wallet, pesan } }];"
+      },
+      "id": "check",
+      "name": "Cek Kepemilikan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            { "id": "c1", "leftValue": "={{ $json.punya }}", "rightValue": "true", "operator": { "type": "boolean", "operation": "true" } }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if",
+      "name": "Sudah Punya?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID",
+        "text": "={{ $json.pesan }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Kabari Sudah Punya",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 220],
+      "credentials": {
+        "telegramApi": { "id": "GANTI_CREDENTIAL_ID", "name": "Telegram Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## CRYPTO 06 - NFT Mint Watcher\n\nFungsi: pantau apakah wallet lo sudah punya NFT dari koleksi target.\n\nYang diedit:\n- kontrak: alamat kontrak NFT\n- wallet: wallet lo\n- rpc: RPC chain\n- nama_koleksi: nama buat notifikasi\n\nCatatan penting: node ini read-only. Untuk mint otomatis perlu private key - JANGAN taruh private key di n8n kalau instance bisa diakses orang lain.\n\nCara aman: watcher kabar belum punya, lo mint manual dari MetaMask, watcher kabar sudah punya.\n\nUpgrade: tambah cek totalSupply vs maxSupply buat tau sisa kuota.",
+        "height": 380,
+        "width": 600,
+        "color": 5
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Pantau Tiap 15 Menit": { "main": [[{ "node": "Target NFT", "type": "main", "index": 0 }]] },
+    "Target NFT": { "main": [[{ "node": "Cek ownerOf tokenId 0", "type": "main", "index": 0 }]] },
+    "Cek ownerOf tokenId 0": { "main": [[{ "node": "Cek Kepemilikan", "type": "main", "index": 0 }]] },
+    "Cek Kepemilikan": { "main": [[{ "node": "Sudah Punya?", "type": "main", "index": 0 }]] },
+    "Sudah Punya?": { "main": [[{ "node": "Kabari Sudah Punya", "type": "main", "index": 0 }], []] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}
