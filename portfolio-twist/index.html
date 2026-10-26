@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twist — Security Researcher, Automation Builder & Designer</title>
+<meta name="description" content="Portfolio Twist — riset keamanan aplikasi, automation n8n, riset Web3, dan desain grafis. Bukti kerja nyata, bisa diverifikasi.">
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --line:#1f2a38;
+    --txt:#e6edf3; --dim:#8b98a8; --acc:#e8b339; --acc2:#f5d076;
+    --grn:#3fb950; --blue:#58a6ff; --red:#f85149; --pur:#bc8cff; --cyn:#39c5cf;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--acc);text-decoration:none}
+  a:hover{color:var(--acc2)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  nav{position:fixed;top:0;left:0;right:0;background:rgba(10,14,20,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:100}
+  .nav-in{max-width:1080px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{font-weight:700;font-size:17px;letter-spacing:-.3px;white-space:nowrap}
+  .logo span{color:var(--acc)}
+  .nav-links{display:flex;gap:18px;font-size:13px;color:var(--dim);flex-wrap:wrap}
+  .nav-links a{color:var(--dim)}
+  .nav-links a:hover{color:var(--txt)}
+  @media(max-width:860px){.nav-links{display:none}}
+
+  .hero{padding:126px 0 60px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-45%;left:50%;transform:translateX(-50%);width:1000px;height:1000px;background:radial-gradient(circle,rgba(232,179,57,.07) 0%,transparent 60%);pointer-events:none}
+  .badge{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--acc);border:1px solid rgba(232,179,57,.3);background:rgba(232,179,57,.08);padding:5px 14px;border-radius:100px;margin-bottom:20px}
+  h1{font-size:clamp(30px,5.4vw,50px);font-weight:800;letter-spacing:-1.6px;line-height:1.1;margin-bottom:16px}
+  h1 em{font-style:normal;color:var(--acc)}
+  .sub{font-size:clamp(15px,2.2vw,18px);color:var(--dim);max-width:640px;margin-bottom:26px}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:11px 24px;border-radius:8px;font-weight:600;font-size:14.5px;border:1px solid transparent;cursor:pointer;transition:.15s;font-family:var(--sans)}
+  .btn-p{background:var(--acc);color:#0a0e14}
+  .btn-p:hover{background:var(--acc2);color:#0a0e14;transform:translateY(-1px)}
+  .btn-s{background:transparent;color:var(--txt);border-color:var(--line)}
+  .btn-s:hover{border-color:var(--dim)}
+  .hero-stats{display:flex;gap:30px;margin-top:42px;flex-wrap:wrap}
+  .hs b{display:block;font-size:24px;font-weight:800;color:var(--acc);font-family:var(--mono)}
+  .hs span{font-size:12px;color:var(--dim)}
+
+  section{padding:58px 0}
+  .sec-h{font-size:clamp(21px,3.2vw,28px);font-weight:800;letter-spacing:-.7px;margin-bottom:10px}
+  .sec-p{color:var(--dim);margin-bottom:30px;max-width:640px;font-size:14.5px}
+
+  .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+  @media(max-width:760px){.about-grid{grid-template-columns:1fr}}
+  .about-txt p{font-size:14.5px;color:var(--dim);margin-bottom:14px;line-height:1.75}
+  .about-txt b{color:var(--txt)}
+  .skill-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+  .skill-box h3{font-size:14px;font-weight:700;margin-bottom:16px;letter-spacing:.3px}
+  .sk{margin-bottom:14px}
+  .sk-h{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+  .sk-h span:last-child{font-family:var(--mono);color:var(--dim);font-size:11px}
+  .bar{height:6px;background:var(--bg2);border-radius:100px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+
+  .work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .work{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;transition:.18s;display:flex;flex-direction:column}
+  .work:hover{border-color:rgba(232,179,57,.35);transform:translateY(-2px)}
+  .work-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}
+  .work-ico{font-size:26px;flex-shrink:0}
+  .work-st{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:100px;letter-spacing:.5px;white-space:nowrap}
+  .st-done{background:rgba(63,185,80,.12);color:var(--grn);border:1px solid rgba(63,185,80,.3)}
+  .st-live{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.3)}
+  .st-sub{background:rgba(232,179,57,.12);color:var(--acc);border:1px solid rgba(232,179,57,.3)}
+  .st-dup{background:rgba(248,81,73,.1);color:var(--red);border:1px solid rgba(248,81,73,.25)}
+  .work h3{font-size:16.5px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+  .work p{font-size:13.5px;color:var(--dim);margin-bottom:14px;flex:1;line-height:1.65}
+  .work-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .tag{font-family:var(--mono);font-size:10.5px;color:var(--dim);background:var(--bg2);border:1px solid var(--line);padding:3px 8px;border-radius:5px}
+  .work-link{font-size:12.5px;font-family:var(--mono);padding-top:12px;border-top:1px solid var(--line)}
+
+  .tl{position:relative;padding-left:28px}
+  .tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1px;background:var(--line)}
+  .tl-i{position:relative;margin-bottom:26px}
+  .tl-i::before{content:"";position:absolute;left:-24px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--acc);border:2px solid var(--bg)}
+  .tl-d{font-family:var(--mono);font-size:11.5px;color:var(--acc);margin-bottom:4px}
+  .tl-t{font-size:15px;font-weight:700;margin-bottom:5px}
+  .tl-p{font-size:13.5px;color:var(--dim);line-height:1.65}
+
+  .note{background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.22);border-radius:12px;padding:20px 22px;margin-top:26px}
+  .note h4{font-size:13.5px;font-weight:700;color:var(--red);margin-bottom:8px}
+  .note p{font-size:13px;color:var(--dim);line-height:1.7}
+  .note ul{margin:8px 0 0 16px}
+  .note li{font-size:12.5px;color:var(--dim);margin-bottom:4px}
+
+  .contact{background:var(--bg2);border-top:1px solid var(--line)}
+  .contact-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px;text-align:center;max-width:560px;margin:0 auto}
+  .contact-box h2{font-size:23px;font-weight:800;letter-spacing:-.6px;margin-bottom:10px}
+  .contact-box p{color:var(--dim);font-size:14px;margin-bottom:22px}
+  .c-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:12.5px;color:#5a6675}
+  footer a{color:var(--dim)}
+
+  @media print{
+    nav,.cta-row,.c-row{display:none}
+    body{background:#fff;color:#111}
+    .work,.skill-box,.note,.contact-box{background:#fff;border:1px solid #ddd}
+    .dim,.work p,.about-txt p,.tl-p{color:#444}
+    h1,h2,h3,.work h3,.tl-t{color:#111}
+    .hs b,.tl-d,.badge{color:#8a6d1f}
+    section{padding:24px 0;page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo">twist<span>.portfolio</span></div>
+    <div class="nav-links">
+      <a href="#tentang">Tentang</a>
+      <a href="#kerjaan">Kerjaan</a>
+      <a href="#skill">Skill</a>
+      <a href="#perjalanan">Perjalanan</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">PORTFOLIO · TWIST · INDONESIA</div>
+    <h1>Gue bikin, audit, dan<br><em>otomatisiin</em> — lalu tulis soal itu.</h1>
+    <p class="sub">Riset keamanan aplikasi, automation n8n, riset Web3, dan desain grafis. Self-taught, no degree. Semua yang gue klaim bisa dicek — ada link, ada bukti on-chain, ada kode.</p>
+    <div class="cta-row">
+      <a href="#kerjaan" class="btn btn-p">Lihat Kerjaan</a>
+      <a href="#kontak" class="btn btn-s">Hubungi Gue</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><b>5</b><span>laporan ke program bounty</span></div>
+      <div class="hs"><b>12</b><span>template automation n8n</span></div>
+      <div class="hs"><b>4</b><span>write-up lab terbit</span></div>
+      <div class="hs"><b>2</b><span>NFT on-chain minted</span></div>
+      <div class="hs"><b>1</b><span>artikel dev.to terbit</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="tentang">
+  <div class="wrap">
+    <h2 class="sec-h">Tentang gue</h2>
+    <p class="sec-p">Bukan "ahli segalanya" — spesialis di beberapa hal, dan jujur soal batasnya.</p>
+    <div class="about-grid">
+      <div class="about-txt">
+        <p>Gue <b>Twist</b>, based in Indonesia, kerja remote di <b>keamanan aplikasi</b>, <b>automation</b>, dan <b>riset Web3</b>. Pola kerjanya sama terus: bongkar sesuatu, pahami cara kerjanya, lalu bikin versi yang lebih rapi — entah itu laporan bug, workflow automation, atau halaman web.</p>
+        <p>Gue mulai dari rasa penasaran: bongkar APK, baca smali, cari celah. Dari situ tumbuh ke audit kontrak pintar, riset token on-chain, dan terakhir automation n8n buat UMKM dan trader. <b>Self-taught, tanpa degree</b> — gue peduli hasil kerjaan, bukan asal-usulnya.</p>
+        <p>Di luar teknis, gue juga bikin <b>aset visual</b>: infografis, cover gambar, dan halaman web ber-desain gelap. Gue percau produk yang bagus harus enak dilihat juga, bukan cuma bener di belakang layar.</p>
+      </div>
+      <div class="skill-box">
+        <h3>SKILL</h3>
+        <div class="sk"><div class="sk-h"><span>Keamanan aplikasi</span><span>Lanjutan</span></div><div class="bar"><i style="width:85%"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Automation (n8n)</span><span>Lanjutan</span></div><div class="bar"><i style="width:80%"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Riset Web3 / on-chain</span><span>Menengah-Lanjutan</span></div><div class="bar"><i style="width:75%"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Penulisan teknis</span><span>Lanjutan</span></div><div class="bar"><i style="width:85%"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Desain grafis / UI</span><span>Menengah</span></div><div class="bar"><i style="width:65%"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>3D / modeling</span><span>Belajar</span></div><div class="bar"><i style="width:35%"></i></div></div>
+        <div class="sk"><div class="sk-h"><span>Front-end (HTML/CSS/JS)</span><span>Menengah-Lanjutan</span></div><div class="bar"><i style="width:70%"></i></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kerjaan" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="sec-h">Kerjaan</h2>
+    <p class="sec-p">Semua yang ada di sini punya bukti — link, transaksi on-chain, atau kode. Status ditulis apa adanya, termasuk yang gagal.</p>
+    <div class="work-grid">
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🔒</div><span class="work-st st-dup">CLOSED — DUPLICATE</span></div>
+        <h3>Analisis Keamanan Mobile — eero (Amazon)</h3>
+        <p>Analisis statis APK eero: token sesi SSO dikirim lewat skema <code>eero://</code> tanpa validasi host — dua arah serangan (pencurian sesi dan injeksi sesi). Plus audit 12 komponen <code>exported</code> di AndroidManifest. Dilaporkan ke HackerOne #4141935, ditutup sebagai duplikat karena orang lain lapor lebih dulu.</p>
+        <div class="work-tags"><span class="tag">APK</span><span class="tag">smali</span><span class="tag">Deep link</span><span class="tag">HackerOne</span></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/portfolio.html">Portfolio lengkap →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">⛓️</div><span class="work-st st-sub">SUBMITTED</span></div>
+        <h3>Audit Smart Contract — Avail Bridge</h3>
+        <p><code>SP1Vector.commitHeaderRange</code> pakai <code>&amp;&amp;</code> bukan <code>||</code> di validasi header tepercaya — relayer yang disetujui bisa memalsukan pesan bridge. Severity Critical, dilengkapi bukti PoC Foundry. Dikirim ke Immunefi.</p>
+        <div class="work-tags"><span class="tag">Solidity</span><span class="tag">Foundry</span><span class="tag">Immunefi</span><span class="tag">Critical</span></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/portfolio.html">Portfolio lengkap →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🧪</div><span class="work-st st-done">PUBLISHED</span></div>
+        <h3>4 Write-up Lab Keamanan</h3>
+        <p>SQL injection sampai kompromi database, broken access control + DOM XSS, dekripsi RSA tanpa padding, dan rekonstruksi penuh dari recon ke eksploitasi. Ditulis end-to-end dengan langkah reproduksi.</p>
+        <div class="work-tags"><span class="tag">SQLi</span><span class="tag">XSS</span><span class="tag">Crypto</span><span class="tag">Recon</span></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/">Baca write-up →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">⚙️</div><span class="work-st st-live">LIVE</span></div>
+        <h3>12 Template Automation n8n</h3>
+        <p>Paket workflow siap pakai: 6 untuk UMKM (auto-reply, invoice, laporan harian, minta review) dan 6 untuk crypto (price alert, wallet monitor, token scanner, gas alert, portfolio report, NFT watcher). Total 87 node, semua pakai API publik gratis.</p>
+        <div class="work-tags"><span class="tag">n8n</span><span class="tag">UMKM</span><span class="tag">Crypto</span><span class="tag">87 nodes</span></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/automation/">Lihat template →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">📝</div><span class="work-st st-done">PUBLISHED</span></div>
+        <h3>Riset On-chain — Kintara ($KINS)</h3>
+        <p>Analisis 1.430 kata tentang Kintara, browser MMO di Solana di mana $KINS berfungsi sebagai "pintu" bukan mata uang. Setiap angka bersumber dan bertanggal observasi. Terbit di dev.to, diserahkan ke Taskmarket.</p>
+        <div class="work-tags"><span class="tag">Solana</span><span class="tag">dev.to</span><span class="tag">Taskmarket</span><span class="tag">Riset</span></div>
+        <div class="work-link"><a href="https://dev.to/twist5202ux/kintara-kins-a-browser-mmo-where-the-token-is-a-door-not-a-currency-2j65">Baca artikel →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🎨</div><span class="work-st st-live">LIVE</span></div>
+        <h3>Desain Web &amp; Aset Visual</h3>
+        <p>Membangun dan mendesain beberapa halaman web bertema gelap: portfolio keamanan, halaman jasa audit, dan dua halaman jualan template automation. Plus infografis dan cover gambar untuk konten Web3.</p>
+        <div class="work-tags"><span class="tag">HTML/CSS</span><span class="tag">UI gelap</span><span class="tag">Infografis</span><span class="tag">Cover</span></div>
+        <div class="work-link"><a href="https://twist5202-ux.github.io/">Lihat desain →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🐴</div><span class="work-st st-done">MINTED</span></div>
+        <h3>Ptah Proof of Agent — Kartu #14676</h3>
+        <p>Mint NFT soulbound "Proof of Agent" series Satellite Network (#530) di BNB Chain, terikat ke Binance Agent ID <code>twistti.ai</code>. Terverifikasi on-chain melalui <code>ownerOf(14676)</code>.</p>
+        <div class="work-tags"><span class="tag">BNB Chain</span><span class="tag">NFT</span><span class="tag">On-chain</span><span class="tag">Verified</span></div>
+        <div class="work-link"><a href="https://bscscan.com/token/0xD87ADb2E47979d6cb323896B1A9320E0dd132213">Cek di BscScan →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🤖</div><span class="work-st st-live">ACTIVE</span></div>
+        <h3>Agent On-Chain &amp; Marketplace</h3>
+        <p>Mendaftarkan agent <code>twistscrape.agent</code> di TermiX (BSC) kategori Data &amp; Research, serta agent ID <code>twistti.ai</code> di Binance Agentic Wallet. Aktif di Taskmarket (agent ID 1130728) dengan submission karya.</p>
+        <div class="work-tags"><span class="tag">TermiX</span><span class="tag">Taskmarket</span><span class="tag">Agent ID</span><span class="tag">BSC</span></div>
+        <div class="work-link"><a href="https://github.com/twist5202-ux">GitHub →</a></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🔧</div><span class="work-st st-done">CONTRIBUTED</span></div>
+        <h3>Kontribusi Upstream &amp; Toolkit</h3>
+        <p>Pull request perbaikan keamanan di omarchy (plugin tidak tepercaya bisa mewarisi kapabilitas kode first-party). Juga memelihara toolkit bug hunting agentik sendiri dengan 15 alat recon dan scan.</p>
+        <div class="work-tags"><span class="tag">Open source</span><span class="tag">Pull request</span><span class="tag">Tooling</span></div>
+        <div class="work-link"><a href="https://github.com/twist5202-ux">GitHub →</a></div>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <h4>YANG BELUM ADA (jujur)</h4>
+      <p>Portofolio ini sengaja tidak menampilkan:</p>
+      <ul>
+        <li><b>Bounty yang sudah dibayar</b> — eero ditutup duplikat, Avail masih menunggu triase. Total bounty diterima: <b>$0</b>.</li>
+        <li><b>Portofolio 3D yang jadi</b> — gue masih belajar. Belum ada karya 3D yang layak dipajang di sini.</li>
+        <li><b>Klien jasa automation</b> — template sudah jadi dan halaman jualan live, tapi belum ada klien bayar. Angka penjualan: <b>0</b>.</li>
+        <li><b>Sertifikat formal</b> — gue self-taught, tanpa degree. Yang gue punya bukti kerja, bukan ijazah.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="skill">
+  <div class="wrap">
+    <h2 class="sec-h">Skill detail</h2>
+    <p class="sec-p">Dikelompokkan berdasarkan bukti kerja, bukan klaim.</p>
+    <div class="work-grid">
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🔒</div></div>
+        <h3>Keamanan Aplikasi</h3>
+        <p>Analisis statis APK, review smali, audit AndroidManifest, identifikasi deep-link flaw, analisis kebocoran token sesi. Audit kontrak pintar Solidity dengan Foundry. Penulisan laporan terstruktur untuk triage engineer.</p>
+        <div class="work-tags"><span class="tag">APK</span><span class="tag">smali</span><span class="tag">Solidity</span><span class="tag">Foundry</span><span class="tag">CVSS</span></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">⚙️</div></div>
+        <h3>Automation &amp; Scripting</h3>
+        <p>Membangun 12 workflow n8n produksi (87 node) untuk UMKM dan crypto. Python scripting, web scraping, output data terstruktur JSON/CSV. Self-hosted n8n di Windows dengan SQLite.</p>
+        <div class="work-tags"><span class="tag">n8n</span><span class="tag">Python</span><span class="tag">Scraping</span><span class="tag">JSON/CSV</span></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">⛓️</div></div>
+        <h3>Web3 &amp; On-chain</h3>
+        <p>Riset token dan tokenomics, analisis likuiditas dan pasar via DexScreener, interaksi RPC langsung (eth_call, eth_getLogs), mint NFT on-chain, dan operasi wallet burner.</p>
+        <div class="work-tags"><span class="tag">BSC</span><span class="tag">Solana</span><span class="tag">RPC</span><span class="tag">DexScreener</span></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">✍️</div></div>
+        <h3>Penulisan Teknis</h3>
+        <p>Laporan vulnerability lengkap dengan langkah reproduksi, artikel explainer 1.400+ kata dengan setiap angka bersumber, dokumentasi workflow Bahasa Indonesia, dan thread teknis untuk X.</p>
+        <div class="work-tags"><span class="tag">Laporan</span><span class="tag">Artikel</span><span class="tag">Dokumentasi</span><span class="tag">Thread</span></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🎨</div></div>
+        <h3>Desain Grafis &amp; UI</h3>
+        <p>Mendesain halaman web bertema gelap dari nol (HTML/CSS vanilla, tanpa framework), infografis data dengan Python, serta cover gambar untuk konten sosial media. Memahami hierarki visual, tipografi, dan konsistensi warna.</p>
+        <div class="work-tags"><span class="tag">HTML/CSS</span><span class="tag">Infografis</span><span class="tag">Cover</span><span class="tag">UI gelap</span></div>
+      </div>
+
+      <div class="work">
+        <div class="work-top"><div class="work-ico">🧊</div></div>
+        <h3>3D — Sedang Belajar</h3>
+        <p>Gue sedang mendalami 3D modeling dan rendering. Belum ada karya yang layak dipajang, jadi gue taruh di sini apa adanya: <b>skill dalam proses</b>, bukan klaim jadi. Kalau lo butuh kerjaan 3D serius, gue belum orangnya — tapi gue terbuka untuk proyek latihan.</p>
+        <div class="work-tags"><span class="tag">Belajar</span><span class="tag">Modeling</span><span class="tag">Rendering</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="perjalanan" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="sec-h">Perjalanan</h2>
+    <p class="sec-p">Urutan waktu berdasarkan yang benar-benar dikerjakan.</p>
+    <div class="tl">
+      <div class="tl-i">
+        <div class="tl-d">FASE 1 — DASAR</div>
+        <div class="tl-t">Belajar sendiri, bongkar APK, baca kode</div>
+        <div class="tl-p">Mulai dari rasa penasaran: gimana cara kerja aplikasi di balik layar. Belajar decompile APK, baca smali, cari komponen yang terekspos. Tanpa kursus, tanpa degree — coba-nyoba sampai paham.</div>
+      </div>
+      <div class="tl-i">
+        <div class="tl-d">FASE 2 — LAPORAN</div>
+        <div class="tl-t">Laporan bug bounty pertama</div>
+        <div class="tl-p">Menemukan celah deep-link di aplikasi eero (Amazon) yang membocorkan token sesi SSO. Menulis laporan lengkap 286 baris untuk HackerOne. Hasil: ditutup duplikat — pelajaran berharga soal kecepatan lapor.</div>
+      </div>
+      <div class="tl-i">
+        <div class="tl-d">FASE 3 — KONTRAK</div>
+        <div class="tl-t">Audit smart contract, kirim ke Immunefi</div>
+        <div class="tl-p">Beralih dari aplikasi ke kontrak pintar. Menemukan bug logika <code>&amp;&amp;</code> vs <code>||</code> di Avail Bridge yang bisa dipakai relayer untuk memalsukan pesan. Membuat PoC Foundry, mengirim ke Immunefi dengan severity Critical.</div>
+      </div>
+      <div class="tl-i">
+        <div class="tl-d">FASE 4 — RISET</div>
+        <div class="tl-t">Riset on-chain dan penulisan terbit</div>
+        <div class="tl-p">Menganalisis Kintara ($KINS) di Solana — token sebagai "pintu" bukan mata uang. Artikel 1.430 kata terbit di dev.to, diserahkan ke Taskmarket. Belajar bahwa angka tanpa sumber itu sampah.</div>
+      </div>
+      <div class="tl-i">
+        <div class="tl-d">FASE 5 — BANGUN</div>
+        <div class="tl-t">Automation n8n dan agent on-chain</div>
+        <div class="tl-p">Membangun 12 template automation (87 node) untuk UMKM dan crypto. Mendaftarkan agent <code>twistscrape.agent</code> di TermiX dan <code>twistti.ai</code> di Binance. Mint NFT Proof of Agent #14676.</div>
+      </div>
+      <div class="tl-i">
+        <div class="tl-d">FASE 6 — SEKARANG</div>
+        <div class="tl-t">Desain, jualan, dan belajar 3D</div>
+        <div class="tl-p">Mendesain halaman web portfolio, jasa keamanan, dan dua halaman jualan template. Mulai belajar 3D. Fokus: mengubah skill jadi produk yang orang mau bayar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontak" class="contact">
+  <div class="wrap">
+    <div class="contact-box">
+      <h2>Mau kerja sama?</h2>
+      <p>Audit keamanan, automation n8n, riset Web3, atau desain — chat aja. Konsultasi awal gratis.</p>
+      <div class="c-row">
+        <a href="https://t.me/twistti_bot" class="btn btn-p">Chat Telegram</a>
+        <a href="https://x.com/Twistti1" class="btn btn-s">DM di X</a>
+      </div>
+      <p style="margin-top:18px;font-size:12.5px;color:#5a6675">
+        Email: <a href="mailto:twist5202@gmail.com">twist5202@gmail.com</a> ·
+        GitHub: <a href="https://github.com/twist5202-ux">@twist5202-ux</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>twist.portfolio — riset keamanan, automation, dan desain. Dibangun dari Indonesia.</p>
+    <p style="margin-top:6px">
+      <a href="https://twist5202-ux.github.io/portfolio.html">Portfolio keamanan</a> ·
+      <a href="https://twist5202-ux.github.io/jasa-keamanan.html">Jasa audit</a> ·
+      <a href="https://twist5202-ux.github.io/automation/">Template n8n</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length < 2) return;
+      const el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      const top = el.getBoundingClientRect().top + window.pageYOffset - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
