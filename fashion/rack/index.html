@@ -3,225 +3,210 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ATELIER — The Rack</title>
-<meta name="description" content="Browse the Atelier rack. Click a garment to bring it front-facing.">
+<title>NORDRAIL — On The Rail</title>
+<meta name="description" content="NORDRAIL — FW20 Basics. Heavyweight garment-dyed fleece on the rail.">
 <style>
   :root{
-    --bg:#f5f2ec; --bg2:#eae5dc; --card:#fffefb; --line:#ddd6c9;
-    --ink:#1a1714; --dim:#8a8175; --acc:#b4530a; --acc2:#d97706;
-    --serif:"Georgia","Times New Roman",serif;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --bg:#ffffff; --bg2:#f6f5f3; --card:#ffffff; --line:#e6e4e0;
+    --ink:#111110; --dim:#8b8880; --acc:#e8541d; --acc2:#c2410c;
+    --serif:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
     --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   a{color:inherit;text-decoration:none}
   button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-  .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+  .wrap{max-width:1440px;margin:0 auto;padding:0 28px}
 
-  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,242,236,.86);backdrop-filter:blur(16px);
-    border-bottom:1px solid transparent;transition:border-color .3s}
-  nav.scrolled{border-color:var(--line)}
-  .nav-in{max-width:1280px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-  .brand{font-family:var(--serif);font-size:23px;letter-spacing:-.6px}
-  .brand b{font-weight:400;color:var(--acc)}
-  .nav-links{display:flex;gap:24px;font-size:13px;letter-spacing:.4px;color:var(--dim);align-items:center}
-  .nav-links a{position:relative;padding:2px 0;transition:color .25s}
-  .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ink);transition:width .3s cubic-bezier(.16,1,.3,1)}
-  .nav-links a:hover{color:var(--ink)}
-  .nav-links a:hover::after{width:100%}
-  .nav-links a.on{color:var(--ink);font-weight:600}
-  @media(max-width:820px){.nav-links{display:none}}
+  /* ============ TOP BAR ============ */
+  .topbar{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);z-index:100}
+  .topbar-in{max-width:1440px;margin:0 auto;padding:15px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+  .menu-btn{font-size:11.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;display:flex;align-items:center;gap:9px;transition:opacity .2s}
+  .menu-btn:hover{opacity:.55}
+  .menu-btn .bars{display:flex;flex-direction:column;gap:3px;width:16px}
+  .menu-btn .bars i{display:block;height:1.5px;background:var(--ink);border-radius:2px}
+  .brand{font-size:clamp(18px,2.4vw,25px);font-weight:700;letter-spacing:5px;text-transform:uppercase}
+  .bag-btn{font-size:11.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;display:flex;align-items:center;gap:9px;transition:opacity .2s}
+  .bag-btn:hover{opacity:.55}
+  .bag-btn .cnt{font-family:var(--mono);font-weight:700;font-size:11px}
+  .bag-btn svg{width:17px;height:17px;stroke:var(--ink);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
-  .head{padding:118px 0 8px;text-align:center;position:relative}
-  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2.6px;color:var(--acc);text-transform:uppercase;
-    display:inline-flex;align-items:center;gap:10px;margin-bottom:16px}
-  .eyebrow::before,.eyebrow::after{content:"";width:24px;height:1px;background:var(--acc)}
-  h1{font-family:var(--serif);font-size:clamp(34px,5.6vw,62px);letter-spacing:-2px;font-weight:400;line-height:1.02;margin-bottom:14px}
-  h1 em{font-style:italic;color:var(--acc)}
-  .head p{color:var(--dim);font-size:15px;max-width:470px;margin:0 auto}
-  .hint{margin-top:18px;display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;
-    letter-spacing:1.2px;color:var(--dim);text-transform:uppercase;border:1px solid var(--line);border-radius:100px;
-    padding:7px 16px;background:var(--card)}
-  .hint .dot{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:blip 1.8s infinite}
-  @keyframes blip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+  /* ============ COLLECTION LABEL ============ */
+  .coll{text-align:center;padding:26px 0 6px}
+  .coll span{font-size:10.5px;font-weight:600;letter-spacing:2.6px;text-transform:uppercase;color:var(--dim)}
 
-  /* ===== RACK — INDUSTRIAL PIPE ===== */
-  .scene{padding:44px 0 30px;perspective:1600px;perspective-origin:50% 22%;position:relative}
+  /* ============ RAIL SCENE ============ */
+  .scene{position:relative;padding:34px 0 0;overflow:hidden}
+  .stage{position:relative;height:clamp(380px,52vh,560px);display:flex;align-items:stretch;justify-content:center}
+  .stage-bg{position:absolute;inset:0;
+    background:radial-gradient(ellipse 78% 62% at 50% 42%,#fbfaf8 0%,#f2f0ec 52%,#e8e5e0 100%)}
+  .stage-bg::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26%;
+    background:linear-gradient(180deg,transparent,rgba(17,17,16,.05))}
 
-  /* floor */
-  .floor{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(1180px,94vw);height:120px;
-    background:radial-gradient(ellipse 60% 100% at 50% 100%,rgba(26,23,20,.1),transparent 72%);pointer-events:none;z-index:0}
-  .floor::after{content:"";position:absolute;left:6%;right:6%;bottom:14px;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(26,23,20,.13),transparent)}
+  /* the rod — sags under weight */
+  .rod{position:absolute;left:50%;top:56px;transform:translateX(-50%);width:min(1180px,92vw);height:34px;z-index:2}
+  .rod svg{width:100%;height:100%;display:block;overflow:visible}
+  .rod-line{stroke:#c9c6bf;stroke-width:2.2;fill:none;stroke-linecap:round}
+  .rod-shine{stroke:rgba(255,255,255,.85);stroke-width:.9;fill:none;stroke-linecap:round}
+  .sus{stroke:#d6d3cc;stroke-width:1}
 
-  /* the rack frame */
-  .rack-frame{position:relative;max-width:1120px;margin:0 auto;padding:0 16px;z-index:1}
+  /* garments */
+  .rail{position:relative;display:flex;align-items:flex-start;justify-content:center;
+    gap:clamp(10px,2.6vw,54px);width:min(1180px,92vw);margin:0 auto;z-index:3;padding-top:74px}
+  .g-slot{flex:0 0 auto;width:clamp(88px,15vw,178px);position:relative;
+    opacity:0;transform:translateY(-26px);animation:dropIn .9s cubic-bezier(.34,1.25,.5,1) forwards}
+  @keyframes dropIn{to{opacity:1;transform:translateY(0)}}
 
-  /* top pipe */
-  .pipe-top{position:relative;height:17px;margin:0 22px;border-radius:100px;
-    background:linear-gradient(180deg,#0a0a0a 0%,#262626 22%,#4a4a4a 48%,#1f1f1f 74%,#0d0d0d 100%);
-    box-shadow:0 4px 12px -3px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.16),
-               inset 0 -1px 0 rgba(0,0,0,.6);z-index:3}
-  .pipe-top::before,.pipe-top::after{content:"";position:absolute;top:50%;transform:translateY(-50%);
-    width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 34% 32%,#6b6b6b,#111 62%,#000);
-    box-shadow:inset 0 -1px 2px rgba(0,0,0,.9),0 1px 3px rgba(0,0,0,.5)}
-  .pipe-top::before{left:-9px}
-  .pipe-top::after{right:-9px}
-  /* pipe weld seams */
-  .pipe-seam{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.1),transparent)}
-  .pipe-seam.s1{left:24%}
-  .pipe-seam.s2{left:72%}
+  .garment{position:relative;cursor:pointer;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .5s,filter .5s;
+    transform-origin:50% -20px}
+  /* idle sway — every garment breathes slightly */
+  .garment .sway{animation:sway 5.2s ease-in-out infinite;transform-origin:50% -18px}
+  .g-slot:nth-child(2) .sway{animation-duration:5.9s;animation-delay:-1.4s}
+  .g-slot:nth-child(3) .sway{animation-duration:6.4s;animation-delay:-2.6s}
+  .g-slot:nth-child(4) .sway{animation-duration:5.5s;animation-delay:-3.5s}
+  .g-slot:nth-child(5) .sway{animation-duration:6.1s;animation-delay:-.7s}
+  @keyframes sway{0%,100%{transform:rotate(-.7deg)}50%{transform:rotate(.7deg)}}
 
-  /* side posts */
-  .post{position:absolute;top:0;width:13px;border-radius:0 0 4px 4px;
-    background:linear-gradient(90deg,#050505,#2e2e2e 40%,#454545 55%,#161616 82%,#000);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.13),2px 0 6px -2px rgba(0,0,0,.5);z-index:2}
-  .post.left{left:0;height:calc(100% - 26px)}
-  .post.right{right:0;height:calc(100% - 26px)}
-  /* post flange joints */
-  .post::before{content:"";position:absolute;left:-4px;right:-4px;top:52%;height:16px;border-radius:3px;
-    background:linear-gradient(180deg,#3a3a3a,#181818);box-shadow:0 1px 3px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12)}
+  .rail.has-active .g-slot:not(.active) .garment{opacity:.42;filter:saturate(.55) blur(.4px)}
+  .g-slot.active .garment{transform:scale(1.07)}
+  .g-slot.active .sway{animation:none;transform:rotate(0)}
 
-  /* feet + casters */
-  .foot{position:absolute;bottom:-8px;width:34px;height:34px;z-index:2;cursor:grab}
-  .foot::before{content:"";position:absolute;left:0;top:0;width:100%;height:9px;border-radius:3px;
-    background:linear-gradient(180deg,#2a2a2a,#101010);box-shadow:0 2px 5px -1px rgba(0,0,0,.5)}
-  .foot .wheel{position:absolute;left:50%;bottom:0;transform:translateX(-50%) rotate(var(--spin,0deg));
-    width:22px;height:22px;border-radius:50%;border:2px solid #0a0a0a;
-    background:radial-gradient(circle at 36% 32%,#5c5c5c,#1c1c1c 55%,#050505);
-    box-shadow:inset 0 -2px 3px rgba(0,0,0,.9),0 2px 5px rgba(0,0,0,.45)}
-  .foot .wheel::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:6px;height:6px;border-radius:50%;background:#3a3a3a;box-shadow:inset 0 1px 1px rgba(0,0,0,.8)}
-  .foot.fl{left:-14px}
-  .foot.fr{right:-14px}
-  .rack-frame{cursor:grab;transition:transform .1s linear}
-  .rack-frame:active{cursor:grabbing}
-
-  /* base bar */
-  .pipe-base{position:absolute;left:14px;right:14px;bottom:14px;height:8px;border-radius:100px;
-    background:linear-gradient(180deg,#0a0a0a,#2a2a2a 40%,#3d3d3d 55%,#141414);
-    box-shadow:0 3px 8px -2px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12);z-index:1}
-
-  /* garment rail inside the frame */
-  .rack{display:flex;justify-content:center;align-items:flex-start;gap:clamp(3px,1.2vw,18px);
-    margin:0 auto;padding:0 6px;transform-style:preserve-3d;position:relative;z-index:1}
-  .slot{flex:0 0 auto;width:clamp(92px,12.6vw,150px);opacity:0;transform:translateY(-70px);
-    animation:hangIn .85s cubic-bezier(.34,1.3,.5,1) forwards}
-  @keyframes hangIn{to{opacity:1;transform:translateY(0)}}
-
-  .garment{position:relative;transform-style:preserve-3d;cursor:pointer;
-    transform:rotateY(var(--ry)) scale(1);
-    transition:transform .8s cubic-bezier(.16,1,.3,1),filter .5s,opacity .5s}
-  .swing{transform-origin:50% -13px;position:relative}
-  .garment.face{transform:rotateY(0deg) translateZ(95px) scale(1.06)}
-  .garment.face .swing{animation:swing .95s cubic-bezier(.36,.07,.19,.97)}
-  @keyframes swing{
-    0%{transform:rotateZ(0)} 14%{transform:rotateZ(4.6deg)} 32%{transform:rotateZ(-3.5deg)}
-    52%{transform:rotateZ(2.5deg)} 72%{transform:rotateZ(-1.5deg)} 88%{transform:rotateZ(.7deg)} 100%{transform:rotateZ(0)}
-  }
-  .rack.has-face .garment:not(.face){opacity:.48;filter:saturate(.5)}
-  .rack.has-face .garment:not(.face):hover{opacity:.85;filter:none}
-
-  .hanger{width:100%;height:22px;position:relative;z-index:3;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+  /* wooden hanger */
+  .hanger{width:100%;height:26px;position:relative;z-index:4}
   .hanger svg{width:100%;height:100%;display:block;overflow:visible}
-  .hook{stroke:#2a2a2a;stroke-width:2.4;fill:none;stroke-linecap:round}
-  .hg-body{fill:#1a1a1a;stroke:rgba(255,255,255,.22);stroke-width:1}
+  .hw{stroke:#b08550;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .hw-fill{fill:#c99a63;stroke:#a87a45;stroke-width:1}
+  .hhook{stroke:#9a9a94;stroke-width:1.8;fill:none;stroke-linecap:round}
 
-  .body{position:relative;border-radius:5px 5px 12px 12px;overflow:hidden;margin-top:-3px;
-    box-shadow:0 18px 30px -18px rgba(26,23,20,.45),inset 0 0 0 1px rgba(255,255,255,.13);
-    transition:box-shadow .5s}
-  .garment.face .body{box-shadow:0 32px 52px -22px rgba(26,23,20,.58),inset 0 0 0 1px rgba(255,255,255,.2)}
-  .cloth{position:absolute;inset:0}
-  .grain{position:absolute;inset:0;opacity:.13;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
-  .sil{position:absolute;inset:0;display:grid;place-items:center;padding:9% 6% 4%}
-  .sil svg{width:100%;height:100%;overflow:visible}
-  .hem{position:absolute;left:0;right:0;bottom:0;height:13%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.17))}
-  .tag{position:absolute;top:11px;left:11px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.1px;
-    text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--ink);padding:4px 9px;border-radius:100px}
-  .tag.sale{background:var(--acc);color:#fff}
-  .face-badge{position:absolute;top:11px;right:11px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.93);
-    display:grid;place-items:center;opacity:0;transform:scale(.4);transition:.4s cubic-bezier(.34,1.56,.64,1)}
-  .garment.face .face-badge{opacity:1;transform:scale(1)}
-  .face-badge svg{width:14px;height:14px;stroke:var(--acc);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .gname{position:absolute;left:0;right:0;bottom:0;padding:13px 12px 11px;
-    background:linear-gradient(180deg,transparent,rgba(0,0,0,.6));color:#fff;
-    opacity:0;transform:translateY(10px);transition:.45s cubic-bezier(.16,1,.3,1) .12s}
-  .garment.face .gname{opacity:1;transform:none}
-  .gname h3{font-size:12.5px;font-weight:600;letter-spacing:-.2px;margin-bottom:1px}
-  .gname span{font-family:var(--mono);font-size:11px;opacity:.88}
+  /* cloth body */
+  .g-body{position:relative;border-radius:3px;overflow:hidden;margin-top:-4px;
+    box-shadow:0 16px 30px -16px rgba(17,17,16,.4),inset 0 0 0 1px rgba(0,0,0,.06)}
+  .g-slot.active .g-body{box-shadow:0 30px 54px -22px rgba(17,17,16,.5),inset 0 0 0 1px rgba(0,0,0,.09)}
+  .g-art{position:absolute;inset:0;display:grid;place-items:center;padding:7% 5% 3%}
+  .g-art svg{width:100%;height:100%;overflow:visible}
+  .g-shadow{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);width:112%;height:22px;
+    background:radial-gradient(ellipse at center,rgba(17,17,16,.24),transparent 68%);z-index:-1;filter:blur(3px)}
+  .g-slot.active .g-shadow{width:126%;height:28px;bottom:-22px;opacity:.85}
 
-  /* ===== DETAIL ===== */
-  .detail{padding:32px 0 70px}
-  .detail-in{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:34px;
-    display:grid;grid-template-columns:.85fr 1.15fr;gap:38px;align-items:center;
-    box-shadow:0 24px 50px -34px rgba(26,23,20,.3);transition:opacity .35s}
-  @media(max-width:800px){.detail-in{grid-template-columns:1fr;gap:24px;padding:26px}}
-  .detail-in.swap{opacity:.3}
-  .d-vis{aspect-ratio:4/5;border-radius:16px;position:relative;overflow:hidden;max-height:350px}
-  .d-vis .grain{position:absolute;inset:0;opacity:.13;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
-  .d-zoom{position:absolute;right:12px;bottom:12px;width:74px;height:74px;border-radius:10px;overflow:hidden;
-    border:2px solid rgba(255,255,255,.85);box-shadow:0 6px 16px -6px rgba(0,0,0,.4)}
-  .d-zoom .zl{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:8.5px;
-    letter-spacing:1px;color:#fff;background:rgba(0,0,0,.35);text-transform:uppercase}
-  .d-cat{font-family:var(--mono);font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--acc);margin-bottom:10px}
-  .d-info h2{font-family:var(--serif);font-size:clamp(23px,3.2vw,34px);letter-spacing:-1px;font-weight:400;line-height:1.08;margin-bottom:12px}
-  .d-price{display:flex;align-items:baseline;gap:11px;margin-bottom:15px;flex-wrap:wrap}
-  .d-price b{font-family:var(--mono);font-size:21px}
-  .d-price s{color:var(--dim);font-size:14px}
-  .d-price .off{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--acc);padding:3px 9px;border-radius:100px}
-  .d-desc{font-size:14px;color:var(--dim);line-height:1.75;margin-bottom:19px}
-  .d-row{display:flex;gap:24px;margin-bottom:20px;flex-wrap:wrap}
-  .d-row div span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
-  .d-row div b{font-size:13px;font-weight:600}
-  .swatches{display:flex;gap:8px;margin-bottom:22px;align-items:center}
-  .swatches .lb{font-family:var(--mono);font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:var(--dim);margin-right:4px}
-  .sw{width:25px;height:25px;border-radius:50%;border:2px solid transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
-    cursor:pointer;transition:.25s}
-  .sw:hover{transform:scale(1.13)}
-  .sw.on{border-color:var(--ink)}
-  .d-cta{display:flex;gap:11px;flex-wrap:wrap}
-  .btn{display:inline-flex;align-items:center;gap:9px;padding:13px 25px;border-radius:100px;font-size:14px;font-weight:600;
-    transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,background .25s;position:relative;overflow:hidden}
-  .btn-dark{background:var(--ink);color:var(--bg)}
-  .btn-dark:hover{transform:translateY(-2px);box-shadow:0 12px 26px -10px rgba(26,23,20,.45)}
-  .btn-ghost{border:1px solid var(--line);color:var(--ink)}
-  .btn-ghost:hover{border-color:var(--ink);transform:translateY(-2px)}
-  .btn .arw{transition:transform .3s cubic-bezier(.16,1,.3,1)}
-  .btn:hover .arw{transform:translateX(5px)}
-  .d-empty{grid-column:1/-1;text-align:center;padding:42px 20px;color:var(--dim)}
-  .d-empty .ei{font-size:40px;margin-bottom:12px;opacity:.45}
-  .d-empty p{font-size:14.5px}
+  /* rail arrows */
+  .arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.9);border:1px solid var(--line);display:grid;place-items:center;z-index:6;
+    transition:.28s cubic-bezier(.34,1.56,.64,1);box-shadow:0 3px 12px -4px rgba(17,17,16,.18)}
+  .arrow:hover{background:var(--ink);border-color:var(--ink);transform:translateY(-50%) scale(1.09)}
+  .arrow svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .28s}
+  .arrow:hover svg{stroke:#fff}
+  .arrow.prev{left:max(14px,calc(50% - min(1180px,92vw)/2 - 54px))}
+  .arrow.next{right:max(14px,calc(50% - min(1180px,92vw)/2 - 54px))}
 
-  footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:12.5px;color:var(--dim);background:var(--card)}
-  footer a{text-decoration:underline;transition:color .2s}
-  footer a:hover{color:var(--ink)}
+  /* ============ PRODUCT CALLOUT ============ */
+  .callout{text-align:center;padding:38px 0 8px;position:relative;z-index:5}
+  .callout .cn{font-size:clamp(24px,3.6vw,40px);font-weight:700;letter-spacing:-.9px;line-height:1.05;
+    transition:opacity .3s,transform .3s}
+  .callout .cp{font-size:13.5px;color:var(--dim);margin-top:7px;letter-spacing:.3px;transition:opacity .3s,transform .3s}
+  .callout .cp b{color:var(--ink);font-weight:600}
+  .callout.swap .cn,.callout.swap .cp{opacity:0;transform:translateY(8px)}
+  .explore{margin-top:20px;display:inline-flex;align-items:center;gap:10px;padding:13px 30px;border:1.5px solid var(--ink);
+    border-radius:100px;font-size:11.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+    transition:.3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+  .explore:hover{background:var(--ink);color:#fff;transform:translateY(-2px)}
+  .explore .arw{transition:transform .3s cubic-bezier(.16,1,.3,1)}
+  .explore:hover .arw{transform:translateX(5px)}
 
-  #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);background:var(--ink);color:var(--bg);
-    padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:600;z-index:300;display:flex;align-items:center;gap:9px;
-    opacity:0;visibility:hidden;transition:.35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 14px 32px -12px rgba(26,23,20,.5)}
+  /* ============ SPEC BAR ============ */
+  .specbar{margin-top:44px;background:var(--acc);color:#fff}
+  .specbar-in{max-width:1440px;margin:0 auto;padding:15px 28px;display:grid;grid-template-columns:1fr 1fr 1fr;
+    gap:1px;position:relative}
+  .specbar-in::before,.specbar-in::after{content:"";position:absolute;top:14%;bottom:14%;width:1px;background:rgba(255,255,255,.32)}
+  .specbar-in::before{left:33.33%}
+  .specbar-in::after{left:66.66%}
+  .spec{text-align:center;font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 8px}
+
+  /* ============ PDP (product detail, appears on EXPLORE) ============ */
+  .pdp{position:fixed;inset:0;z-index:300;visibility:hidden;pointer-events:none}
+  .pdp.open{visibility:visible;pointer-events:auto}
+  .pdp-veil{position:absolute;inset:0;background:rgba(17,17,16,.42);backdrop-filter:blur(4px);opacity:0;transition:opacity .4s}
+  .pdp.open .pdp-veil{opacity:1}
+  .pdp-card{position:absolute;inset:0;background:#fff;display:grid;grid-template-columns:1.15fr .85fr;
+    transform:translateY(28px) scale(.985);opacity:0;transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .4s}
+  .pdp.open .pdp-card{transform:none;opacity:1}
+  @media(max-width:900px){.pdp-card{grid-template-columns:1fr;grid-template-rows:auto 1fr;overflow-y:auto}}
+
+  .pdp-img{position:relative;background:radial-gradient(ellipse 80% 70% at 50% 40%,#fbfaf8,#eeece7 60%,#e3e0da);
+    display:grid;place-items:center;padding:56px 40px;min-height:340px;overflow:hidden}
+  .pdp-img .rodmini{position:absolute;left:50%;top:44px;transform:translateX(-50%);width:78%;height:22px}
+  .pdp-img .rodmini svg{width:100%;height:100%;display:block;overflow:visible}
+  .pdp-img .g-wrap{position:relative;width:min(320px,72%);margin-top:26px}
+  .pdp-img .g-shadow{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);width:118%;height:26px;
+    background:radial-gradient(ellipse at center,rgba(17,17,16,.22),transparent 68%);filter:blur(3px);z-index:-1}
+  .pdp-close{position:absolute;top:18px;left:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);
+    border:1px solid var(--line);display:grid;place-items:center;z-index:5;transition:.25s}
+  .pdp-close:hover{background:var(--ink);border-color:var(--ink)}
+  .pdp-close svg{width:14px;height:14px;stroke:var(--ink);stroke-width:1.9;stroke-linecap:round;transition:stroke .25s}
+  .pdp-close:hover svg{stroke:#fff}
+
+  .pdp-info{padding:clamp(28px,4vw,54px);display:flex;flex-direction:column;overflow-y:auto}
+  .pdp-crumb{font-size:10.5px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+  .pdp-crumb b{color:var(--ink)}
+  .pdp-name{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-1.2px;line-height:1.03;margin-bottom:10px}
+  .pdp-price{font-family:var(--mono);font-size:19px;font-weight:700;margin-bottom:4px}
+  .pdp-tax{font-size:11.5px;color:var(--dim);letter-spacing:.4px;margin-bottom:26px}
+
+  .opt{margin-bottom:22px}
+  .opt-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px}
+  .opt-h span{font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+  .opt-h b{font-size:11.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase}
+  .sw-row{display:flex;gap:11px}
+  .sw{width:30px;height:30px;border-radius:50%;border:1.5px solid transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
+    cursor:pointer;transition:.25s cubic-bezier(.34,1.56,.64,1);position:relative}
+  .sw:hover{transform:scale(1.12)}
+  .sw.on{border-color:var(--ink);transform:scale(1.06)}
+  .sz-row{display:flex;gap:8px;flex-wrap:wrap}
+  .sz{min-width:50px;padding:11px 6px;border:1px solid var(--line);border-radius:3px;font-size:12px;font-weight:600;
+    letter-spacing:1px;text-align:center;color:var(--dim);transition:.22s;background:#fff}
+  .sz:hover{border-color:var(--ink);color:var(--ink)}
+  .sz.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .add-btn{width:100%;padding:17px;background:var(--acc);color:#fff;border-radius:100px;font-size:12px;font-weight:700;
+    letter-spacing:2.2px;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:10px;
+    transition:.28s cubic-bezier(.34,1.56,.64,1);margin-bottom:26px}
+  .add-btn:hover{background:var(--acc2);transform:translateY(-2px);box-shadow:0 12px 26px -10px rgba(232,84,29,.5)}
+  .add-btn .chev{transition:transform .3s}
+  .add-btn:hover .chev{transform:translateY(2px)}
+
+  .acc-item{border-top:1px solid var(--line)}
+  .acc-item:last-child{border-bottom:1px solid var(--line)}
+  .acc-h{width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 2px;
+    font-size:11.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;transition:opacity .2s}
+  .acc-h:hover{opacity:.55}
+  .acc-h .pm{font-family:var(--mono);font-size:15px;font-weight:400;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+  .acc-item.open .acc-h .pm{transform:rotate(45deg)}
+  .acc-b{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1)}
+  .acc-item.open .acc-b{max-height:260px}
+  .acc-b p{padding:0 2px 17px;font-size:13.5px;color:var(--dim);line-height:1.75}
+
+  /* ============ FOOTER ============ */
+  footer{border-top:1px solid var(--line);padding:30px 0;margin-top:0}
+  .foot-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:11px;letter-spacing:1.4px;
+    text-transform:uppercase;color:var(--dim)}
+
+  /* ============ TOAST ============ */
+  #toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,18px);background:var(--ink);color:#fff;
+    padding:12px 22px;border-radius:100px;font-size:12.5px;font-weight:600;letter-spacing:.5px;z-index:400;
+    display:flex;align-items:center;gap:9px;opacity:0;visibility:hidden;
+    transition:.35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 14px 32px -12px rgba(17,17,16,.5)}
   #toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
-  #toast .tk{color:#4ade80;font-size:15px}
-
-  .rv{opacity:0;transform:translateY(24px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
-  .rv.in{opacity:1;transform:none}
+  #toast .tk{color:#4ade80;font-size:14px}
 
   @media print{
-    nav,.hint,.scene::after,#toast,.d-zoom{display:none}
-    body{background:#fff}
-    .garment{transform:none!important;opacity:1!important;filter:none!important}
-    .rack-frame{box-shadow:none}
-    .pipe-top,.post,.pipe-base,.foot{background:#999!important;box-shadow:none}
-    .detail-in{box-shadow:none;border:1px solid #ddd}
-    section{padding:18px 0}
+    .topbar,.arrow,.explore,.specbar,.pdp,#toast{display:none}
+    .g-slot{opacity:1;transform:none}
+    section{padding:16px 0}
   }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-    .slot{opacity:1;transform:none}
-    .rv{opacity:1;transform:none}
+    .g-slot{opacity:1;transform:none}
   }
 </style>
 </head>
@@ -230,347 +215,349 @@
 <!-- ============ FABRIC PATTERNS ============ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <pattern id="p-twill" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
-      <line x1="0" y1="0" x2="0" y2="7" stroke="rgba(0,0,0,.15)" stroke-width="1.7"/>
-      <line x1="3.5" y1="0" x2="3.5" y2="7" stroke="rgba(255,255,255,.09)" stroke-width="1"/>
+    <pattern id="f-fleece" width="5" height="5" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r=".7" fill="rgba(255,255,255,.13)"/>
+      <circle cx="3.7" cy="3.7" r=".7" fill="rgba(0,0,0,.1)"/>
     </pattern>
-    <pattern id="p-oxford" width="5" height="5" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="5" y2="0" stroke="rgba(0,0,0,.075)" stroke-width="1"/>
-      <line x1="0" y1="0" x2="0" y2="5" stroke="rgba(0,0,0,.055)" stroke-width="1"/>
+    <pattern id="f-jersey" width="4" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="4" stroke="rgba(0,0,0,.07)" stroke-width=".9"/>
+      <line x1="2" y1="0" x2="2" y2="4" stroke="rgba(255,255,255,.07)" stroke-width=".9"/>
     </pattern>
-    <pattern id="p-merino" width="4" height="4" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="0" y2="4" stroke="rgba(0,0,0,.065)" stroke-width=".9"/>
-      <line x1="2" y1="0" x2="2" y2="4" stroke="rgba(255,255,255,.075)" stroke-width=".9"/>
-    </pattern>
-    <pattern id="p-rib22" width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="4" height="8" fill="rgba(255,255,255,.11)"/>
-      <rect x="4" y="0" width="4" height="8" fill="rgba(0,0,0,.11)"/>
-    </pattern>
-    <pattern id="p-pleat" width="9" height="9" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="4" height="9" fill="rgba(255,255,255,.10)"/>
-      <rect x="4" y="0" width="1.2" height="9" fill="rgba(0,0,0,.14)"/>
-    </pattern>
-    <pattern id="p-crepe" width="6" height="6" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="3" x2="6" y2="3" stroke="rgba(255,255,255,.055)" stroke-width="1"/>
-    </pattern>
-    <pattern id="p-linen" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(14)">
-      <line x1="0" y1="0" x2="6" y2="0" stroke="rgba(0,0,0,.085)" stroke-width="1"/>
-      <line x1="3" y1="0" x2="3" y2="6" stroke="rgba(255,255,255,.065)" stroke-width="1"/>
+    <pattern id="f-twill" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="rgba(0,0,0,.13)" stroke-width="1.6"/>
     </pattern>
   </defs>
 </svg>
 
-<nav id="nav">
-  <div class="nav-in">
-    <a href="/fashion/" class="brand">ATELIER<b>.</b></a>
-    <div class="nav-links">
-      <a href="/fashion/">Shop</a>
-      <a href="/fashion/rack/" class="on">The Rack</a>
-      <a href="/fashion/#lookbook">Lookbook</a>
-      <a href="/fashion/#about">About</a>
-    </div>
-  </div>
-</nav>
-
-<header class="head">
-  <div class="wrap">
-    <div class="eyebrow rv">Autumn / Winter 2026</div>
-    <h1 class="rv" style="transition-delay:.06s">The <em>rack</em>.</h1>
-    <p class="rv" style="transition-delay:.12s">Seven pieces, freshly hung. Everything on one rail — pick one up and turn it to face you.</p>
-    <div class="hint rv" style="transition-delay:.18s"><span class="dot"></span> Click a garment to face it front · drag the rack to roll it</div>
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <button class="menu-btn"><span class="bars"><i></i><i></i><i></i></span> Menu</button>
+    <div class="brand">Nordrail</div>
+    <button class="bag-btn" id="bagBtn">
+      <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 12.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 7z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/></svg>
+      Bag (<span class="cnt" id="bagCount">0</span>)
+    </button>
   </div>
 </header>
 
+<div class="coll"><span>On the rail / FW20 Basics</span></div>
+
+<!-- ============ RAIL SCENE ============ -->
 <section class="scene">
-  <div class="floor"></div>
-  <div class="rack-frame" id="frame">
-    <div class="pipe-top">
-      <span class="pipe-seam s1"></span>
-      <span class="pipe-seam s2"></span>
+  <div class="stage">
+    <div class="stage-bg"></div>
+
+    <!-- the rod, sagging under weight -->
+    <div class="rod">
+      <svg viewBox="0 0 1180 34" preserveAspectRatio="none">
+        <line class="sus" x1="60" y1="0" x2="60" y2="14"/>
+        <line class="sus" x1="1120" y1="0" x2="1120" y2="14"/>
+        <path class="rod-line" d="M40 14 Q590 32 1140 14"/>
+        <path class="rod-shine" d="M60 15.4 Q590 31 1120 15.4"/>
+      </svg>
     </div>
-    <div class="rack" id="rack"></div>
-    <div class="post left"></div>
-    <div class="post right"></div>
-    <div class="pipe-base"></div>
-    <div class="foot fl"><span class="wheel"></span></div>
-    <div class="foot fr"><span class="wheel"></span></div>
+
+    <button class="arrow prev" id="prevBtn" aria-label="Previous">
+      <svg viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+    </button>
+    <button class="arrow next" id="nextBtn" aria-label="Next">
+      <svg viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+    </button>
+
+    <div class="rail" id="rail"></div>
+  </div>
+
+  <!-- product callout -->
+  <div class="callout" id="callout">
+    <div class="cn" id="cName">Hood Coal</div>
+    <div class="cp" id="cPrice">washed coal — <b>$84</b></div>
+    <button class="explore" id="exploreBtn">Explore piece <span class="arw">→</span></button>
   </div>
 </section>
 
-<section class="detail">
-  <div class="wrap">
-    <div class="detail-in rv" id="detail">
-      <div class="d-empty">
-        <div class="ei">🧥</div>
-        <p>Nothing selected yet.<br>Click a garment on the rack to bring it front-facing.</p>
+<!-- ============ SPEC BAR ============ -->
+<div class="specbar">
+  <div class="specbar-in">
+    <div class="spec">Heavyweight 430 GSM fleece</div>
+    <div class="spec">Garment dyes</div>
+    <div class="spec">Free shipping over $150</div>
+  </div>
+</div>
+
+<!-- ============ PDP ============ -->
+<div class="pdp" id="pdp">
+  <div class="pdp-veil" id="pdpVeil"></div>
+  <div class="pdp-card">
+    <div class="pdp-img">
+      <button class="pdp-close" id="pdpClose" aria-label="Close">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="rodmini">
+        <svg viewBox="0 0 600 22" preserveAspectRatio="none">
+          <path d="M20 8 Q300 20 580 8" stroke="#c9c6bf" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
       </div>
+      <div class="g-wrap" id="pdpArt"></div>
+    </div>
+    <div class="pdp-info">
+      <div class="pdp-crumb">FW20 Basics / <b id="pdpIdx">02</b> / 05</div>
+      <h2 class="pdp-name" id="pdpName">Hood Coal</h2>
+      <div class="pdp-price" id="pdpPrice">$84.00</div>
+      <div class="pdp-tax">USD · taxes included</div>
+
+      <div class="opt">
+        <div class="opt-h"><span>Color</span><b id="colorName">Washed coal</b></div>
+        <div class="sw-row" id="colorRow"></div>
+      </div>
+
+      <div class="opt">
+        <div class="opt-h"><span>Size</span><b id="sizeName">M</b></div>
+        <div class="sz-row" id="sizeRow"></div>
+      </div>
+
+      <button class="add-btn" id="addBtn">Add to bag — <span id="addSize">M</span> <span class="chev">▾</span></button>
+
+      <div id="accWrap"></div>
     </div>
   </div>
-</section>
+</div>
 
 <footer>
-  <div class="wrap">
-    <a href="/fashion/">← Back to the shop</a> · © 2026 Atelier Studio · Made in Indonesia
+  <div class="wrap foot-in">
+    <span>© 2026 Nordrail</span>
+    <span>On the rail</span>
+    <span>Made for the cold</span>
   </div>
 </footer>
 
 <div id="toast"><span class="tk">✓</span> <span id="toastMsg">Added to bag</span></div>
 
 <script>
-/* ================= DATA ================= */
+/* ================= GARMENTS ================= */
 const G = [
-  { n:'Camel Wool Overcoat', c:'Outerwear', p:1890000, o:2290000, r:4.9, s:'coat', pat:'p-twill',
-    g:'linear-gradient(155deg,#e8a94e,#c07a1c 55%,#8f5510)', tag:'Best seller',
-    d:'Double-faced wool from a Biella mill. Unstructured shoulders, hidden two-button closure, and a hem that falls just below the knee.',
-    mat:'80% wool, 20% cashmere', fit:'Relaxed', care:'Dry clean only', sw:['#c07a1c','#1c1917','#a8a29e','#78716c'] },
+  { n:'Tee Sky',      cn:'Dusty sky',  p:38,  s:'tee',   pat:'f-jersey',
+    g:'linear-gradient(160deg,#a8c4d8,#8fb0cc 58%,#7a9dbd)', col:'#8fb0cc',
+    d:'Boxy crew in mid-weight jersey, garment-dyed for a soft, lived-in tone from the first wear.',
+    det:'260 GSM combed cotton · garment dyed · boxy fit · ribbed crew neck',
+    fab:'Machine wash cold, hang dry. Expect gentle fading — that is the dye doing its job.',
+    fit:'True to size. Take one down for a closer cut.',
+    ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
-  { n:'Black Column Dress', c:'Dresses', p:1290000, r:4.8, s:'dress', pat:'p-crepe',
-    g:'linear-gradient(155deg,#5c5752,#2a2622 58%,#171412)', tag:'New',
-    d:'Bias-cut in heavy crepe so it moves without clinging. Square neck, no zip, and a strap you can actually adjust.',
-    mat:'100% viscose crepe', fit:'True to size', care:'Hand wash cold', sw:['#2a2622','#7c2d12','#d6d3d1','#44403c'] },
+  { n:'Hood Cream',   cn:'Bone',       p:84,  s:'hoodie',pat:'f-fleece',
+    g:'linear-gradient(160deg,#efe9dd,#ddd3c1 58%,#c9bda6)', col:'#ddd3c1',
+    d:'The heavyweight hoodie in bone. Double-layer hood, kangaroo pocket, ribbed everything.',
+    det:'430 GSM loopback fleece · double-layer hood · kangaroo pocket · ribbed cuffs and hem',
+    fab:'Wash cold inside out. Do not bleach. Tumble low.',
+    fit:'Relaxed drop shoulder. Size down for a regular fit.',
+    ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
-  { n:'White Oxford Shirt', c:'Shirts', p:540000, r:4.7, s:'shirt', pat:'p-oxford',
-    g:'linear-gradient(155deg,#ffffff,#eceae6 58%,#d9d6d1)', tag:null,
-    d:'Woven in Portugal from long-staple cotton. Softened twice before cutting so it breaks in over a week, not a year.',
-    mat:'100% organic cotton', fit:'Regular', care:'Machine wash 30°', sw:['#ffffff','#dbeafe','#1e3a8a','#a8a29e'] },
+  { n:'Hood Coal',    cn:'Washed coal',p:84,  s:'hoodie',pat:'f-fleece',
+    g:'linear-gradient(160deg,#4a4844,#33312e 58%,#232220)', col:'#33312e',
+    d:'Our flagship hoodie in washed coal. Heavyweight fleece, dyed after construction so the colour sits deep.',
+    det:'430 GSM loopback fleece · double-layer hood · kangaroo pocket · ribbed cuffs and hem',
+    fab:'Wash cold inside out. Do not bleach. Tumble low.',
+    fit:'Relaxed drop shoulder. Size down for a regular fit.',
+    ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
-  { n:'Cream Merino Knit', c:'Knitwear', p:690000, r:4.8, s:'knit', pat:'p-merino',
-    g:'linear-gradient(155deg,#fdf7e7,#f3e4c3 56%,#e2cfa2)', tag:null,
-    d:'Fully fashioned merino, 12-gauge. Crew neck, raglan sleeve, and a hem that holds its shape after a season of wear.',
-    mat:'100% extra-fine merino', fit:'Slim', care:'Wool cycle 30°', sw:['#f3e4c3','#1c1917','#b4530a','#78716c'] },
+  { n:'LS Bone',      cn:'Raw cream',  p:52,  s:'ls',    pat:'f-jersey',
+    g:'linear-gradient(160deg,#f0ebe1,#ddd6c7 58%,#c6bda9)', col:'#ddd6c7',
+    d:'Long-sleeve crew in raw cream. Heavy enough to wear alone, light enough to layer.',
+    det:'300 GSM slub jersey · long-sleeve crew · garment dyed · slightly heavier hand',
+    fab:'Machine wash cold. Dry flat to keep the shape.',
+    fit:'Regular. Sits just below the waist.',
+    ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' },
 
-  { n:'Olive Pleated Skirt', c:'Skirts', p:620000, r:4.5, s:'skirt', pat:'p-pleat',
-    g:'linear-gradient(155deg,#9ac636,#5c8a12 58%,#3f6109)', tag:null,
-    d:'Knife pleats set into a flat front waistband. Cut long enough to move properly, weighted so it hangs straight.',
-    mat:'100% Tencel™ lyocell', fit:'High waist', care:'Machine wash cold', sw:['#5c8a12','#1c1917','#d6d3d1','#a8a29e'] },
-
-  { n:'Navy Soft Blazer', c:'Tailoring', p:1650000, o:1950000, r:4.9, s:'blazer', pat:'p-linen',
-    g:'linear-gradient(155deg,#4063c9,#24408f 58%,#172c63)', tag:'Sale',
-    d:'Half-canvassed, unstructured, and cut from a cotton-linen hopsack. The kind of jacket you wear open with the sleeves pushed.',
-    mat:'62% linen, 38% cotton', fit:'Tailored', care:'Dry clean', sw:['#24408f','#1c1917','#a8a29e','#d6d3d1'] },
-
-  { n:'Rust Ribbed Turtleneck', c:'Knitwear', p:620000, r:4.4, s:'knit2', pat:'p-rib22',
-    g:'linear-gradient(155deg,#f06a1c,#c2410c 56%,#8c2d08)', tag:null,
-    d:'2x2 rib in a mid-weight lambswool. High collar that folds instead of slouching, and a body that layers under a coat cleanly.',
-    mat:'100% lambswool', fit:'Slim', care:'Hand wash cold', sw:['#c2410c','#f3e4c3','#1c1917','#78716c'] }
+  { n:'LS Forest',    cn:'Deep forest',p:52,  s:'ls',    pat:'f-twill',
+    g:'linear-gradient(160deg,#3f5d4a,#2f4a39 58%,#22382b)', col:'#2f4a39',
+    d:'Long-sleeve crew in deep forest, cut from a slub twill that reads almost solid at distance.',
+    det:'300 GSM slub twill · long-sleeve crew · garment dyed · textured face',
+    fab:'Machine wash cold. Dry flat to keep the shape.',
+    fit:'Regular. Sits just below the waist.',
+    ship:'Free over $150. Flat $8 under. Dispatched in 2 working days.' }
 ];
 
-/* ---- garment illustrations: shape + fabric pattern + construction details ---- */
+const SIZES = ['XS','S','M','L','XL'];
+const COLORS = [
+  { n:'Washed coal', c:'#33312e' },
+  { n:'Bone',        c:'#ddd3c1' },
+  { n:'Dusty sky',   c:'#8fb0cc' },
+  { n:'Deep forest', c:'#2f4a39' },
+  { n:'Oxblood',     c:'#5c2a2a' }
+];
+
+/* ================= GARMENT ART ================= */
 const ART = {
-  coat: () => `
-    <path d="M60 15 L43 19 L21 29 L13 58 L23 66 L29 50 L27 187 L93 187 L91 50 L97 66 L107 58 L99 29 L77 19 Z" fill="rgba(0,0,0,.10)"/>
-    <path d="M60 15 L43 19 L21 29 L13 58 L23 66 L29 50 L27 187 L93 187 L91 50 L97 66 L107 58 L99 29 L77 19 Z" fill="url(#p-twill)"/>
-    <path d="M59 16 L46 21 L55 64 L68 33 Z" fill="rgba(0,0,0,.16)"/>
-    <path d="M61 16 L74 21 L65 64 L52 33 Z" fill="rgba(0,0,0,.16)"/>
-    <path d="M59 16 L46 21 M61 16 L74 21" stroke="rgba(255,255,255,.4)" stroke-width="1.2" fill="none"/>
-    <rect x="27" y="91" width="66" height="9" rx="1.5" fill="rgba(0,0,0,.24)"/>
-    <rect x="54" y="88.5" width="13" height="14" rx="2" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.6"/>
-    <circle cx="51" cy="74" r="3.2" fill="rgba(0,0,0,.32)"/><circle cx="51" cy="74" r="3.2" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
-    <circle cx="69" cy="74" r="3.2" fill="rgba(0,0,0,.32)"/><circle cx="69" cy="74" r="3.2" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
-    <circle cx="51" cy="102" r="3.2" fill="rgba(0,0,0,.32)"/><circle cx="51" cy="102" r="3.2" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
-    <circle cx="69" cy="102" r="3.2" fill="rgba(0,0,0,.32)"/><circle cx="69" cy="102" r="3.2" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
-    <rect x="36" y="124" width="18" height="12" rx="1.5" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
-    <rect x="66" y="124" width="18" height="12" rx="1.5" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
-    <path d="M29 52 L27 187 M91 52 L93 187" stroke="rgba(255,255,255,.28)" stroke-width="1.2" fill="none"/>
-    <path d="M27 178 L93 178" stroke="rgba(0,0,0,.2)" stroke-width="1.4"/>
-    <path d="M60 15 L43 19 L21 29 L13 58 L23 66 L29 50 L27 187 L93 187 L91 50 L97 66 L107 58 L99 29 L77 19 Z" fill="none" stroke="rgba(255,255,255,.34)" stroke-width="1.4"/>`,
+  hoodie: () => `
+    <path d="M60 22 L42 28 L20 40 L14 74 L25 82 L31 62 L31 152 L89 152 L89 62 L95 82 L106 74 L100 40 L78 28 Z" fill="rgba(0,0,0,.13)"/>
+    <path d="M60 22 L42 28 L20 40 L14 74 L25 82 L31 62 L31 152 L89 152 L89 62 L95 82 L106 74 L100 40 L78 28 Z" fill="url(#f-fleece)"/>
+    <path d="M46 28 Q60 46 74 28 L74 20 Q60 30 46 20 Z" fill="rgba(0,0,0,.2)"/>
+    <path d="M46 28 Q60 46 74 28" stroke="rgba(255,255,255,.3)" stroke-width="1.3" fill="none"/>
+    <path d="M50 26 Q48 40 52 48 M70 26 Q72 40 68 48" stroke="rgba(0,0,0,.16)" stroke-width="1.4" fill="none"/>
+    <rect x="36" y="106" width="48" height="26" rx="3" fill="rgba(0,0,0,.14)" stroke="rgba(255,255,255,.16)" stroke-width="1"/>
+    <path d="M36 106 L84 106" stroke="rgba(255,255,255,.2)" stroke-width="1.2"/>
+    <rect x="31" y="140" width="58" height="12" rx="2" fill="url(#f-fleece)"/>
+    <path d="M31 140 L89 140" stroke="rgba(0,0,0,.2)" stroke-width="1.3"/>
+    <rect x="14" y="66" width="11" height="14" rx="2" fill="url(#f-fleece)"/>
+    <rect x="95" y="66" width="11" height="14" rx="2" fill="url(#f-fleece)"/>
+    <path d="M60 22 L42 28 L20 40 L14 74 L25 82 L31 62 L31 152 L89 152 L89 62 L95 82 L106 74 L100 40 L78 28 Z" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.4"/>`,
 
-  dress: () => `
-    <path d="M60 22 L46 26 L36 34 L33 48 L40 52 L44 40 L46 78 L26 186 L94 186 L74 78 L76 40 L80 52 L87 48 L84 34 L74 26 Z" fill="rgba(0,0,0,.12)"/>
-    <path d="M60 22 L46 26 L36 34 L33 48 L40 52 L44 40 L46 78 L26 186 L94 186 L74 78 L76 40 L80 52 L87 48 L84 34 L74 26 Z" fill="url(#p-crepe)"/>
-    <path d="M46 26 L74 26 L74 31 L46 31 Z" fill="rgba(255,255,255,.14)"/>
-    <path d="M52 88 Q58 130 55 186" stroke="rgba(255,255,255,.16)" stroke-width="1.6" fill="none"/>
-    <path d="M68 88 Q62 130 65 186" stroke="rgba(255,255,255,.16)" stroke-width="1.6" fill="none"/>
-    <path d="M46 78 L74 78" stroke="rgba(255,255,255,.2)" stroke-width="1.2"/>
-    <path d="M26 176 L94 176" stroke="rgba(0,0,0,.24)" stroke-width="1.4"/>
-    <path d="M60 22 L46 26 L36 34 L33 48 L40 52 L44 40 L46 78 L26 186 L94 186 L74 78 L76 40 L80 52 L87 48 L84 34 L74 26 Z" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.4"/>`,
+  tee: () => `
+    <path d="M60 16 L44 22 L24 32 L16 58 L26 65 L32 50 L32 138 L88 138 L88 50 L94 65 L104 58 L96 32 L76 22 Z" fill="rgba(0,0,0,.09)"/>
+    <path d="M60 16 L44 22 L24 32 L16 58 L26 65 L32 50 L32 138 L88 138 L88 50 L94 65 L104 58 L96 32 L76 22 Z" fill="url(#f-jersey)"/>
+    <ellipse cx="60" cy="20" rx="15" ry="6.5" fill="rgba(0,0,0,.16)"/>
+    <ellipse cx="60" cy="19" rx="15" ry="6.5" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="1.4"/>
+    <path d="M44 23 L32 50 M76 23 L88 50" stroke="rgba(255,255,255,.26)" stroke-width="1.3" fill="none"/>
+    <rect x="32" y="128" width="56" height="10" rx="2" fill="url(#f-jersey)"/>
+    <path d="M32 138 L88 138" stroke="rgba(0,0,0,.16)" stroke-width="1.3"/>
+    <path d="M60 16 L44 22 L24 32 L16 58 L26 65 L32 50 L32 138 L88 138 L88 50 L94 65 L104 58 L96 32 L76 22 Z" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.4"/>`,
 
-  shirt: () => `
-    <path d="M60 12 L44 17 L24 27 L14 52 L10 120 L21 124 L26 96 L30 150 L90 150 L94 96 L99 124 L110 120 L106 52 L96 27 L76 17 Z" fill="rgba(0,0,0,.07)"/>
-    <path d="M60 12 L44 17 L24 27 L14 52 L10 120 L21 124 L26 96 L30 150 L90 150 L94 96 L99 124 L110 120 L106 52 L96 27 L76 17 Z" fill="url(#p-oxford)"/>
-    <path d="M60 12 L50 17 L56 31 L65 20 Z" fill="rgba(0,0,0,.12)" stroke="rgba(255,255,255,.45)" stroke-width="1.1"/>
-    <path d="M60 12 L70 17 L64 31 L55 20 Z" fill="rgba(0,0,0,.12)" stroke="rgba(255,255,255,.45)" stroke-width="1.1"/>
-    <rect x="55.5" y="19" width="9" height="131" fill="rgba(0,0,0,.07)"/>
-    <path d="M60 19 L60 150" stroke="rgba(0,0,0,.16)" stroke-width="1"/>
-    <circle cx="60" cy="32" r="2.4" fill="rgba(255,255,255,.85)"/><circle cx="60" cy="54" r="2.4" fill="rgba(255,255,255,.85)"/>
-    <circle cx="60" cy="76" r="2.4" fill="rgba(255,255,255,.85)"/><circle cx="60" cy="98" r="2.4" fill="rgba(255,255,255,.85)"/>
-    <circle cx="60" cy="120" r="2.4" fill="rgba(255,255,255,.85)"/><circle cx="60" cy="142" r="2.4" fill="rgba(255,255,255,.85)"/>
-    <rect x="37" y="48" width="17" height="19" rx="1.5" fill="rgba(0,0,0,.06)" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
-    <rect x="9" y="112" width="13" height="11" rx="1" fill="rgba(0,0,0,.1)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
-    <rect x="98" y="112" width="13" height="11" rx="1" fill="rgba(0,0,0,.1)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
-    <path d="M30 150 L43 158 L60 152 L77 158 L90 150" stroke="rgba(0,0,0,.14)" stroke-width="1.3" fill="none"/>
-    <path d="M60 12 L44 17 L24 27 L14 52 L10 120 L21 124 L26 96 L30 150 L90 150 L94 96 L99 124 L110 120 L106 52 L96 27 L76 17 Z" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="1.4"/>`,
-
-  knit: () => `
-    <path d="M60 20 L42 25 L20 36 L14 66 L24 73 L30 56 L30 140 L90 140 L90 56 L96 73 L106 66 L100 36 L78 25 Z" fill="rgba(0,0,0,.09)"/>
-    <path d="M60 20 L42 25 L20 36 L14 66 L24 73 L30 56 L30 140 L90 140 L90 56 L96 73 L106 66 L100 36 L78 25 Z" fill="url(#p-merino)"/>
-    <ellipse cx="60" cy="24" rx="17" ry="7.5" fill="rgba(0,0,0,.2)"/>
-    <ellipse cx="60" cy="23" rx="17" ry="7.5" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.4"/>
-    <path d="M44 26 L30 56 M76 26 L90 56" stroke="rgba(255,255,255,.34)" stroke-width="1.3" fill="none"/>
-    <rect x="30" y="129" width="60" height="11" rx="1.5" fill="url(#p-rib22)"/>
-    <rect x="14" y="58" width="11" height="14" rx="1.5" fill="url(#p-rib22)"/>
-    <rect x="95" y="58" width="11" height="14" rx="1.5" fill="url(#p-rib22)"/>
-    <path d="M30 140 L90 140" stroke="rgba(0,0,0,.18)" stroke-width="1.3"/>
-    <path d="M60 20 L42 25 L20 36 L14 66 L24 73 L30 56 L30 140 L90 140 L90 56 L96 73 L106 66 L100 36 L78 25 Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.4"/>`,
-
-  skirt: () => `
-    <path d="M32 27 L88 27 L102 158 L18 158 Z" fill="rgba(0,0,0,.1)"/>
-    <path d="M32 27 L88 27 L102 158 L18 158 Z" fill="url(#p-pleat)"/>
-    <rect x="32" y="14" width="56" height="14" rx="2.5" fill="rgba(0,0,0,.2)"/>
-    <rect x="32" y="14" width="56" height="14" rx="2.5" fill="url(#p-pleat)"/>
-    <circle cx="60" cy="21" r="2.8" fill="rgba(255,255,255,.7)"/>
-    <path d="M38 27 L28 158 M46 27 L41 158 M54 27 L54 158 M62 27 L67 158 M70 27 L74 158 M78 27 L88 158"
-          stroke="rgba(0,0,0,.2)" stroke-width="1.5" fill="none"/>
-    <path d="M42 27 L34 158 M50 27 L48 158 M58 27 L60 158 M66 27 L72 158 M74 27 L82 158"
-          stroke="rgba(255,255,255,.14)" stroke-width="1.2" fill="none"/>
-    <path d="M18 149 L102 149" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
-    <path d="M32 27 L88 27 L102 158 L18 158 Z" fill="none" stroke="rgba(255,255,255,.34)" stroke-width="1.4"/>
-    <rect x="32" y="14" width="56" height="14" rx="2.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.3"/>`,
-
-  blazer: () => `
-    <path d="M60 14 L42 19 L22 30 L15 56 L25 63 L31 48 L30 160 L90 160 L89 48 L95 63 L105 56 L98 30 L78 19 Z" fill="rgba(0,0,0,.12)"/>
-    <path d="M60 14 L42 19 L22 30 L15 56 L25 63 L31 48 L30 160 L90 160 L89 48 L95 63 L105 56 L98 30 L78 19 Z" fill="url(#p-linen)"/>
-    <path d="M59 15 L45 21 L50 41 L57 34 L53 59 L67 31 Z" fill="rgba(0,0,0,.2)"/>
-    <path d="M61 15 L75 21 L70 41 L63 34 L67 59 L53 31 Z" fill="rgba(0,0,0,.2)"/>
-    <path d="M59 15 L45 21 L50 41 L57 34 L53 59 M61 15 L75 21 L70 41 L63 34 L67 59" stroke="rgba(255,255,255,.42)" stroke-width="1.2" fill="none"/>
-    <path d="M53 59 L67 59 L60 92 Z" fill="rgba(0,0,0,.14)"/>
-    <circle cx="60" cy="92" r="3.2" fill="rgba(0,0,0,.34)"/><circle cx="60" cy="92" r="3.2" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-    <circle cx="60" cy="110" r="3.2" fill="rgba(0,0,0,.34)"/><circle cx="60" cy="110" r="3.2" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-    <rect x="36" y="118" width="20" height="10" rx="1.5" fill="rgba(0,0,0,.22)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
-    <rect x="64" y="118" width="20" height="10" rx="1.5" fill="rgba(0,0,0,.22)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
-    <rect x="68" y="52" width="13" height="9" rx="1.5" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
-    <circle cx="25" cy="126" r="2.2" fill="rgba(255,255,255,.6)"/><circle cx="95" cy="126" r="2.2" fill="rgba(255,255,255,.6)"/>
-    <path d="M31 48 L30 160 M89 48 L90 160" stroke="rgba(255,255,255,.26)" stroke-width="1.2" fill="none"/>
-    <path d="M60 14 L42 19 L22 30 L15 56 L25 63 L31 48 L30 160 L90 160 L89 48 L95 63 L105 56 L98 30 L78 19 Z" fill="none" stroke="rgba(255,255,255,.36)" stroke-width="1.4"/>`,
-
-  knit2: () => `
-    <path d="M60 30 L42 35 L20 46 L14 74 L24 81 L30 64 L30 142 L90 142 L90 64 L96 81 L106 74 L100 46 L78 35 Z" fill="rgba(0,0,0,.1)"/>
-    <path d="M60 30 L42 35 L20 46 L14 74 L24 81 L30 64 L30 142 L90 142 L90 64 L96 81 L106 74 L100 46 L78 35 Z" fill="url(#p-rib22)"/>
-    <rect x="44" y="7" width="32" height="27" rx="5" fill="rgba(0,0,0,.18)"/>
-    <rect x="44" y="7" width="32" height="27" rx="5" fill="url(#p-rib22)"/>
-    <path d="M44 21 L76 21" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/>
-    <rect x="44" y="7" width="32" height="27" rx="5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.3"/>
-    <path d="M44 35 L30 64 M76 35 L90 64" stroke="rgba(255,255,255,.32)" stroke-width="1.3" fill="none"/>
-    <rect x="30" y="131" width="60" height="11" rx="1.5" fill="url(#p-rib22)"/>
-    <rect x="14" y="66" width="11" height="14" rx="1.5" fill="url(#p-rib22)"/>
-    <rect x="95" y="66" width="11" height="14" rx="1.5" fill="url(#p-rib22)"/>
-    <path d="M30 142 L90 142" stroke="rgba(0,0,0,.2)" stroke-width="1.3"/>
-    <path d="M60 30 L42 35 L20 46 L14 74 L24 81 L30 64 L30 142 L90 142 L90 64 L96 81 L106 74 L100 46 L78 35 Z" fill="none" stroke="rgba(255,255,255,.34)" stroke-width="1.4"/>`
+  ls: () => `
+    <path d="M60 18 L42 24 L20 36 L13 70 L24 78 L30 58 L30 148 L90 148 L90 58 L96 78 L107 70 L100 36 L78 24 Z" fill="rgba(0,0,0,.1)"/>
+    <path d="M60 18 L42 24 L20 36 L13 70 L24 78 L30 58 L30 148 L90 148 L90 58 L96 78 L107 70 L100 36 L78 24 Z" fill="url(#f-jersey)"/>
+    <ellipse cx="60" cy="22" rx="15" ry="6.5" fill="rgba(0,0,0,.16)"/>
+    <ellipse cx="60" cy="21" rx="15" ry="6.5" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="1.4"/>
+    <path d="M42 25 L30 58 M78 25 L90 58" stroke="rgba(255,255,255,.26)" stroke-width="1.3" fill="none"/>
+    <rect x="13" y="62" width="11" height="14" rx="2" fill="url(#f-jersey)"/>
+    <rect x="96" y="62" width="11" height="14" rx="2" fill="url(#f-jersey)"/>
+    <rect x="30" y="138" width="60" height="10" rx="2" fill="url(#f-jersey)"/>
+    <path d="M30 148 L90 148" stroke="rgba(0,0,0,.16)" stroke-width="1.3"/>
+    <path d="M60 18 L42 24 L20 36 L13 70 L24 78 L30 58 L30 148 L90 148 L90 58 L96 78 L107 70 L100 36 L78 24 Z" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.4"/>`
 };
+const VB = { hoodie:'0 0 120 165', tee:'0 0 120 150', ls:'0 0 120 160' };
 
-const VB = { coat:'0 0 120 200', dress:'0 0 120 200', shirt:'0 0 120 165', knit:'0 0 120 155',
-             skirt:'0 0 120 170', blazer:'0 0 120 175', knit2:'0 0 120 155' };
-
-function art(type){
-  return '<svg viewBox="' + VB[type] + '" preserveAspectRatio="xMidYMid meet">' + ART[type]() + '</svg>';
+function art(t, pat){
+  return '<svg viewBox="' + VB[t] + '" preserveAspectRatio="xMidYMid meet">' + ART[t]() + '</svg>';
 }
+const HW = '<path class="hhook" d="M50 21 Q50 7 62 7 Q72 7 72 15 Q72 20 66 20"/>' +
+           '<path class="hw" d="M22 24 L78 24"/>' +
+           '<path class="hw-fill" d="M22 24 L78 24 L74 29 L26 29 Z"/>';
 
-const rp = n => 'Rp ' + n.toLocaleString('id-ID');
-const ANGLES = [-21, 13, -11, 19, -15, 10, -7];
-const HOOK = '<path class="hook" d="M50 20 Q50 6 62 6 Q72 6 72 14 Q72 19 66 19"/>';
-const BAR  = '<path class="hg-body" d="M20 22 L80 22 L78 27 L22 27 Z"/>';
-
-/* ================= RENDER RACK ================= */
-const rack = document.getElementById('rack');
-rack.innerHTML = G.map((g, i) =>
-  '<div class="slot" style="animation-delay:' + (0.12 + i * 0.09).toFixed(2) + 's">' +
-    '<div class="garment" data-i="' + i + '" style="--ry:' + ANGLES[i] + 'deg" tabindex="0" role="button" aria-label="' + g.n + '">' +
-      '<div class="swing">' +
-        '<div class="hanger"><svg viewBox="0 0 100 29" preserveAspectRatio="xMidYMid meet">' + HOOK + BAR + '</svg></div>' +
-        '<div class="body" style="background:' + g.g + '">' +
-          '<div class="grain"></div>' +
-          '<div class="sil">' + art(g.s) + '</div>' +
-          '<div class="hem"></div>' +
-          (g.tag ? '<span class="tag' + (g.tag === 'Sale' ? ' sale' : '') + '">' + g.tag + '</span>' : '') +
-          '<span class="face-badge"><svg viewBox="0 0 24 24"><path d="M5 12l4.5 4.5L19 7"/></svg></span>' +
-          '<div class="gname"><h3>' + g.n + '</h3><span>' + rp(g.p) + '</span></div>' +
+/* ================= RENDER RAIL ================= */
+const rail = document.getElementById('rail');
+rail.innerHTML = G.map((g, i) =>
+  '<div class="g-slot" data-i="' + i + '" style="animation-delay:' + (0.15 + i * 0.12).toFixed(2) + 's">' +
+    '<div class="garment" tabindex="0" role="button" aria-label="' + g.n + '">' +
+      '<div class="sway">' +
+        '<div class="hanger"><svg viewBox="0 0 100 31" preserveAspectRatio="xMidYMid meet">' + HW + '</svg></div>' +
+        '<div class="g-body" style="background:' + g.g + '">' +
+          '<div class="g-art">' + art(g.s, g.pat) + '</div>' +
         '</div>' +
+        '<div class="g-shadow"></div>' +
       '</div>' +
     '</div>' +
   '</div>'
 ).join('');
 
-/* ================= FACE FRONT ================= */
-let active = -1;
-const detail = document.getElementById('detail');
+/* ================= STATE ================= */
+let active = 0;
+const slots = [...rail.querySelectorAll('.g-slot')];
+const callout = document.getElementById('callout');
+const cName = document.getElementById('cName');
+const cPrice = document.getElementById('cPrice');
 
-function face(i){
-  if (active === i){
-    rack.querySelectorAll('.garment').forEach(el => el.classList.remove('face'));
-    rack.classList.remove('has-face');
-    active = -1;
-    renderEmpty();
-    return;
-  }
-  rack.querySelectorAll('.garment').forEach((el, k) => el.classList.toggle('face', k === i));
-  rack.classList.add('has-face');
-  active = i;
-  renderDetail(G[i]);
+function setActive(i, scroll){
+  active = (i + G.length) % G.length;
+  slots.forEach((s, k) => s.classList.toggle('active', k === active));
+  rail.classList.add('has-active');
+  const g = G[active];
+  callout.classList.add('swap');
+  setTimeout(() => {
+    cName.textContent = g.n;
+    cPrice.innerHTML = g.cn + ' — <b>$' + g.p + '</b>';
+    callout.classList.remove('swap');
+  }, 220);
+  if (scroll) slots[active].scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
 }
 
-rack.querySelectorAll('.garment').forEach(el => {
-  el.addEventListener('click', () => face(+el.dataset.i));
-  el.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); face(+el.dataset.i); }
+slots.forEach((s, i) => {
+  s.querySelector('.garment').addEventListener('click', () => setActive(i));
+  s.querySelector('.garment').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); setActive(i); }
   });
 });
+document.getElementById('prevBtn').addEventListener('click', () => setActive(active - 1, true));
+document.getElementById('nextBtn').addEventListener('click', () => setActive(active + 1, true));
+setActive(0);
 
-/* ================= DETAIL ================= */
-function renderEmpty(){
-  detail.classList.add('swap');
-  setTimeout(() => {
-    detail.innerHTML =
-      '<div class="d-empty"><div class="ei">🧥</div>' +
-      '<p>Nothing selected yet.<br>Click a garment on the rack to bring it front-facing.</p></div>';
-    detail.classList.remove('swap');
-  }, 200);
+/* ================= PDP ================= */
+const pdp = document.getElementById('pdp');
+let selColor = 0, selSize = 2;
+
+function openPDP(){
+  const g = G[active];
+  document.getElementById('pdpIdx').textContent = String(active + 1).padStart(2, '0');
+  document.getElementById('pdpName').textContent = g.n;
+  document.getElementById('pdpPrice').textContent = '$' + g.p + '.00';
+  document.getElementById('pdpArt').innerHTML =
+    '<div class="g-body" style="background:' + g.g + ';box-shadow:0 24px 44px -20px rgba(17,17,16,.45)">' +
+      '<div class="g-art">' + art(g.s, g.pat) + '</div>' +
+    '</div><div class="g-shadow"></div>';
+
+  // colours — the garment's own colour first, then the rest
+  const order = [COLORS.findIndex(c => c.c === g.col), ...COLORS.map((c, k) => k).filter(k => COLORS[k].c !== g.col)];
+  selColor = 0;
+  document.getElementById('colorRow').innerHTML = order.map((ci, k) =>
+    '<button class="sw' + (k === 0 ? ' on' : '') + '" data-c="' + ci + '" style="background:' + COLORS[ci].c + '" aria-label="' + COLORS[ci].n + '"></button>'
+  ).join('');
+  document.getElementById('colorName').textContent = COLORS[order[0]].n;
+  document.querySelectorAll('#colorRow .sw').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#colorRow .sw').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('colorName').textContent = COLORS[+b.dataset.c].n;
+  }));
+
+  // sizes
+  selSize = 2;
+  document.getElementById('sizeRow').innerHTML = SIZES.map((s, k) =>
+    '<button class="sz' + (k === 2 ? ' on' : '') + '" data-s="' + s + '">' + s + '</button>'
+  ).join('');
+  document.getElementById('sizeName').textContent = 'M';
+  document.getElementById('addSize').textContent = 'M';
+  document.querySelectorAll('#sizeRow .sz').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#sizeRow .sz').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('sizeName').textContent = b.dataset.s;
+    document.getElementById('addSize').textContent = b.dataset.s;
+  }));
+
+  // accordions
+  document.getElementById('accWrap').innerHTML = [
+    ['Details', g.det], ['Fabric & care', g.fab], ['Fit & sizing', g.fit], ['Shipping & returns', g.ship]
+  ].map(([t, b]) =>
+    '<div class="acc-item"><button class="acc-h">' + t + '<span class="pm">+</span></button>' +
+    '<div class="acc-b"><p>' + b + '</p></div></div>'
+  ).join('');
+  document.querySelectorAll('.acc-h').forEach(h => h.addEventListener('click', () => {
+    h.parentElement.classList.toggle('open');
+  }));
+
+  pdp.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
-function renderDetail(g){
-  detail.classList.add('swap');
-  setTimeout(() => {
-    const stars = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#f59e0b"><path d="M12 2l3 6.5 7 .8-5 4.8 1.3 7L12 17.8 5.7 21l1.3-7-5-4.8 7-.8z"/></svg>'.repeat(5);
-    detail.innerHTML =
-      '<div class="d-vis" style="background:' + g.g + '">' +
-        '<div class="grain"></div>' +
-        '<div class="sil" style="position:absolute;inset:0;display:grid;place-items:center;padding:9% 6% 4%">' + art(g.s) + '</div>' +
-        '<div class="d-zoom" style="background:' + g.g + '">' +
-          '<svg viewBox="0 0 26 26" preserveAspectRatio="none" style="width:100%;height:100%"><rect width="26" height="26" fill="url(#' + g.pat + ')"/></svg>' +
-          '<span class="zl">Fabric</span>' +
-        '</div>' +
-      '</div>' +
-      '<div class="d-info">' +
-        '<div class="d-cat">' + g.c + '</div>' +
-        '<h2>' + g.n + '</h2>' +
-        '<div class="d-price"><b>' + rp(g.p) + '</b>' +
-          (g.o ? '<s>' + rp(g.o) + '</s><span class="off">-' + Math.round((1 - g.p / g.o) * 100) + '%</span>' : '') +
-        '</div>' +
-        '<p class="d-desc">' + g.d + '</p>' +
-        '<div class="d-row">' +
-          '<div><span>Material</span><b>' + g.mat + '</b></div>' +
-          '<div><span>Fit</span><b>' + g.fit + '</b></div>' +
-          '<div><span>Rating</span><b>' + stars + ' ' + g.r.toFixed(1) + '</b></div>' +
-        '</div>' +
-        '<div class="swatches"><span class="lb">Colour</span>' +
-          g.sw.map((c, k) => '<button class="sw' + (k === 0 ? ' on' : '') + '" style="background:' + c + '"></button>').join('') +
-        '</div>' +
-        '<div class="d-cta">' +
-          '<button class="btn btn-dark" id="addBag">Add to bag <span class="arw">→</span></button>' +
-          '<button class="btn btn-ghost" id="saveIt">Save for later</button>' +
-        '</div>' +
-      '</div>';
-    detail.classList.remove('swap');
-
-    detail.querySelectorAll('.sw').forEach(b => b.addEventListener('click', () => {
-      detail.querySelectorAll('.sw').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
-    }));
-    document.getElementById('addBag').addEventListener('click', () => toast('Added — ' + g.n));
-    document.getElementById('saveIt').addEventListener('click', () => toast('Saved — ' + g.n));
-  }, 200);
+function closePDP(){
+  pdp.classList.remove('open');
+  document.body.style.overflow = '';
 }
+document.getElementById('exploreBtn').addEventListener('click', openPDP);
+document.getElementById('pdpClose').addEventListener('click', closePDP);
+document.getElementById('pdpVeil').addEventListener('click', closePDP);
+addEventListener('keydown', e => { if (e.key === 'Escape') closePDP(); });
 
-/* ================= TOAST / NAV / REVEAL ================= */
+/* ================= BAG ================= */
+let bag = 0;
+document.getElementById('addBtn').addEventListener('click', () => {
+  bag++;
+  document.getElementById('bagCount').textContent = bag;
+  toast('Added — ' + G[active].n + ' · ' + document.getElementById('addSize').textContent);
+  closePDP();
+});
+document.getElementById('bagBtn').addEventListener('click', () => {
+  toast(bag ? 'Bag: ' + bag + ' item' + (bag > 1 ? 's' : '') : 'Your bag is empty');
+});
+
+/* ================= TOAST ================= */
 let toastT;
 function toast(msg){
   const t = document.getElementById('toast');
@@ -579,54 +566,13 @@ function toast(msg){
   clearTimeout(toastT);
   toastT = setTimeout(() => t.classList.remove('show'), 2200);
 }
-const nav = document.getElementById('nav');
-addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 12), { passive: true });
-const io = new IntersectionObserver(es => {
-  es.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
-}, { threshold: .12 });
-document.querySelectorAll('.rv').forEach(el => io.observe(el));
 
-/* ================= RACK ROLL (mouse drag to push the rack) ================= */
-(function(){
-  const frame = document.getElementById('frame');
-  if (!frame) return;
-  let dragging = false, startX = 0, curX = 0, baseX = 0, raf = null;
-
-  function apply(){
-    frame.style.transform = 'translateX(' + curX.toFixed(1) + 'px)';
-    // casters counter-rotate with the roll
-    const spin = (curX / 22) * 40;
-    frame.querySelectorAll('.foot').forEach(f => {
-      f.style.setProperty('--spin', spin.toFixed(1) + 'deg');
-    });
-  }
-  function loop(){
-    curX += (baseX - curX) * .12;
-    apply();
-    if (Math.abs(baseX - curX) > .3){ raf = requestAnimationFrame(loop); }
-    else { raf = null; curX = baseX; apply(); }
-  }
-  function kick(){ if (!raf) raf = requestAnimationFrame(loop); }
-
-  frame.addEventListener('pointerdown', e => {
-    if (e.target.closest('.garment')) return;   // let garment clicks through
-    dragging = true; startX = e.clientX;
-    frame.setPointerCapture(e.pointerId);
-    frame.style.cursor = 'grabbing';
-  });
-  frame.addEventListener('pointermove', e => {
-    if (!dragging) return;
-    baseX = Math.max(-70, Math.min(70, e.clientX - startX));
-    kick();
-  });
-  function release(){
-    if (!dragging) return;
-    dragging = false; baseX = 0; kick();
-    frame.style.cursor = '';
-  }
-  frame.addEventListener('pointerup', release);
-  frame.addEventListener('pointercancel', release);
-})();
+/* ================= KEYBOARD NAV ================= */
+addEventListener('keydown', e => {
+  if (pdp.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') setActive(active - 1, true);
+  if (e.key === 'ArrowRight') setActive(active + 1, true);
+});
 </script>
 
 </body>
