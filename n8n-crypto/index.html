@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twist Automation — Paket Automation Crypto (n8n)</title>
+<meta name="description" content="Template automation n8n untuk trader, airdrop farmer, dan investor crypto. Price alert, wallet monitor, token scanner, gas alert, portfolio report, NFT watcher.">
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --line:#1f2a38;
+    --txt:#e6edf3; --dim:#8b98a8; --acc:#e8b339; --acc2:#f5d076;
+    --grn:#3fb950; --blue:#58a6ff; --red:#f85149; --pur:#bc8cff;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--acc);text-decoration:none}
+  a:hover{color:var(--acc2)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  nav{position:fixed;top:0;left:0;right:0;background:rgba(10,14,20,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:100}
+  .nav-in{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:700;font-size:17px;letter-spacing:-.3px}
+  .logo span{color:var(--acc)}
+  .nav-links{display:flex;gap:20px;font-size:14px;color:var(--dim)}
+  .nav-links a{color:var(--dim)}
+  .nav-links a:hover{color:var(--txt)}
+  @media(max-width:640px){.nav-links{display:none}}
+
+  .hero{padding:130px 0 70px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(232,179,57,.07) 0%,transparent 60%);pointer-events:none}
+  .badge{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--acc);border:1px solid rgba(232,179,57,.3);background:rgba(232,179,57,.08);padding:5px 14px;border-radius:100px;margin-bottom:22px}
+  h1{font-size:clamp(30px,5.2vw,50px);font-weight:800;letter-spacing:-1.5px;line-height:1.12;margin-bottom:18px}
+  h1 em{font-style:normal;color:var(--acc)}
+  .sub{font-size:clamp(15px,2.2vw,18px);color:var(--dim);max-width:620px;margin:0 auto 32px}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:12px 26px;border-radius:8px;font-weight:600;font-size:15px;border:1px solid transparent;cursor:pointer;transition:.15s}
+  .btn-p{background:var(--acc);color:#0a0e14}
+  .btn-p:hover{background:var(--acc2);color:#0a0e14;transform:translateY(-1px)}
+  .btn-s{background:transparent;color:var(--txt);border-color:var(--line)}
+  .btn-s:hover{border-color:var(--dim)}
+  .hero-stats{display:flex;gap:32px;justify-content:center;margin-top:48px;flex-wrap:wrap}
+  .hs b{display:block;font-size:24px;font-weight:800;color:var(--acc);font-family:var(--mono)}
+  .hs span{font-size:12.5px;color:var(--dim)}
+
+  section{padding:64px 0}
+  .sec-h{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.7px;margin-bottom:10px}
+  .sec-p{color:var(--dim);margin-bottom:34px;max-width:620px}
+
+  .pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .pain{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .pain .ico{font-size:22px;margin-bottom:10px}
+  .pain h3{font-size:15px;margin-bottom:6px}
+  .pain p{font-size:13.5px;color:var(--dim);line-height:1.55}
+
+  .tpl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px}
+  .tpl{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;position:relative;transition:.18s;display:flex;flex-direction:column}
+  .tpl:hover{border-color:rgba(232,179,57,.35);transform:translateY(-2px)}
+  .tpl-num{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:1px;margin-bottom:10px}
+  .tpl h3{font-size:17px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+  .tpl p{font-size:13.5px;color:var(--dim);margin-bottom:14px;flex:1;line-height:1.6}
+  .tpl-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .tag{font-family:var(--mono);font-size:10.5px;color:var(--dim);background:var(--bg2);border:1px solid var(--line);padding:3px 8px;border-radius:5px}
+  .tpl-meta{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--line)}
+  .tpl-price{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--grn)}
+  .tpl-nodes{font-size:11.5px;color:var(--dim);font-family:var(--mono)}
+  .hot{position:absolute;top:-9px;right:16px;background:var(--acc);color:#0a0e14;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.5px}
+  .hot-g{background:var(--grn)}
+  .hot-b{background:var(--blue)}
+  .hot-p{background:var(--pur)}
+
+  .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:stretch}
+  .pk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;position:relative}
+  .pk-best{border-color:var(--acc);background:linear-gradient(160deg,rgba(232,179,57,.06),var(--card))}
+  .pk-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--acc);color:#0a0e14;font-size:10.5px;font-weight:700;padding:4px 14px;border-radius:100px;letter-spacing:.5px;white-space:nowrap}
+  .pk h3{font-size:15px;color:var(--dim);font-weight:600;margin-bottom:6px}
+  .pk-amt{font-family:var(--mono);font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+  .pk-amt small{font-size:14px;color:var(--dim);font-weight:400}
+  .pk-note{font-size:12px;color:var(--dim);margin-bottom:20px}
+  .pk ul{list-style:none;margin-bottom:24px;flex:1}
+  .pk li{font-size:13.5px;color:var(--dim);padding:6px 0;border-bottom:1px solid rgba(31,42,56,.5);display:flex;gap:9px}
+  .pk li::before{content:"✓";color:var(--grn);font-weight:700;flex-shrink:0}
+  .pk li.no{color:#5a6675}
+  .pk li.no::before{content:"—";color:#5a6675}
+  .pk .btn{text-align:center;width:100%}
+
+  .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .why{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .why .ico{font-size:24px;margin-bottom:12px}
+  .why h3{font-size:15px;margin-bottom:6px}
+  .why p{font-size:13px;color:var(--dim);line-height:1.6}
+
+  .faq-item{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--card);overflow:hidden}
+  .faq-q{padding:16px 20px;font-weight:600;font-size:14.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none}
+  .faq-q::after{content:"+";font-family:var(--mono);color:var(--acc);font-size:18px;flex-shrink:0}
+  .faq-item.open .faq-q::after{content:"−"}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease}
+  .faq-a-in{padding:0 20px 16px;font-size:13.5px;color:var(--dim);line-height:1.7}
+  .faq-item.open .faq-a{max-height:400px}
+
+  .contact{background:var(--bg2);border-top:1px solid var(--line)}
+  .contact-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px;text-align:center;max-width:560px;margin:0 auto}
+  .contact-box h2{font-size:24px;font-weight:800;letter-spacing:-.6px;margin-bottom:10px}
+  .contact-box p{color:var(--dim);font-size:14.5px;margin-bottom:22px}
+  .c-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  footer{border-top:1px solid var(--line);padding:28px 0;text-align:center;font-size:12.5px;color:#5a6675}
+  footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo">twist<span>.automation</span></div>
+    <div class="nav-links">
+      <a href="#masalah">Masalah</a>
+      <a href="#template">Template</a>
+      <a href="#harga">Harga</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">AUTOMATION CRYPTO · N8N · UNTUK TRADER & FARMER</div>
+    <h1>Pasar gerak 24 jam.<br><em>Lo harusnya tidur.</em></h1>
+    <p class="sub">Template automation siap pakai buat trader, airdrop farmer, dan investor crypto. Price alert, wallet monitor, token scanner, gas alert — semuanya jalan sendiri, lo tinggal lihat Telegram.</p>
+    <div class="cta-row">
+      <a href="#template" class="btn btn-p">Lihat Template</a>
+      <a href="#harga" class="btn btn-s">Lihat Harga</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><b>6</b><span>template crypto</span></div>
+      <div class="hs"><b>46</b><span>node terpasang</span></div>
+      <div class="hs"><b>0</b><span>API key berbayar</span></div>
+      <div class="hs"><b>1x</b><span>bayar, bukan langganan</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="masalah">
+  <div class="wrap">
+    <h2 class="sec-h">Kenapa masih pantau manual?</h2>
+    <p class="sec-p">Kalau lo masih ngelakuin ini tiap hari, lo buang waktu dan kehabisan peluang.</p>
+    <div class="pain-grid">
+      <div class="pain">
+        <div class="ico">📱</div>
+        <h3>Buka DexScreener tiap 5 menit</h3>
+        <p>Harga gerak, lo gak lihat. Baru sadar udah telat. Padahal bisa dapat alert otomatis.</p>
+      </div>
+      <div class="pain">
+        <div class="ico">👛</div>
+        <h3>Banyak wallet, susah dipantau</h3>
+        <p>Farm 5-10 wallet, tiap hari cek satu-satu di explorer. Capek dan gampang lupa.</p>
+      </div>
+      <div class="pain">
+        <div class="ico">⛽</div>
+        <h3>Gas mahal, mint keburu tutup</h3>
+        <p>Tunggu gas turun tapi gak tau kapan. Gas naik pas mau mint, bayar mahal.</p>
+      </div>
+      <div class="pain">
+        <div class="ico">📊</div>
+        <h3>Gak tau portfolio worth berapa</h3>
+        <p>Aset berserakan di beberapa chain. Gak ada catatan rapi buat tau untung rugi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="template" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="sec-h">6 template crypto, siap pakai</h2>
+    <p class="sec-p">Semua pakai API publik gratis — DexScreener, RPC node, Telegram. Nggak ada biaya API berbayar.</p>
+    <div class="tpl-grid">
+
+      <div class="tpl">
+        <div class="hot">PALING LAKU</div>
+        <div class="tpl-num">CRYPTO 01</div>
+        <h3>Price Alert Multi-Token</h3>
+        <p>Pantau banyak token sekaligus. Kalau harga gerak lebih dari threshold (default 5%), langsung dapat alert Telegram lengkap dengan volume dan likuiditas.</p>
+        <div class="tpl-tags"><span class="tag">DexScreener</span><span class="tag">Multi-token</span><span class="tag">Telegram</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">8 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="hot hot-g">WAJIB BUAT FARMER</div>
+        <div class="tpl-num">CRYPTO 02</div>
+        <h3>Wallet Balance Monitor</h3>
+        <p>Pantau saldo semua wallet lo dalam satu tempat. Cek tiap jam, laporan masuk Telegram. Nggak perlu buka explorer satu-satu.</p>
+        <div class="tpl-tags"><span class="tag">RPC</span><span class="tag">Multi-wallet</span><span class="tag">Read-only</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="hot hot-b">RISET</div>
+        <div class="tpl-num">CRYPTO 03</div>
+        <h3>New Token Scanner</h3>
+        <p>Scan pair baru tiap 30 menit, filter berdasarkan likuiditas, volume, dan umur. Kandidat yang lolos langsung dikirim ke Telegram.</p>
+        <div class="tpl-tags"><span class="tag">Solana</span><span class="tag">Filter</span><span class="tag">Auto-scan</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="tpl-num">CRYPTO 04</div>
+        <h3>Gas Price Alert</h3>
+        <p>Pantau gas price BNB, Ethereum, dan Base tiap 5 menit. Kabar pas gas turun — biar mint dan swap lo hemat biaya.</p>
+        <div class="tpl-tags"><span class="tag">Multi-chain</span><span class="tag">Gas</span><span class="tag">Hemat biaya</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">8 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="tpl-num">CRYPTO 05</div>
+        <h3>Daily Portfolio Report</h3>
+        <p>Laporan portfolio otomatis tiap malam: nilai semua aset, perubahan 24 jam, plus catatan rapi di Google Sheets buat chart.</p>
+        <div class="tpl-tags"><span class="tag">Sheets</span><span class="tag">Tracking</span><span class="tag">Telegram</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">9 nodes</span></div>
+      </div>
+
+      <div class="tpl">
+        <div class="hot hot-p">ANTI DOUBLE MINT</div>
+        <div class="tpl-num">CRYPTO 06</div>
+        <h3>NFT Mint Watcher</h3>
+        <p>Pantau apakah wallet lo sudah punya NFT dari koleksi target. Kabar kalau sudah — biar gak mint dua kali dan buang gas.</p>
+        <div class="tpl-tags"><span class="tag">On-chain</span><span class="tag">Read-only</span><span class="tag">Aman</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 500.000</span><span class="tpl-nodes">7 nodes</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="harga">
+  <div class="wrap">
+    <h2 class="sec-h">Pilih paket</h2>
+    <p class="sec-p">Sekali bayar. Bukan langganan. Semua template pakai API gratis — nggak ada biaya bulanan tersembunyi.</p>
+    <div class="price-grid">
+
+      <div class="pk">
+        <h3>Basic</h3>
+        <div class="pk-amt">Rp 500rb</div>
+        <div class="pk-note">1 template crypto</div>
+        <ul>
+          <li>1 template pilihan lo</li>
+          <li>Setup + konfigurasi</li>
+          <li>Dokumentasi Bahasa Indonesia</li>
+          <li>1x revisi</li>
+          <li class="no">Training</li>
+          <li class="no">Support berkelanjutan</li>
+        </ul>
+        <a href="#kontak" class="btn btn-s">Pilih Basic</a>
+      </div>
+
+      <div class="pk pk-best">
+        <div class="pk-badge">PALING WORTH</div>
+        <h3>Standard</h3>
+        <div class="pk-amt">Rp 1jt</div>
+        <div class="pk-note">3 template, hemat Rp 500rb</div>
+        <ul>
+          <li>3 template pilihan lo</li>
+          <li>Setup + konfigurasi semua</li>
+          <li>Dokumentasi Bahasa Indonesia</li>
+          <li>2x revisi</li>
+          <li>Training 1 jam (via call)</li>
+          <li class="no">Support berkelanjutan</li>
+        </ul>
+        <a href="#kontak" class="btn btn-p">Pilih Standard</a>
+      </div>
+
+      <div class="pk pk-best" style="border-color:var(--grn);background:linear-gradient(160deg,rgba(63,185,80,.06),var(--card))">
+        <div class="pk-badge" style="background:var(--grn)">HEMAT Rp 1JT</div>
+        <h3>Premium</h3>
+        <div class="pk-amt">Rp 2jt</div>
+        <div class="pk-note">semua 6 template + bonus</div>
+        <ul>
+          <li>Semua 6 template crypto</li>
+          <li>Setup + konfigurasi semua</li>
+          <li>Dokumentasi Bahasa Indonesia</li>
+          <li>Revisi tanpa batas (30 hari)</li>
+          <li>Training 2 jam (via call)</li>
+          <li>Support 1 bulan penuh</li>
+        </ul>
+        <a href="#kontak" class="btn btn-p">Pilih Premium</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--dim)">
+      Mau paket UMKM + Crypto sekaligus (12 template)? <a href="#kontak">Chat aja</a> — ada harga bundle.
+    </p>
+  </div>
+</section>
+
+<section style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="sec-h">Kenapa beli di sini?</h2>
+    <p class="sec-p">Beda dari yang jual "signal group" atau bot trading ajaib.</p>
+    <div class="why-grid">
+      <div class="why">
+        <div class="ico">🔓</div>
+        <h3>Bukan black box</h3>
+        <p>Lo pegang semua workflow. Bisa diedit, dikembangin, dilihat logikanya. Bukan bot orang yang lo gak tau isinya.</p>
+      </div>
+      <div class="why">
+        <div class="ico">🔒</div>
+        <h3>Read-only, aman</h3>
+        <p>Template cuma baca data on-chain publik. Nggak ada private key, nggak ada signing otomatis. Lo tetap pegang kendali.</p>
+      </div>
+      <div class="why">
+        <div class="ico">💸</div>
+        <h3>Nol biaya API</h3>
+        <p>Semua pakai DexScreener, RPC publik, dan Telegram — gratis. Nggak ada langganan bulanan kayak layanan alert berbayar.</p>
+      </div>
+      <div class="why">
+        <div class="ico">🛡️</div>
+        <h3>Dibangun orang security</h3>
+        <p>Gue riset keamanan on-chain. Gue tau mana yang aman dibaca dan mana yang jangan disentuh.</p>
+      </div>
+      <div class="why">
+        <div class="ico">🇮🇩</div>
+        <h3>Bahasa Indonesia</h3>
+        <p>Dokumentasi, training, support — semua Bahasa Indonesia. Bukan translatean mesin.</p>
+      </div>
+      <div class="why">
+        <div class="ico">⚡</div>
+        <h3>Jalan 24 jam</h3>
+        <p>Setup di VPS, automation jalan nonstop. Lo tidur, bot yang jaga. Pasar crypto gak tutup, monitoring lo juga gak boleh.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2 class="sec-h">Pertanyaan yang sering masuk</h2>
+    <p class="sec-p">Kalau masih ada yang mau ditanya, langsung chat aja.</p>
+
+    <div class="faq-item">
+      <div class="faq-q">Ini bot trading otomatis? Bisa auto-beli auto-jual?</div>
+      <div class="faq-a"><div class="faq-a-in">Bukan. Template ini buat <b>monitoring dan riset</b> — alert harga, pantau wallet, scan token. Gue sengaja gak bikin auto-trading karena butuh private key, dan itu risiko keamanan yang gak worth. Keputusan beli/jual tetap di tangan lo.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Aman nggak? Perlu private key?</div>
+      <div class="faq-a"><div class="faq-a-in">Aman. Semua template <b>read-only</b> — cuma baca data publik dari blockchain (saldo, harga, kepemilikan NFT). Nggak ada private key, nggak ada signing, nggak ada yang bisa mindahin aset lo.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Bisa dipakai buat chain apa aja?</div>
+      <div class="faq-a"><div class="faq-a-in">Bisa. Selama ada RPC publik, template bisa dipakai untuk BNB Chain, Ethereum, Base, Solana, Arbitrum, dan lain-lain. Tinggal ganti URL RPC dan alamat kontrak.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Gue gak ngerti coding. Bisa?</div>
+      <div class="faq-a"><div class="faq-a-in">Bisa. Gue yang setup semuanya. Lo tinggal terima alert di Telegram. Kalau mau nambah token atau ganti threshold, gue ajarin lewat training — cuma ganti teks, bukan kode.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Bedanya sama bayar layanan alert $10/bulan?</div>
+      <div class="faq-a"><div class="faq-a-in">Bayar sekali Rp500rb-2jt, pakai selamanya. Layanan alert $10/bulan = $120/tahun = Rp 1,9jt/tahun, dan lo cuma dapat fitur yang mereka kasih. Di sini lo pegang kodenya, bisa nambah fitur sendiri.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Bayar gimana?</div>
+      <div class="faq-a"><div class="faq-a-in">Transfer bank, e-wallet (DANA/GoPay/OVO), atau USDC. Bisa DP 50% dulu, pelunasan setelah setup jalan dan lo terima alert pertama.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<section id="kontak" class="contact">
+  <div class="wrap">
+    <div class="contact-box">
+      <h2>Siap berhenti buka DexScreener tiap 5 menit?</h2>
+      <p>Chat aja, gue bantu pilih template yang paling cocok. Konsultasi gratis.</p>
+      <div class="c-row">
+        <a href="https://t.me/twistti_bot" class="btn btn-p">Chat Telegram</a>
+        <a href="https://x.com/Twistti1" class="btn btn-s">DM di X</a>
+      </div>
+      <p style="margin-top:18px;font-size:12.5px;color:#5a6675">
+        Atau email: <a href="mailto:twist5202@gmail.com">twist5202@gmail.com</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>twist.automation — template n8n untuk UMKM & crypto Indonesia.</p>
+    <p style="margin-top:6px">
+      Portfolio: <a href="https://twist5202-ux.github.io">twist5202-ux.github.io</a> ·
+      Template UMKM: <a href="/n8n/">/n8n/</a> ·
+      GitHub: <a href="https://github.com/twist5202-ux">@twist5202-ux</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length < 2) return;
+      const el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      const top = el.getBoundingClientRect().top + window.pageYOffset - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
