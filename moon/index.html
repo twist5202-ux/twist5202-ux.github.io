@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>For You — Klik Bulannya</title>
-<meta name="description" content="Klik bulannya. Ada yang mau dikasih tau.">
+<meta name="description" content="Gantungin bulannya, geser, klik. Ada yang mau dikasih tau.">
 <style>
   :root{
-    --bg:#070912; --bg2:#0d1120; --card:#141a2e; --line:#232c4a;
+    --bg:#06080f; --bg2:#0c1120; --card:#141a2e; --line:#232c4a;
     --txt:#eef1f8; --dim:#8b93ad;
     --acc:#f5d076; --acc2:#ffe9a8;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -16,34 +16,50 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--txt);font-family:var(--sans);
-    line-height:1.6;-webkit-font-smoothing:antialiased;overflow:hidden}
+    line-height:1.6;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;height:100dvh}
   a{color:inherit}
   button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 
   /* ============ NIGHT SKY ============ */
   #sky{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-  /* ============ STAGE ============ */
-  .stage{position:fixed;inset:0;display:grid;place-items:center;z-index:2;
-    transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
-  .stage.gone{opacity:0;transform:scale(1.12);pointer-events:none}
+  /* ============ HUD ============ */
+  .hud{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;
+    align-items:flex-start;padding:18px clamp(14px,3vw,26px);pointer-events:none;
+    font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .hud .box{background:rgba(12,17,32,.72);border:1px solid var(--line);border-radius:12px;
+    padding:10px 14px;backdrop-filter:blur(8px);pointer-events:auto}
+  .hud b{color:var(--acc);font-weight:700}
+  .hud .row{display:flex;gap:14px;flex-wrap:wrap}
+  .hud .stat{display:flex;flex-direction:column;gap:2px;min-width:52px}
+  .hud .stat span{font-size:9px;opacity:.7}
+  .hud .stat b{font-size:15px;font-family:var(--mono);letter-spacing:0}
+  @media(max-width:560px){ .hud{font-size:10px} .hud .stat b{font-size:13px} }
 
-  .moon-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:34px;padding:20px}
+  /* ============ STAGE ============ */
+  .stage{position:fixed;inset:0;z-index:2;
+    transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+  .stage.gone{opacity:0;transform:scale(1.15);pointer-events:none}
+
+  /* pendulum pivot */
+  .pivot{position:absolute;left:50%;top:0;width:0;height:0;z-index:4}
+  .arm{position:absolute;left:-1px;top:0;width:2px;height:var(--arm,180px);
+    transform-origin:50% 0;transform:rotate(var(--ang,0deg));
+    background:linear-gradient(180deg,rgba(245,224,150,.05),rgba(245,224,150,.28));
+    transition:background .3s}
+  .arm::after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
+    width:7px;height:7px;border-radius:50%;background:rgba(245,224,150,.5)}
 
   /* the moon */
-  .moon{position:relative;width:clamp(150px,34vw,240px);height:clamp(150px,34vw,240px);
-    border-radius:50%;cursor:pointer;border:none;background:none;padding:0;
-    animation:float 6s ease-in-out infinite;
-    transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-  .moon:hover{transform:scale(1.06)}
-  .moon:active{transform:scale(.97)}
-
+  .moon{position:absolute;left:0;top:var(--arm,180px);
+    width:clamp(120px,26vw,190px);height:clamp(120px,26vw,190px);
+    transform:translate(-50%,-50%);border-radius:50%;padding:0;
+    transition:filter .3s}
   .moon .disc{position:absolute;inset:0;border-radius:50%;
     background:radial-gradient(circle at 34% 30%,#fffdf5 0%,#f5e9c8 34%,#e3d0a3 62%,#c4ad7d 100%);
-    box-shadow:0 0 60px rgba(245,224,150,.45),0 0 140px rgba(245,224,150,.22),
-               inset -14px -14px 34px rgba(120,100,60,.28)}
-  /* craters */
+    box-shadow:0 0 60px rgba(245,224,150,.45),0 0 140px rgba(245,224,150,.2),
+               inset -14px -14px 34px rgba(120,100,60,.28);
+    transition:box-shadow .3s}
   .moon .cr{position:absolute;border-radius:50%;background:rgba(150,128,88,.22);
     box-shadow:inset 1.5px 1.5px 3px rgba(90,74,48,.35)}
   .cr.c1{width:22%;height:22%;top:20%;left:22%}
@@ -52,36 +68,57 @@
   .cr.c4{width:8%;height:8%;top:34%;left:68%}
   .cr.c5{width:12%;height:12%;top:74%;left:60%}
 
-  /* glow ring */
-  .moon .ring{position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(245,224,150,.18);
+  /* glow rings */
+  .moon .ring{position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(245,224,150,.16);
     animation:ringPulse 3.4s ease-in-out infinite}
-  .moon .ring.r2{inset:-42px;border-color:rgba(245,224,150,.1);animation-delay:.6s}
-  @keyframes ringPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.07);opacity:.15}}
+  .moon .ring.r2{inset:-38px;border-color:rgba(245,224,150,.09);animation-delay:.6s}
+  @keyframes ringPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.08);opacity:.12}}
 
-  /* hint */
-  .hint{font-family:var(--mono);font-size:clamp(11px,2.6vw,13px);letter-spacing:2.4px;
-    text-transform:uppercase;color:var(--dim);text-align:center;
-    animation:hintBlink 2.6s ease-in-out infinite}
-  @keyframes hintBlink{0%,100%{opacity:.45}50%{opacity:1}}
+  /* hover / drag states */
+  .moon:hover .disc{box-shadow:0 0 80px rgba(245,224,150,.6),0 0 180px rgba(245,224,150,.3),
+               inset -14px -14px 34px rgba(120,100,60,.28)}
+  .moon.grab{cursor:grabbing}
+  .moon.grab .disc{box-shadow:0 0 100px rgba(245,224,150,.75),0 0 220px rgba(245,224,150,.4),
+               inset -14px -14px 34px rgba(120,100,60,.28)}
+
+  /* click ripple */
+  .ripple{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:100%;
+    border-radius:50%;border:2px solid rgba(245,224,150,.6);pointer-events:none;
+    animation:rip .7s cubic-bezier(.16,1,.3,1) forwards}
+  @keyframes rip{to{transform:translate(-50%,-50%) scale(2.1);opacity:0}}
+
+  /* sparkle particles from the moon */
+  .spark{position:absolute;pointer-events:none;font-size:14px;z-index:5;
+    animation:sparkOut .9s cubic-bezier(.16,1,.3,1) forwards}
+  @keyframes sparkOut{
+    0%{opacity:1;transform:translate(0,0) scale(.5)}
+    100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2)}
+  }
+
+  /* ============ HINT ============ */
+  .hint{position:fixed;left:50%;bottom:clamp(20px,5vh,42px);transform:translateX(-50%);z-index:6;
+    font-family:var(--mono);font-size:clamp(10px,2.4vw,12px);letter-spacing:2.2px;
+    text-transform:uppercase;color:var(--dim);text-align:center;white-space:nowrap;
+    animation:hintBlink 2.8s ease-in-out infinite;pointer-events:none}
+  @keyframes hintBlink{0%,100%{opacity:.4}50%{opacity:.95}}
   .hint b{color:var(--acc);font-weight:600}
 
   /* ============ MESSAGE SCENE ============ */
-  .scene{position:fixed;inset:0;z-index:3;display:grid;place-items:center;padding:24px;
+  .scene{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:24px;
     opacity:0;visibility:hidden;pointer-events:none;
     transition:opacity 1s ease,visibility 1s}
   .scene.show{opacity:1;visibility:visible;pointer-events:auto}
 
   .card{position:relative;max-width:520px;width:100%;text-align:center;
-    background:linear-gradient(170deg,rgba(20,26,46,.92),rgba(13,17,32,.96));
+    background:linear-gradient(170deg,rgba(20,26,46,.93),rgba(13,17,32,.97));
     border:1px solid var(--line);border-radius:24px;
-    padding:clamp(34px,6vw,54px) clamp(24px,5vw,44px);
+    padding:clamp(32px,6vw,52px) clamp(22px,5vw,44px);
     box-shadow:0 40px 90px -40px rgba(0,0,0,.85);
     transform:translateY(30px) scale(.96);opacity:0;
     transition:transform .9s cubic-bezier(.16,1,.3,1) .15s,opacity .9s ease .15s}
   .scene.show .card{transform:none;opacity:1}
 
-  /* small moon inside the card */
-  .card .mini{width:62px;height:62px;border-radius:50%;margin:0 auto 24px;position:relative;
+  .card .mini{width:60px;height:60px;border-radius:50%;margin:0 auto 22px;position:relative;
     background:radial-gradient(circle at 34% 30%,#fffdf5,#f0e0b8 40%,#d8c493 100%);
     box-shadow:0 0 30px rgba(245,224,150,.4)}
   .card .mini::after{content:"";position:absolute;inset:-12px;border-radius:50%;
@@ -95,25 +132,22 @@
   .scene.show .card .line:nth-of-type(3) span{animation-delay:.79s}
   @keyframes lineUp{to{transform:translateY(0);opacity:1}}
 
-  .ilove{font-family:var(--mono);font-size:clamp(30px,7.4vw,54px);font-weight:700;
+  .ilove{font-family:var(--mono);font-size:clamp(28px,7vw,52px);font-weight:700;
     letter-spacing:-1px;line-height:1.1;margin-bottom:16px;
     background:linear-gradient(100deg,var(--acc),var(--acc2) 50%,#fff3cf);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  .sub{font-size:clamp(14px,3vw,16.5px);color:var(--dim);line-height:1.75;margin-bottom:8px}
+  .sub{font-size:clamp(13.5px,2.9vw,16px);color:var(--dim);line-height:1.75;margin-bottom:8px}
   .sub b{color:var(--txt);font-weight:600}
 
-  /* floating hearts */
   .hearts{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:24px}
-  .heart{position:absolute;bottom:-30px;font-size:18px;opacity:0;
-    animation:rise linear forwards}
+  .heart{position:absolute;bottom:-30px;font-size:18px;opacity:0;animation:rise linear forwards}
   @keyframes rise{
     0%{opacity:0;transform:translateY(0) scale(.6) rotate(0)}
     12%{opacity:.9}
     100%{opacity:0;transform:translateY(-360px) scale(1.15) rotate(var(--rot,20deg))}
   }
 
-  /* replay */
-  .again{margin-top:26px;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;
+  .again{margin-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:2px;
     text-transform:uppercase;color:var(--dim);border:1px solid var(--line);
     padding:9px 20px;border-radius:100px;transition:.25s}
   .again:hover{color:var(--acc);border-color:rgba(245,224,150,.4)}
@@ -125,12 +159,12 @@
     background:linear-gradient(90deg,#fff,transparent);transform-origin:0 50%}
 
   @media print{
-    .stage,.hint{display:none}
+    .stage,.hud,.hint{display:none}
     .scene{position:static;opacity:1;visibility:visible}
     .card{box-shadow:none;border:1px solid #ddd;background:#fff;transform:none;opacity:1}
     .ilove{-webkit-text-fill-color:#8a6d1f;color:#8a6d1f}
     .sub{color:#444}
-    body{background:#fff;overflow:visible}
+    body{background:#fff;overflow:visible;height:auto}
   }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -142,10 +176,25 @@
 
 <canvas id="sky"></canvas>
 
-<!-- ============ STAGE: THE MOON ============ -->
+<!-- ============ HUD ============ -->
+<div class="hud">
+  <div class="box">
+    <div>🌙 <b>MOON</b> · interaktif</div>
+  </div>
+  <div class="box">
+    <div class="row">
+      <div class="stat"><span>geser</span><b id="sDrag">0</b></div>
+      <div class="stat"><span>klik</span><b id="sClick">0</b></div>
+      <div class="stat"><span>sudut</span><b id="sAng">0°</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STAGE ============ -->
 <div class="stage" id="stage">
-  <div class="moon-wrap">
-    <button class="moon" id="moon" aria-label="Klik bulan">
+  <div class="pivot" id="pivot">
+    <div class="arm" id="arm"></div>
+    <button class="moon" id="moon" aria-label="Gantungin atau klik bulan">
       <span class="ring"></span>
       <span class="ring r2"></span>
       <span class="disc">
@@ -156,11 +205,12 @@
         <span class="cr c5"></span>
       </span>
     </button>
-    <div class="hint">Klik <b>bulannya</b> →</div>
   </div>
 </div>
 
-<!-- ============ SCENE: THE MESSAGE ============ -->
+<div class="hint">Geser buat <b>gantungin</b> · klik buat <b>kasih tahu</b> →</div>
+
+<!-- ============ SCENE ============ -->
 <div class="scene" id="scene">
   <div class="card">
     <div class="hearts" id="hearts"></div>
@@ -168,7 +218,7 @@
     <div class="line"><span class="ilove">I love you.</span></div>
     <div class="line"><span class="sub">Dari langit yang sama, dari bulan yang selalu ada —<br>walau lo gak lihat, dia tetap nyala.</span></div>
     <div class="line"><span class="sub" style="margin-top:14px">Makanya jangan lupa:<br><b>lo berharga. Selalu.</b></span></div>
-    <button class="again" id="again">← Lihat bulan lagi</button>
+    <button class="again" id="again">← Gantungin bulan lagi</button>
   </div>
 </div>
 
@@ -191,12 +241,10 @@
     ctx.clearRect(0,0,w,h);
     for (var i = 0; i < stars.length; i++){
       var st = stars[i];
-      st.ph += st.tw;
-      st.y += st.s;
+      st.ph += st.tw; st.y += st.s;
       if (st.y > h + 2){ st.y = -2; st.x = Math.random()*w; }
       var o = st.o * (0.55 + 0.45*Math.sin(st.ph));
-      ctx.beginPath();
-      ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
       ctx.fillStyle = 'rgba(255,255,255,' + o.toFixed(3) + ')';
       ctx.fill();
     }
@@ -208,14 +256,12 @@
 /* ============ SHOOTING STARS ============ */
 (function(){
   function spawn(){
-    if (document.hidden) { setTimeout(spawn, 2600); return; }
+    if (document.hidden){ setTimeout(spawn, 2600); return; }
     var el = document.createElement('div');
     el.className = 'shoot';
-    var sx = Math.random() * innerWidth * .7;
-    var sy = Math.random() * innerHeight * .35;
+    el.style.left = (Math.random() * innerWidth * .7) + 'px';
+    el.style.top = (Math.random() * innerHeight * .35) + 'px';
     var ang = 28 + Math.random() * 16;
-    el.style.left = sx + 'px';
-    el.style.top = sy + 'px';
     el.style.transform = 'rotate(' + ang + 'deg)';
     el.style.transition = 'transform 1.1s linear, opacity 1.1s ease';
     document.body.appendChild(el);
@@ -229,44 +275,167 @@
   setTimeout(spawn, 1400);
 })();
 
-/* ============ CLICK THE MOON ============ */
+/* ============ THE PENDULUM MOON ============ */
 (function(){
-  var moon = document.getElementById('moon');
+  var pivot = document.getElementById('pivot');
+  var arm   = document.getElementById('arm');
+  var moon  = document.getElementById('moon');
   var stage = document.getElementById('stage');
   var scene = document.getElementById('scene');
   var hearts = document.getElementById('hearts');
   var again = document.getElementById('again');
-  var burst = null;
 
-  function popHearts(){
-    if (burst) clearInterval(burst);
-    var glyphs = ['❤','💛','✨','🌙','💫'];
-    burst = setInterval(function(){
-      var h = document.createElement('span');
-      h.className = 'heart';
-      h.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
-      h.style.left = (8 + Math.random()*84) + '%';
-      h.style.fontSize = (13 + Math.random()*13) + 'px';
-      h.style.animationDuration = (2.6 + Math.random()*1.8) + 's';
-      h.style.setProperty('--rot', (Math.random()*70 - 35) + 'deg');
-      hearts.appendChild(h);
-      setTimeout(function(){ h.remove(); }, 4600);
-    }, 260);
+  var sDrag = document.getElementById('sDrag');
+  var sClick = document.getElementById('sClick');
+  var sAng = document.getElementById('sAng');
+
+  var ARM = Math.round(Math.min(200, innerHeight * 0.26));
+  pivot.style.setProperty('--arm', ARM + 'px');
+
+  var MAX = 62;                 // max swing angle
+  var angle = 0;                // current rendered angle
+  var target = 0;               // target angle
+  var vel = 0;                  // angular velocity
+  var dragging = false;
+  var lastX = 0, lastT = 0;
+  var dragCount = 0, clickCount = 0;
+  var raf = null;
+
+  /* ---- physics loop: spring back to centre + damping ---- */
+  function tick(){
+    if (!dragging){
+      var k = 0.028;            // spring stiffness
+      var d = 0.972;            // damping
+      vel += -angle * k;
+      vel *= d;
+      angle += vel;
+    }
+    pivot.style.setProperty('--ang', angle.toFixed(2) + 'deg');
+    sAng.textContent = Math.round(angle) + '°';
+    if (Math.abs(angle) > 0.02 || Math.abs(vel) > 0.02 || dragging){
+      raf = requestAnimationFrame(tick);
+    } else {
+      angle = 0; vel = 0;
+      pivot.style.setProperty('--ang', '0deg');
+      sAng.textContent = '0°';
+      raf = null;
+    }
   }
+  function kick(){ if (!raf) raf = requestAnimationFrame(tick); }
 
-  moon.addEventListener('click', function(){
+  /* ---- pointer drag ---- */
+  moon.addEventListener('pointerdown', function(e){
+    dragging = true; lastX = e.clientX; lastT = performance.now();
+    moon.classList.add('grab');
+    moon.setPointerCapture(e.pointerId);
+    vel = 0;
+    kick();
+  });
+
+  moon.addEventListener('pointermove', function(e){
+    if (!dragging) return;
+    var cx = innerWidth / 2;
+    var dx = e.clientX - cx;
+    var t = Math.max(-1, Math.min(1, dx / (innerWidth * 0.42)));
+    target = t * MAX;
+    // velocity from movement
+    var now = performance.now();
+    var dt = Math.max(1, now - lastT);
+    vel = (target - angle) * 0.42;
+    angle = target;
+    lastX = e.clientX; lastT = now;
+    kick();
+  });
+
+  function release(){
+    if (!dragging) return;
+    dragging = false;
+    moon.classList.remove('grab');
+    if (Math.abs(angle) > 3){ dragCount++; sDrag.textContent = dragCount; }
+    kick();   // spring back
+  }
+  moon.addEventListener('pointerup', release);
+  moon.addEventListener('pointercancel', release);
+
+  /* ---- click: ripple + sparkles, then reveal ---- */
+  moon.addEventListener('click', function(e){
+    if (Math.abs(angle) > 14) return;   // mid-swing click ignored, feels physical
+    clickCount++;
+    sClick.textContent = clickCount;
+
+    // ripple
+    var r = document.createElement('span');
+    r.className = 'ripple';
+    moon.appendChild(r);
+    setTimeout(function(){ r.remove(); }, 720);
+
+    // sparkle burst
+    var glyphs = ['✨','⭐','💫','🌟','·'];
+    var rect = moon.getBoundingClientRect();
+    for (var i = 0; i < 14; i++){
+      var s = document.createElement('span');
+      s.className = 'spark';
+      s.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+      var a = (Math.PI * 2 / 14) * i + Math.random() * .4;
+      var dist = 60 + Math.random() * 70;
+      s.style.left = (rect.left + rect.width / 2) + 'px';
+      s.style.top = (rect.top + rect.height / 2) + 'px';
+      s.style.setProperty('--dx', (Math.cos(a) * dist).toFixed(1) + 'px');
+      s.style.setProperty('--dy', (Math.sin(a) * dist).toFixed(1) + 'px');
+      s.style.fontSize = (10 + Math.random() * 12) + 'px';
+      document.body.appendChild(s);
+      (function(el){ setTimeout(function(){ el.remove(); }, 950); })(s);
+    }
+
+    // reveal
     stage.classList.add('gone');
     setTimeout(function(){
       scene.classList.add('show');
       popHearts();
-    }, 420);
+    }, 460);
   });
 
+  /* ---- hearts ---- */
+  var burst = null;
+  function popHearts(){
+    if (burst) clearInterval(burst);
+    var g = ['❤','💛','✨','🌙','💫'];
+    burst = setInterval(function(){
+      var h = document.createElement('span');
+      h.className = 'heart';
+      h.textContent = g[Math.floor(Math.random() * g.length)];
+      h.style.left = (8 + Math.random() * 84) + '%';
+      h.style.fontSize = (13 + Math.random() * 13) + 'px';
+      h.style.animationDuration = (2.6 + Math.random() * 1.8) + 's';
+      h.style.setProperty('--rot', (Math.random() * 70 - 35) + 'deg');
+      hearts.appendChild(h);
+      (function(el){ setTimeout(function(){ el.remove(); }, 4600); })(h);
+    }, 260);
+  }
+
+  /* ---- replay ---- */
   again.addEventListener('click', function(){
     if (burst) clearInterval(burst);
     hearts.innerHTML = '';
     scene.classList.remove('show');
-    setTimeout(function(){ stage.classList.remove('gone'); }, 500);
+    setTimeout(function(){ stage.classList.remove('gone'); }, 520);
+  });
+
+  /* ---- keyboard: arrow keys swing the moon ---- */
+  addEventListener('keydown', function(e){
+    if (scene.classList.contains('show')) return;
+    if (e.key === 'ArrowLeft'){  vel -= 3.2; kick(); }
+    if (e.key === 'ArrowRight'){ vel += 3.2; kick(); }
+    if (e.key === 'Enter' || e.key === ' '){
+      if (document.activeElement === moon) return;  // let the button handle it
+      moon.click();
+    }
+  });
+
+  /* ---- resize: keep the arm sensible ---- */
+  addEventListener('resize', function(){
+    ARM = Math.round(Math.min(200, innerHeight * 0.26));
+    pivot.style.setProperty('--arm', ARM + 'px');
   });
 })();
 </script>
