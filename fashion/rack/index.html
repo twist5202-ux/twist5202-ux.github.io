@@ -47,20 +47,66 @@
   .hint .dot{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:blip 1.8s infinite}
   @keyframes blip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
 
-  /* ===== RACK ===== */
-  .scene{padding:52px 0 26px;perspective:1500px;perspective-origin:50% 28%;position:relative}
-  .scene::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:76%;height:64px;
-    background:radial-gradient(ellipse at center,rgba(26,23,20,.14),transparent 70%);pointer-events:none;z-index:0}
-  .rail{position:relative;height:13px;max-width:1060px;margin:0 auto;border-radius:100px;
-    background:linear-gradient(180deg,#b8b0a1 0%,#e8e1d4 30%,#f8f4ec 50%,#d5cebf 72%,#a49c8c 100%);
-    box-shadow:0 3px 9px -3px rgba(26,23,20,.32),inset 0 1px 0 rgba(255,255,255,.75);z-index:2}
-  .rail::before,.rail::after{content:"";position:absolute;top:50%;transform:translateY(-50%);width:15px;height:25px;
-    border-radius:5px;background:linear-gradient(180deg,#a8a091,#756d5f)}
-  .rail::before{left:-15px}
-  .rail::after{right:-15px}
+  /* ===== RACK — INDUSTRIAL PIPE ===== */
+  .scene{padding:44px 0 30px;perspective:1600px;perspective-origin:50% 22%;position:relative}
 
-  .rack{display:flex;justify-content:center;align-items:flex-start;gap:clamp(4px,1.4vw,22px);
-    max-width:1100px;margin:0 auto;padding:0 10px;transform-style:preserve-3d;position:relative;z-index:1}
+  /* floor */
+  .floor{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(1180px,94vw);height:120px;
+    background:radial-gradient(ellipse 60% 100% at 50% 100%,rgba(26,23,20,.1),transparent 72%);pointer-events:none;z-index:0}
+  .floor::after{content:"";position:absolute;left:6%;right:6%;bottom:14px;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(26,23,20,.13),transparent)}
+
+  /* the rack frame */
+  .rack-frame{position:relative;max-width:1120px;margin:0 auto;padding:0 16px;z-index:1}
+
+  /* top pipe */
+  .pipe-top{position:relative;height:17px;margin:0 22px;border-radius:100px;
+    background:linear-gradient(180deg,#0a0a0a 0%,#262626 22%,#4a4a4a 48%,#1f1f1f 74%,#0d0d0d 100%);
+    box-shadow:0 4px 12px -3px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.16),
+               inset 0 -1px 0 rgba(0,0,0,.6);z-index:3}
+  .pipe-top::before,.pipe-top::after{content:"";position:absolute;top:50%;transform:translateY(-50%);
+    width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 34% 32%,#6b6b6b,#111 62%,#000);
+    box-shadow:inset 0 -1px 2px rgba(0,0,0,.9),0 1px 3px rgba(0,0,0,.5)}
+  .pipe-top::before{left:-9px}
+  .pipe-top::after{right:-9px}
+  /* pipe weld seams */
+  .pipe-seam{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.1),transparent)}
+  .pipe-seam.s1{left:24%}
+  .pipe-seam.s2{left:72%}
+
+  /* side posts */
+  .post{position:absolute;top:0;width:13px;border-radius:0 0 4px 4px;
+    background:linear-gradient(90deg,#050505,#2e2e2e 40%,#454545 55%,#161616 82%,#000);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.13),2px 0 6px -2px rgba(0,0,0,.5);z-index:2}
+  .post.left{left:0;height:calc(100% - 26px)}
+  .post.right{right:0;height:calc(100% - 26px)}
+  /* post flange joints */
+  .post::before{content:"";position:absolute;left:-4px;right:-4px;top:52%;height:16px;border-radius:3px;
+    background:linear-gradient(180deg,#3a3a3a,#181818);box-shadow:0 1px 3px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12)}
+
+  /* feet + casters */
+  .foot{position:absolute;bottom:-8px;width:34px;height:34px;z-index:2;cursor:grab}
+  .foot::before{content:"";position:absolute;left:0;top:0;width:100%;height:9px;border-radius:3px;
+    background:linear-gradient(180deg,#2a2a2a,#101010);box-shadow:0 2px 5px -1px rgba(0,0,0,.5)}
+  .foot .wheel{position:absolute;left:50%;bottom:0;transform:translateX(-50%) rotate(var(--spin,0deg));
+    width:22px;height:22px;border-radius:50%;border:2px solid #0a0a0a;
+    background:radial-gradient(circle at 36% 32%,#5c5c5c,#1c1c1c 55%,#050505);
+    box-shadow:inset 0 -2px 3px rgba(0,0,0,.9),0 2px 5px rgba(0,0,0,.45)}
+  .foot .wheel::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:6px;height:6px;border-radius:50%;background:#3a3a3a;box-shadow:inset 0 1px 1px rgba(0,0,0,.8)}
+  .foot.fl{left:-14px}
+  .foot.fr{right:-14px}
+  .rack-frame{cursor:grab;transition:transform .1s linear}
+  .rack-frame:active{cursor:grabbing}
+
+  /* base bar */
+  .pipe-base{position:absolute;left:14px;right:14px;bottom:14px;height:8px;border-radius:100px;
+    background:linear-gradient(180deg,#0a0a0a,#2a2a2a 40%,#3d3d3d 55%,#141414);
+    box-shadow:0 3px 8px -2px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12);z-index:1}
+
+  /* garment rail inside the frame */
+  .rack{display:flex;justify-content:center;align-items:flex-start;gap:clamp(3px,1.2vw,18px);
+    margin:0 auto;padding:0 6px;transform-style:preserve-3d;position:relative;z-index:1}
   .slot{flex:0 0 auto;width:clamp(92px,12.6vw,150px);opacity:0;transform:translateY(-70px);
     animation:hangIn .85s cubic-bezier(.34,1.3,.5,1) forwards}
   @keyframes hangIn{to{opacity:1;transform:translateY(0)}}
@@ -78,9 +124,10 @@
   .rack.has-face .garment:not(.face){opacity:.48;filter:saturate(.5)}
   .rack.has-face .garment:not(.face):hover{opacity:.85;filter:none}
 
-  .hanger{width:100%;height:24px;position:relative;z-index:3}
+  .hanger{width:100%;height:22px;position:relative;z-index:3;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
   .hanger svg{width:100%;height:100%;display:block;overflow:visible}
-  .hook{stroke:#8a8175;stroke-width:2;fill:none;stroke-linecap:round}
+  .hook{stroke:#2a2a2a;stroke-width:2.4;fill:none;stroke-linecap:round}
+  .hg-body{fill:#1a1a1a;stroke:rgba(255,255,255,.22);stroke-width:1}
 
   .body{position:relative;border-radius:5px 5px 12px 12px;overflow:hidden;margin-top:-3px;
     box-shadow:0 18px 30px -18px rgba(26,23,20,.45),inset 0 0 0 1px rgba(255,255,255,.13);
@@ -166,6 +213,8 @@
     nav,.hint,.scene::after,#toast,.d-zoom{display:none}
     body{background:#fff}
     .garment{transform:none!important;opacity:1!important;filter:none!important}
+    .rack-frame{box-shadow:none}
+    .pipe-top,.post,.pipe-base,.foot{background:#999!important;box-shadow:none}
     .detail-in{box-shadow:none;border:1px solid #ddd}
     section{padding:18px 0}
   }
@@ -228,13 +277,24 @@
     <div class="eyebrow rv">Autumn / Winter 2026</div>
     <h1 class="rv" style="transition-delay:.06s">The <em>rack</em>.</h1>
     <p class="rv" style="transition-delay:.12s">Seven pieces, freshly hung. Everything on one rail — pick one up and turn it to face you.</p>
-    <div class="hint rv" style="transition-delay:.18s"><span class="dot"></span> Click a garment to face it front</div>
+    <div class="hint rv" style="transition-delay:.18s"><span class="dot"></span> Click a garment to face it front · drag the rack to roll it</div>
   </div>
 </header>
 
 <section class="scene">
-  <div class="rail"></div>
-  <div class="rack" id="rack"></div>
+  <div class="floor"></div>
+  <div class="rack-frame" id="frame">
+    <div class="pipe-top">
+      <span class="pipe-seam s1"></span>
+      <span class="pipe-seam s2"></span>
+    </div>
+    <div class="rack" id="rack"></div>
+    <div class="post left"></div>
+    <div class="post right"></div>
+    <div class="pipe-base"></div>
+    <div class="foot fl"><span class="wheel"></span></div>
+    <div class="foot fr"><span class="wheel"></span></div>
+  </div>
 </section>
 
 <section class="detail">
@@ -407,8 +467,8 @@ function art(type){
 
 const rp = n => 'Rp ' + n.toLocaleString('id-ID');
 const ANGLES = [-21, 13, -11, 19, -15, 10, -7];
-const HOOK = '<path class="hook" d="M50 21 Q50 7 62 7 Q72 7 72 15 Q72 20 66 20"/>';
-const BAR  = '<path class="hook" d="M22 23 L78 23" stroke-width="2.6"/>';
+const HOOK = '<path class="hook" d="M50 20 Q50 6 62 6 Q72 6 72 14 Q72 19 66 19"/>';
+const BAR  = '<path class="hg-body" d="M20 22 L80 22 L78 27 L22 27 Z"/>';
 
 /* ================= RENDER RACK ================= */
 const rack = document.getElementById('rack');
@@ -525,6 +585,48 @@ const io = new IntersectionObserver(es => {
   es.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
 }, { threshold: .12 });
 document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+/* ================= RACK ROLL (mouse drag to push the rack) ================= */
+(function(){
+  const frame = document.getElementById('frame');
+  if (!frame) return;
+  let dragging = false, startX = 0, curX = 0, baseX = 0, raf = null;
+
+  function apply(){
+    frame.style.transform = 'translateX(' + curX.toFixed(1) + 'px)';
+    // casters counter-rotate with the roll
+    const spin = (curX / 22) * 40;
+    frame.querySelectorAll('.foot').forEach(f => {
+      f.style.setProperty('--spin', spin.toFixed(1) + 'deg');
+    });
+  }
+  function loop(){
+    curX += (baseX - curX) * .12;
+    apply();
+    if (Math.abs(baseX - curX) > .3){ raf = requestAnimationFrame(loop); }
+    else { raf = null; curX = baseX; apply(); }
+  }
+  function kick(){ if (!raf) raf = requestAnimationFrame(loop); }
+
+  frame.addEventListener('pointerdown', e => {
+    if (e.target.closest('.garment')) return;   // let garment clicks through
+    dragging = true; startX = e.clientX;
+    frame.setPointerCapture(e.pointerId);
+    frame.style.cursor = 'grabbing';
+  });
+  frame.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    baseX = Math.max(-70, Math.min(70, e.clientX - startX));
+    kick();
+  });
+  function release(){
+    if (!dragging) return;
+    dragging = false; baseX = 0; kick();
+    frame.style.cursor = '';
+  }
+  frame.addEventListener('pointerup', release);
+  frame.addEventListener('pointercancel', release);
+})();
 </script>
 
 </body>
