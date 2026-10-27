@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan Setup n8n — Dari 0 Sampai Siap Pakai</title>
+<meta name="description" content="Panduan lengkap setup automation n8n untuk UMKM dan crypto. Dari install sampai aktif, dengan gambar langkah demi langkah.">
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --line:#1f2a38;
+    --txt:#e6edf3; --dim:#8b98a8;
+    --acc:#e8b339; --acc2:#f5d076;
+    --grn:#3fb950; --blue:#58a6ff; --red:#f85149; --pur:#bc8cff; --cyn:#39c5cf; --or:#ff8c42;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--acc);text-decoration:none}
+  a:hover{color:var(--acc2)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .wrap{max-width:900px;margin:0 auto;padding:0 clamp(16px,4vw,24px)}
+  section[id]{scroll-margin-top:70px}
+  p,li,h1,h2,h3,h4{overflow-wrap:break-word}
+
+  /* progress + nav */
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:101;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+  nav{position:sticky;top:0;z-index:100;background:rgba(10,14,20,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:900px;margin:0 auto;padding:12px clamp(16px,4vw,24px);display:flex;align-items:center;gap:14px;overflow-x:auto}
+  .nav-in b{font-size:15px;white-space:nowrap;letter-spacing:-.3px}
+  .nav-in b span{color:var(--acc)}
+  .nav-links{display:flex;gap:14px;font-size:12.5px;color:var(--dim);white-space:nowrap}
+  .nav-links a{color:var(--dim);transition:color .2s}
+  .nav-links a:hover{color:var(--txt)}
+  @media(max-width:700px){.nav-links{display:none}}
+
+  /* hero */
+  .hero{padding:clamp(50px,8vw,80px) 0 40px;text-align:center}
+  .badge{display:inline-block;font-family:var(--mono);font-size:11.5px;color:var(--acc);border:1px solid rgba(232,179,57,.3);
+    background:rgba(232,179,57,.08);padding:5px 14px;border-radius:100px;margin-bottom:20px;letter-spacing:1.4px}
+  h1{font-size:clamp(26px,5vw,44px);font-weight:800;letter-spacing:-1.4px;line-height:1.15;margin-bottom:16px}
+  h1 em{font-style:normal;color:var(--acc)}
+  .sub{color:var(--dim);font-size:15px;max-width:560px;margin:0 auto}
+
+  /* steps */
+  section{padding:clamp(30px,5vw,50px) 0}
+  .step-h{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .step-n{flex-shrink:0;width:40px;height:40px;border-radius:12px;background:rgba(232,179,57,.12);border:1px solid rgba(232,179,57,.3);
+    display:grid;place-items:center;font-family:var(--mono);font-size:16px;font-weight:700;color:var(--acc)}
+  h2{font-size:clamp(19px,3.4vw,26px);font-weight:800;letter-spacing:-.6px}
+  .step-p{color:var(--dim);font-size:14px;margin-bottom:24px;max-width:640px}
+
+  /* cards */
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:clamp(16px,3vw,24px);margin-bottom:16px}
+  .box h3{font-size:15px;font-weight:700;margin-bottom:10px;letter-spacing:-.2px}
+  .box p{font-size:13.5px;color:var(--dim);margin-bottom:10px}
+  .box p:last-child{margin-bottom:0}
+
+  /* numbered list */
+  ol.steps{list-style:none;counter-reset:s}
+  ol.steps li{counter-increment:s;position:relative;padding:10px 0 10px 42px;font-size:14px;color:var(--dim);border-bottom:1px solid rgba(31,42,56,.5)}
+  ol.steps li:last-child{border-bottom:none}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:11px;width:26px;height:26px;border-radius:8px;
+    background:var(--bg2);border:1px solid var(--line);display:grid;place-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--acc)}
+  ol.steps li b{color:var(--txt);font-weight:600}
+
+  /* illustration */
+  .ill{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:clamp(12px,3vw,22px);margin:16px 0;overflow-x:auto}
+  .ill svg{display:block;width:100%;height:auto;min-width:280px}
+  .ill-cap{font-family:var(--mono);font-size:10.5px;color:var(--dim2,#5f6b7c);letter-spacing:1px;text-transform:uppercase;margin-top:10px;text-align:center}
+
+  /* code / inline */
+  code{font-family:var(--mono);font-size:12.5px;background:var(--bg2);border:1px solid var(--line);padding:2px 7px;border-radius:5px;color:var(--acc2)}
+  pre{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:12px 0;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;color:#c8d6e8}
+  pre code{background:none;border:none;padding:0;color:inherit}
+
+  /* placeholder table */
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--bg2);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
+  tr:nth-child(even) td{background:rgba(255,255,255,.013)}
+  td code{font-size:11.5px}
+
+  /* warning / tip */
+  .tip{background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.22);border-radius:12px;padding:14px 18px;margin:14px 0;font-size:13.5px;color:var(--dim)}
+  .tip b{color:var(--grn)}
+  .warn{background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.22);border-radius:12px;padding:14px 18px;margin:14px 0;font-size:13.5px;color:var(--dim)}
+  .warn b{color:var(--red)}
+
+  /* template index */
+  .tpl-idx{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px;margin:16px 0}
+  .tpl-i{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;transition:border-color .25s}
+  .tpl-i:hover{border-color:rgba(232,179,57,.35)}
+  .tpl-i .n{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:1.2px;margin-bottom:4px}
+  .tpl-i b{display:block;font-size:13.5px;margin-bottom:4px}
+  .tpl-i span{font-size:11.5px;color:var(--dim)}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;font-size:12.5px;color:#5a6675}
+
+  @media print{
+    nav,#prog{display:none}
+    body{background:#fff;color:#111}
+    .box,.ill,.tip,.warn,.tpl-i{background:#fff;border:1px solid #ddd}
+    .box p,ol.steps li,.step-p,.sub{color:#444}
+    h1,h2,h3{color:#111}
+    code{background:#f5f5f5;color:#8a6d1f}
+    .step-n{background:#f5f5f5;color:#8a6d1f}
+    section{padding:16px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition-duration:.01ms!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <div class="nav-in">
+    <b>twist<span>.automation</span></b>
+    <div class="nav-links">
+      <a href="#siapkan">1. Siapin</a>
+      <a href="#install">2. Install n8n</a>
+      <a href="#google">3. Google</a>
+      <a href="#gateway">4. WhatsApp</a>
+      <a href="#import">5. Import</a>
+      <a href="#token">6. Token</a>
+      <a href="#aktif">7. Aktifin</a>
+      <a href="#template">8. Per Template</a>
+      <a href="#sheets">9. Sheets</a>
+      <a href="#masalah">10. Masalah</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">PANDUAN LENGKAP · 15 TEMPLATE</div>
+    <h1>Setup n8n dari <em>nol</em><br>sampai siap pakai.</h1>
+    <p class="sub">Semua langkah, dengan gambar. Ikutin urut dari atas — dalam 30 menit semua jalan.</p>
+  </div>
+</header>
+
+<!-- ============ STEP 1 ============ -->
+<section id="siapkan">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">1</div><h2>Siapin dulu apa aja yang dibutuhin</h2></div>
+    <p class="step-p">Ada 3 hal. Dua gratis, satu bayar dikit.</p>
+
+    <div class="box">
+      <h3>✅ Yang perlu disiapkan</h3>
+      <table>
+        <tr><th>Komponen</th><th>Buat apa</th><th>Biaya</th></tr>
+        <tr><td><b>n8n</b></td><td>Aplikasi automation-nya</td><td>Gratis – Rp 150rb/bln</td></tr>
+        <tr><td><b>Google Sheets</b></td><td>N nyimpen data order, stok, customer</td><td>Gratis</td></tr>
+        <tr><td><b>Gateway WhatsApp</b></td><td>Buat kirim pesan WA otomatis</td><td>Rp 22rb – 150rb/bln</td></tr>
+      </table>
+    </div>
+
+    <div class="tip"><b>Tips:</b> Kalau baru pertama coba, pakai <b>n8n Cloud</b> (paling gampang, ada free trial) dan <b>Wablas</b> (Rp 22rb/bulan, ada free trial 15 hari).</div>
+  </div>
+</section>
+
+<!-- ============ STEP 2 ============ -->
+<section id="install">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">2</div><h2>Install n8n</h2></div>
+    <p class="step-p">Pilih salah satu cara. Yang paling gampang: n8n Cloud.</p>
+
+    <div class="box">
+      <h3>Cara A — n8n Cloud (paling gampang, ada free trial)</h3>
+      <ol class="steps">
+        <li>Buka <b>n8n.io</b> di browser</li>
+        <li>Klik tombol <b>"Start free trial"</b></li>
+        <li>Daftar pakai email lo</li>
+        <li>Pilih region <b>Singapore</b> (paling deket)</li>
+        <li>Selesai — n8n langsung bisa dipakai</li>
+      </ol>
+    </div>
+
+    <div class="box">
+      <h3>Cara B — Install di VPS sendiri (paling murah, jalan 24 jam)</h3>
+      <p>Kalau lo punya server/VPS, jalankan perintah ini:</p>
+<pre><code>docker run -d --restart unless-stopped \
+  --name n8n \
+  -p 5678:5678 \
+  -v n8n_data:/home/node/.n8n \
+  n8nio/n8n</code></pre>
+      <p>Lalu buka <code>http://IP-SERVER-LO:5678</code> di browser.</p>
+    </div>
+
+    <div class="box">
+      <h3>Cara C — Install di komputer lo (gratis, tapi mati kalau PC mati)</h3>
+      <p>Jalankan perintah ini di komputer lo:</p>
+<pre><code>npx n8n</code></pre>
+      <p>Lalu buka <code>http://localhost:5678</code></p>
+    </div>
+
+    <!-- ILLUSTRATION: n8n editor overview -->
+    <div class="ill">
+      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="760" height="300" fill="#0f1520" rx="8"/>
+        <!-- top bar -->
+        <rect x="0" y="0" width="760" height="34" fill="#141b26"/>
+        <line x1="0" y1="34" x2="760" y2="34" stroke="#1f2a38" stroke-width="1"/>
+        <text x="14" y="22" fill="#e8b339" font-family="monospace" font-size="11" font-weight="700">n8n</text>
+        <rect x="640" y="8" width="52" height="18" rx="9" fill="#3fb950" opacity=".18"/>
+        <text x="652" y="21" fill="#3fb950" font-family="monospace" font-size="9">Active</text>
+        <rect x="700" y="8" width="48" height="18" rx="4" fill="#1f2a38"/>
+        <text x="708" y="21" fill="#8b98a8" font-family="monospace" font-size="9">Save</text>
+        <!-- left panel -->
+        <rect x="0" y="34" width="120" height="266" fill="#0d1219"/>
+        <text x="12" y="56" fill="#5f6b7c" font-family="monospace" font-size="9">NODES</text>
+        <rect x="8" y="64" width="104" height="20" rx="4" fill="#141b26"/>
+        <text x="16" y="78" fill="#8b98a8" font-size="9">Webhook</text>
+        <rect x="8" y="88" width="104" height="20" rx="4" fill="#141b26"/>
+        <text x="16" y="102" fill="#8b98a8" font-size="9">Schedule</text>
+        <rect x="8" y="112" width="104" height="20" rx="4" fill="#141b26"/>
+        <text x="16" y="126" fill="#8b98a8" font-size="9">Google Sheets</text>
+        <rect x="8" y="136" width="104" height="20" rx="4" fill="#141b26"/>
+        <text x="16" y="150" fill="#8b98a8" font-size="9">HTTP Request</text>
+        <rect x="8" y="160" width="104" height="20" rx="4" fill="#141b26"/>
+        <text x="16" y="174" fill="#8b98a8" font-size="9">IF</text>
+        <rect x="8" y="184" width="104" height="20" rx="4" fill="#141b26"/>
+        <text x="16" y="198" fill="#8b98a8" font-size="9">Set</text>
+        <!-- canvas -->
+        <text x="140" y="56" fill="#5f6b7c" font-family="monospace" font-size="9">CANVAS — kotak-kotak nyambung itu namanya NODE</text>
+        <!-- node 1 -->
+        <rect x="150" y="90" width="130" height="52" rx="8" fill="#141b26" stroke="#e8b339" stroke-width="1.2"/>
+        <circle cx="166" cy="106" r="7" fill="rgba(232,179,57,.15)"/>
+        <text x="163" y="110" fill="#e8b339" font-size="9">⚡</text>
+        <text x="180" y="110" fill="#e6edf3" font-size="10" font-weight="600">Pesan Masuk</text>
+        <text x="162" y="130" fill="#5f6b7c" font-family="monospace" font-size="8">webhook</text>
+        <circle cx="280" cy="116" r="4" fill="#e8b339"/>
+        <!-- connector -->
+        <path d="M280 116 Q320 116 340 116" stroke="#3d4a5c" stroke-width="1.5" fill="none"/>
+        <path d="M335 112 L342 116 L335 120" stroke="#3d4a5c" stroke-width="1.5" fill="none"/>
+        <!-- node 2 -->
+        <rect x="345" y="90" width="130" height="52" rx="8" fill="#141b26" stroke="#1f2a38"/>
+        <circle cx="361" cy="106" r="7" fill="rgba(88,166,255,.15)"/>
+        <text x="358" y="110" fill="#58a6ff" font-size="9">🔀</text>
+        <text x="375" y="110" fill="#e6edf3" font-size="10" font-weight="600">Deteksi Maksud</text>
+        <text x="357" y="130" fill="#5f6b7c" font-family="monospace" font-size="8">switch</text>
+        <circle cx="475" cy="116" r="4" fill="#58a6ff"/>
+        <!-- connector -->
+        <path d="M475 116 Q515 116 535 116" stroke="#3d4a5c" stroke-width="1.5" fill="none"/>
+        <path d="M530 112 L537 116 L530 120" stroke="#3d4a5c" stroke-width="1.5" fill="none"/>
+        <!-- node 3 -->
+        <rect x="540" y="90" width="130" height="52" rx="8" fill="#141b26" stroke="#1f2a38"/>
+        <circle cx="556" cy="106" r="7" fill="rgba(63,185,80,.15)"/>
+        <text x="553" y="110" fill="#3fb950" font-size="9">📤</text>
+        <text x="570" y="110" fill="#e6edf3" font-size="10" font-weight="600">Kirim Balasan</text>
+        <text x="552" y="130" fill="#5f6b7c" font-family="monospace" font-size="8">http request</text>
+        <!-- annotations -->
+        <path d="M215 142 L215 175" stroke="#e8b339" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="150" y="190" fill="#e8b339" font-size="9.5">Klik 2x kotak = buka panel</text>
+        <path d="M410 142 L410 175" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="345" y="190" fill="#58a6ff" font-size="9.5">Garis = alur data</text>
+        <path d="M605 142 L605 175" stroke="#3fb950" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="540" y="190" fill="#3fb950" font-size="9.5">Node kirim WA</text>
+        <!-- bottom note -->
+        <rect x="150" y="215" width="520" height="60" rx="8" fill="#0d1219" stroke="#1f2a38"/>
+        <text x="166" y="236" fill="#8b98a8" font-size="10" font-weight="600">Cara baca workflow:</text>
+        <text x="166" y="254" fill="#5f6b7c" font-size="9.5">Data masuk dari kiri (Pesan Masuk) → diproses (Deteksi Maksud) → keluar ke kanan (Kirim Balasan)</text>
+        <text x="166" y="268" fill="#5f6b7c" font-size="9.5">Ikutin arah panah. Seperti diagram alir.</text>
+      </svg>
+      <div class="ill-cap">Tampilan editor n8n — kotak = node, garis = alur data</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 3 ============ -->
+<section id="google">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">3</div><h2>Connect Google Sheets ke n8n</h2></div>
+    <p class="step-p">Sekali setup, dipakai semua template. n8n butuh izin buat baca/tulis spreadsheet lo.</p>
+
+    <div class="box">
+      <ol class="steps">
+        <li>Di n8n, klik ikon <b>kunci</b> (Credential) di panel kiri</li>
+        <li>Klik <b>Add Credential</b></li>
+        <li>Cari dan pilih <b>Google Sheets</b></li>
+        <li>Klik <b>Sign in with Google</b></li>
+        <li>Pilih akun Gmail lo</li>
+        <li>Klik <b>Allow</b> / Izinkan akses</li>
+        <li>Klik <b>Save</b></li>
+      </ol>
+    </div>
+
+    <!-- ILLUSTRATION: credential flow -->
+    <div class="ill">
+      <svg viewBox="0 0 760 210" xmlns="http://www.w3.org/2000/svg">
+        <rect width="760" height="210" fill="#0f1520" rx="8"/>
+        <!-- panel 1 -->
+        <rect x="14" y="14" width="220" height="182" rx="8" fill="#141b26" stroke="#1f2a38"/>
+        <text x="28" y="38" fill="#8b98a8" font-family="monospace" font-size="9">PANEL KIRI n8n</text>
+        <rect x="26" y="48" width="196" height="26" rx="6" fill="#0d1219"/>
+        <text x="38" y="65" fill="#e6edf3" font-size="10">🔑 Credential</text>
+        <path d="M124 61 L134 61 M129 56 L134 61 L129 66" stroke="#e8b339" stroke-width="1.4" fill="none"/>
+        <rect x="26" y="82" width="196" height="26" rx="6" fill="#0d1219"/>
+        <text x="38" y="99" fill="#5f6b7c" font-size="10">Executions</text>
+        <rect x="26" y="116" width="196" height="26" rx="6" fill="#0d1219"/>
+        <text x="38" y="133" fill="#5f6b7c" font-size="10">Workflows</text>
+        <!-- arrow -->
+        <path d="M240 105 L280 105" stroke="#e8b339" stroke-width="1.6"/>
+        <path d="M274 100 L281 105 L274 110" stroke="#e8b339" stroke-width="1.6" fill="none"/>
+        <!-- panel 2 -->
+        <rect x="288" y="14" width="220" height="182" rx="8" fill="#141b26" stroke="#1f2a38"/>
+        <text x="302" y="38" fill="#8b98a8" font-family="monospace" font-size="9">ADD CREDENTIAL</text>
+        <rect x="302" y="50" width="192" height="24" rx="5" fill="#0d1219"/>
+        <text x="312" y="66" fill="#5f6b7c" font-size="9.5">🔍 Cari...</text>
+        <rect x="302" y="82" width="192" height="30" rx="6" fill="rgba(232,179,57,.08)" stroke="#e8b339" stroke-width="1"/>
+        <text x="314" y="101" fill="#e8b339" font-size="10" font-weight="600">📊 Google Sheets</text>
+        <rect x="302" y="120" width="192" height="24" rx="5" fill="#0d1219"/>
+        <text x="312" y="136" fill="#5f6b7c" font-size="9.5">Telegram</text>
+        <rect x="302" y="150" width="192" height="24" rx="5" fill="#0d1219"/>
+        <text x="312" y="166" fill="#5f6b7c" font-size="9.5">Slack</text>
+        <!-- arrow -->
+        <path d="M514 105 L554 105" stroke="#e8b339" stroke-width="1.6"/>
+        <path d="M548 100 L555 105 L548 110" stroke="#e8b339" stroke-width="1.6" fill="none"/>
+        <!-- panel 3 -->
+        <rect x="562" y="14" width="184" height="182" rx="8" fill="#141b26" stroke="#1f2a38"/>
+        <text x="576" y="38" fill="#8b98a8" font-family="monospace" font-size="9">GOOGLE LOGIN</text>
+        <rect x="576" y="52" width="156" height="28" rx="14" fill="#fff"/>
+        <text x="596" y="70" fill="#333" font-size="10" font-weight="600">G  Sign in with Google</text>
+        <text x="576" y="104" fill="#5f6b7c" font-size="9.5">→ Pilih akun Gmail lo</text>
+        <text x="576" y="122" fill="#5f6b7c" font-size="9.5">→ Klik "Allow"</text>
+        <text x="576" y="140" fill="#5f6b7c" font-size="9.5">→ Klik Save</text>
+        <rect x="576" y="156" width="156" height="24" rx="6" fill="rgba(63,185,80,.12)" stroke="#3fb950" stroke-width="1"/>
+        <text x="600" y="172" fill="#3fb950" font-size="9.5" font-weight="700">✓ TERHUBUNG</text>
+      </svg>
+      <div class="ill-cap">Alur connect Google Sheets — sekali setup, dipakai semua template</div>
+    </div>
+
+    <div class="tip"><b>Tips:</b> Credential ini cuma perlu <b>sekali</b>. Semua template bisa pakai credential yang sama. Kalau nanti ada node Google Sheets yang minta pilih credential, tinggal pilih dari dropdown.</div>
+  </div>
+</section>
+
+<!-- ============ STEP 4 ============ -->
+<section id="gateway">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">4</div><h2>Daftar Gateway WhatsApp</h2></div>
+    <p class="step-p">Ini yang bikin n8n bisa kirim WhatsApp. Pilih salah satu.</p>
+
+    <div class="box">
+      <h3>Pilihan gateway</h3>
+      <table>
+        <tr><th>Gateway</th><th>Harga</th><th>Catatan</th></tr>
+        <tr><td><b>Wablas</b> ⭐</td><td>Rp 22rb/bln</td><td>Paling murah, ada node n8n resmi, free trial 15 hari</td></tr>
+        <tr><td>MPWA</td><td>Rp 50rb/bln</td><td>10.000 pesan, Ultimate Rp 300rb/tahun</td></tr>
+        <tr><td>Fonnte</td><td>Rp 25rb/bln</td><td>Populer, 1.000 pesan text-only</td></tr>
+        <tr><td>Api.co.id (resmi)</td><td>Rp 150rb/bln</td><td>Resmi Meta, gak ada risiko banned</td></tr>
+      </table>
+    </div>
+
+    <div class="box">
+      <h3>Cara daftar & ambil token (contoh: Wablas)</h3>
+      <ol class="steps">
+        <li>Buka <b>wablas.com</b> → klik <b>Daftar</b></li>
+        <li>Verifikasi email lo</li>
+        <li>Klik <b>Add Device</b> / <b>Tambah Perangkat</b></li>
+        <li>Buka WhatsApp di HP → <b>Perangkat Tertaut</b> → <b>Tautkan Perangkat</b></li>
+        <li><b>Scan QR</b> yang muncul di layar</li>
+        <li>Setelah nyambung, buka menu <b>Device</b></li>
+        <li><b>Copy Token</b> — simpan baik-baik</li>
+        <li>Top up saldo (mulai Rp 50.000)</li>
+      </ol>
+    </div>
+
+    <!-- ILLUSTRATION: QR scan -->
+    <div class="ill">
+      <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+        <rect width="760" height="220" fill="#0f1520" rx="8"/>
+        <!-- laptop/dashboard -->
+        <rect x="40" y="20" width="300" height="180" rx="10" fill="#141b26" stroke="#1f2a38"/>
+        <rect x="40" y="20" width="300" height="26" rx="10" fill="#0d1219"/>
+        <circle cx="56" cy="33" r="4" fill="#f85149"/><circle cx="70" cy="33" r="4" fill="#e8b339"/><circle cx="84" cy="33" r="4" fill="#3fb950"/>
+        <text x="160" y="37" fill="#5f6b7c" font-family="monospace" font-size="9">wablas.com/device</text>
+        <text x="58" y="66" fill="#8b98a8" font-family="monospace" font-size="9">SCAN QR INI</text>
+        <!-- QR code fake -->
+        <rect x="140" y="76" width="100" height="100" rx="6" fill="#fff"/>
+        <g fill="#0a0e14">
+          <rect x="148" y="84" width="22" height="22"/><rect x="210" y="84" width="22" height="22"/><rect x="148" y="146" width="22" height="22"/>
+          <rect x="152" y="88" width="14" height="14" fill="#fff"/><rect x="214" y="88" width="14" height="14" fill="#fff"/><rect x="152" y="150" width="14" height="14" fill="#fff"/>
+          <rect x="156" y="92" width="6" height="6"/><rect x="218" y="92" width="6" height="6"/><rect x="156" y="154" width="6" height="6"/>
+          <rect x="180" y="84" width="8" height="8"/><rect x="192" y="96" width="8" height="8"/><rect x="180" y="108" width="8" height="8"/>
+          <rect x="204" y="120" width="8" height="8"/><rect x="168" y="120" width="8" height="8"/><rect x="180" y="132" width="8" height="8"/>
+          <rect x="192" y="144" width="8" height="8"/><rect x="156" y="132" width="8" height="8"/><rect x="216" y="144" width="8" height="8"/>
+          <rect x="168" y="108" width="6" height="6"/><rect x="204" y="100" width="6" height="6"/><rect x="180" y="156" width="6" height="6"/>
+        </g>
+        <text x="58" y="192" fill="#3fb950" font-size="9.5" font-weight="700">✓ Setelah scan: Device nyambung</text>
+        <!-- arrow -->
+        <path d="M350 110 L400 110" stroke="#e8b339" stroke-width="1.6"/>
+        <path d="M394 105 L401 110 L394 115" stroke="#e8b339" stroke-width="1.6" fill="none"/>
+        <!-- phone -->
+        <rect x="410" y="20" width="140" height="180" rx="16" fill="#0d1219" stroke="#1f2a38"/>
+        <rect x="418" y="32" width="124" height="156" rx="10" fill="#141b26"/>
+        <text x="436" y="52" fill="#e6edf3" font-size="9.5" font-weight="700">WhatsApp</text>
+        <text x="436" y="68" fill="#5f6b7c" font-family="monospace" font-size="8">Pengaturan</text>
+        <rect x="430" y="76" width="100" height="18" rx="4" fill="#0d1219"/>
+        <text x="438" y="89" fill="#8b98a8" font-size="8.5">Perangkat Tertaut</text>
+        <rect x="430" y="100" width="100" height="18" rx="4" fill="rgba(63,185,80,.1)" stroke="#3fb950" stroke-width=".8"/>
+        <text x="438" y="113" fill="#3fb950" font-size="8.5">+ Tautkan Perangkat</text>
+        <!-- camera viewfinder -->
+        <rect x="446" y="130" width="68" height="52" rx="6" fill="none" stroke="#e8b339" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="452" y="160" fill="#e8b339" font-size="8">Arahkan ke QR</text>
+        <!-- arrow -->
+        <path d="M560 110 L610 110" stroke="#e8b339" stroke-width="1.6"/>
+        <path d="M604 105 L611 110 L604 115" stroke="#e8b339" stroke-width="1.6" fill="none"/>
+        <!-- token -->
+        <rect x="620" y="50" width="120" height="120" rx="10" fill="#141b26" stroke="#e8b339" stroke-width="1.2"/>
+        <text x="634" y="74" fill="#e8b339" font-family="monospace" font-size="9">TOKEN</text>
+        <rect x="634" y="84" width="92" height="20" rx="4" fill="#0d1219"/>
+        <text x="640" y="98" fill="#8b98a8" font-family="monospace" font-size="8">AbC123XyZ...</text>
+        <rect x="634" y="112" width="60" height="18" rx="9" fill="rgba(232,179,57,.15)"/>
+        <text x="644" y="125" fill="#e8b339" font-size="8.5">Copy</text>
+        <text x="634" y="148" fill="#3fb950" font-size="8.5">✓ Simpan ini</text>
+      </svg>
+      <div class="ill-cap">Scan QR pakai WhatsApp HP → device nyambung → copy token</div>
+    </div>
+
+    <div class="warn"><b>Penting:</b> Token itu seperti password. Jangan kasih ke orang lain selain yang setup n8n lo. Kalau token bocor, orang lain bisa kirim WhatsApp pakai nomor lo.</div>
+  </div>
+</section>
+
+<!-- ============ STEP 5 ============ -->
+<section id="import">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">5</div><h2>Import Template ke n8n</h2></div>
+    <p class="step-p">Template lo dalam bentuk file <code>.json</code>. Tinggal import.</p>
+
+    <div class="box">
+      <ol class="steps">
+        <li>Buka n8n lo</li>
+        <li>Klik tombol <b>"..."</b> (titik tiga) di <b>pojok kanan atas</b></li>
+        <li>Pilih <b>"Import from File"</b></li>
+        <li>Cari dan pilih file <code>.json</code> template</li>
+        <li>Workflow langsung muncul di canvas</li>
+        <li>Ulangi buat setiap template yang mau dipasang</li>
+      </ol>
+    </div>
+
+    <!-- ILLUSTRATION: import -->
+    <div class="ill">
+      <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="760" height="200" fill="#0f1520" rx="8"/>
+        <!-- n8n top bar -->
+        <rect x="20" y="20" width="720" height="40" rx="8" fill="#141b26" stroke="#1f2a38"/>
+        <text x="36" y="44" fill="#e8b339" font-family="monospace" font-size="11" font-weight="700">n8n</text>
+        <text x="330" y="44" fill="#8b98a8" font-size="10">My workflow</text>
+        <rect x="620" y="28" width="36" height="24" rx="4" fill="#0d1219"/>
+        <text x="632" y="44" fill="#8b98a8" font-size="12">···</text>
+        <rect x="664" y="28" width="62" height="24" rx="4" fill="#3fb950" opacity=".16"/>
+        <text x="676" y="44" fill="#3fb950" font-size="9">Active</text>
+        <!-- dropdown -->
+        <rect x="560" y="64" width="180" height="80" rx="8" fill="#0d1219" stroke="#1f2a38"/>
+        <text x="576" y="84" fill="#5f6b7c" font-size="10">New Workflow</text>
+        <text x="576" y="102" fill="#5f6b7c" font-size="10">Open...</text>
+        <rect x="568" y="110" width="164" height="22" rx="4" fill="rgba(232,179,57,.1)"/>
+        <text x="580" y="125" fill="#e8b339" font-size="10" font-weight="600">Import from File</text>
+        <text x="576" y="142" fill="#5f6b7c" font-size="10">Download</text>
+        <!-- arrow pointing to the option -->
+        <path d="M540 121 L556 121" stroke="#e8b339" stroke-width="1.4"/>
+        <path d="M551 117 L557 121 L551 125" stroke="#e8b339" stroke-width="1.4" fill="none"/>
+        <!-- file picker -->
+        <rect x="60" y="160" width="420" height="26" rx="6" fill="#0d1219" stroke="#1f2a38"/>
+        <text x="74" y="177" fill="#8b98a8" font-size="10">📁 Pilih file: umkm-01-auto-reply-bot.json</text>
+        <text x="500" y="177" fill="#3fb950" font-size="10" font-weight="700">→ Workflow muncul!</text>
+      </svg>
+      <div class="ill-cap">Klik "..." kanan atas → Import from File → pilih file .json</div>
+    </div>
+
+    <div class="tip"><b>Tips:</b> Kalau file json-nya kebuka jadi teks panjang di browser, klik kanan file → <b>Save As</b> dulu, baru import.</div>
+  </div>
+</section>
+
+<!-- ============ STEP 6 ============ -->
+<section id="token">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">6</div><h2>Ganti Token &amp; Nomor WA</h2></div>
+    <p class="step-p">Ini langkah paling penting. Semua template punya tulisan <code>GANTI_...</code> yang harus diganti.</p>
+
+    <div class="box">
+      <h3>Cara ganti</h3>
+      <ol class="steps">
+        <li>Klik <b>2x</b> kotak yang namanya ada tulisan <b>"WhatsApp"</b> atau <b>"Kirim"</b></li>
+        <li>Panel muncul di samping</li>
+        <li>Scroll ke bawah sampai ketemu <b>Send Headers</b></li>
+        <li>Di kolom Value, ganti <code>GANTI_TOKEN_FONNTE</code> jadi token lo</li>
+        <li>Scroll dikit lagi ke <b>Send Body</b></li>
+        <li>Ganti <code>GANTI_NOMOR_WA_ADMIN</code> jadi nomor WA lo</li>
+        <li>Klik di luar panel buat nyimpan</li>
+      </ol>
+    </div>
+
+    <!-- ILLUSTRATION: node panel with token -->
+    <div class="ill">
+      <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+        <rect width="760" height="380" fill="#0f1520" rx="8"/>
+        <!-- canvas bg -->
+        <rect x="14" y="14" width="300" height="352" rx="8" fill="#0d1219"/>
+        <text x="28" y="40" fill="#5f6b7c" font-family="monospace" font-size="9">CANVAS</text>
+        <!-- node on canvas -->
+        <rect x="40" y="70" width="240" height="56" rx="8" fill="#141b26" stroke="#e8b339" stroke-width="1.4"/>
+        <circle cx="58" cy="88" r="8" fill="rgba(63,185,80,.15)"/>
+        <text x="55" y="92" fill="#3fb950" font-size="9">📤</text>
+        <text x="72" y="92" fill="#e6edf3" font-size="10" font-weight="600">Kirim Balasan (WhatsApp)</text>
+        <text x="52" y="114" fill="#5f6b7c" font-family="monospace" font-size="8">http request</text>
+        <!-- click indicator -->
+        <circle cx="160" cy="98" r="26" fill="none" stroke="#e8b339" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="120" y="146" fill="#e8b339" font-size="9.5">👆 Klik 2x kotak ini</text>
+        <!-- arrow -->
+        <path d="M286 98 L330 98" stroke="#e8b339" stroke-width="1.6"/>
+        <path d="M324 93 L331 98 L324 103" stroke="#e8b339" stroke-width="1.6" fill="none"/>
+        <!-- NODE PANEL -->
+        <rect x="338" y="14" width="408" height="352" rx="10" fill="#141b26" stroke="#1f2a38"/>
+        <rect x="338" y="14" width="408" height="30" rx="10" fill="#0d1219"/>
+        <text x="354" y="33" fill="#e6edf3" font-size="10" font-weight="700">Kirim Balasan (WhatsApp)</text>
+        <text x="700" y="33" fill="#5f6b7c" font-size="9">✕</text>
+        <!-- Method -->
+        <text x="354" y="62" fill="#8b98a8" font-size="9.5" font-weight="600">Method</text>
+        <rect x="354" y="68" width="90" height="20" rx="4" fill="#0d1219"/>
+        <text x="366" y="82" fill="#e6edf3" font-family="monospace" font-size="9">POST</text>
+        <!-- URL -->
+        <text x="354" y="104" fill="#8b98a8" font-size="9.5" font-weight="600">URL</text>
+        <rect x="354" y="110" width="376" height="20" rx="4" fill="#0d1219"/>
+        <text x="364" y="124" fill="#58a6ff" font-family="monospace" font-size="9">https://api.wablas.com/send</text>
+        <!-- Send Headers -->
+        <text x="354" y="148" fill="#8b98a8" font-size="9.5" font-weight="600">☑ Send Headers</text>
+        <rect x="354" y="154" width="376" height="24" rx="4" fill="#0d1219"/>
+        <text x="364" y="170" fill="#5f6b7c" font-family="monospace" font-size="8.5">Name</text>
+        <text x="470" y="170" fill="#5f6b7c" font-family="monospace" font-size="8.5">Value</text>
+        <line x1="354" y1="166" x2="730" y2="166" stroke="#1f2a38"/>
+        <rect x="354" y="178" width="376" height="26" rx="4" fill="rgba(232,179,57,.07)" stroke="#e8b339" stroke-width="1.2"/>
+        <text x="364" y="195" fill="#e6edf3" font-family="monospace" font-size="9">Authorization</text>
+        <text x="470" y="195" fill="#e8b339" font-family="monospace" font-size="9" font-weight="700">GANTI_TOKEN_FONNTE</text>
+        <!-- annotation -->
+        <path d="M730 191 L742 191" stroke="#e8b339" stroke-width="1.2"/>
+        <text x="676" y="216" fill="#e8b339" font-size="8.5">↑ GANTI INI</text>
+        <!-- Send Body -->
+        <text x="354" y="238" fill="#8b98a8" font-size="9.5" font-weight="600">☑ Send Body</text>
+        <rect x="354" y="244" width="376" height="24" rx="4" fill="#0d1219"/>
+        <text x="364" y="260" fill="#5f6b7c" font-family="monospace" font-size="8.5">Name</text>
+        <text x="470" y="260" fill="#5f6b7c" font-family="monospace" font-size="8.5">Value</text>
+        <line x1="354" y1="256" x2="730" y2="256" stroke="#1f2a38"/>
+        <rect x="354" y="268" width="376" height="24" rx="4" fill="#0d1219"/>
+        <text x="364" y="284" fill="#e6edf3" font-family="monospace" font-size="9">target</text>
+        <text x="470" y="284" fill="#e8b339" font-family="monospace" font-size="9">GANTI_NOMOR_WA_ADMIN</text>
+        <rect x="354" y="294" width="376" height="24" rx="4" fill="#0d1219"/>
+        <text x="364" y="310" fill="#e6edf3" font-family="monospace" font-size="9">message</text>
+        <text x="470" y="310" fill="#58a6ff" font-family="monospace" font-size="9">{{ $json.balasan }}</text>
+        <text x="676" y="332" fill="#e8b339" font-size="8.5">↑ GANTI JUGA</text>
+        <!-- bottom -->
+        <rect x="354" y="340" width="376" height="18" rx="4" fill="rgba(63,185,80,.08)"/>
+        <text x="366" y="353" fill="#3fb950" font-size="8.5">Setelah diganti → klik di luar panel buat nyimpan</text>
+      </svg>
+      <div class="ill-cap">Panel node — 2 tempat yang harus diganti: token &amp; nomor WA</div>
+    </div>
+
+    <div class="box">
+      <h3>Yang harus diganti, di semua template</h3>
+      <table>
+        <tr><th>Tulisan lama</th><th>Ganti jadi</th><th>Contoh</th></tr>
+        <tr><td><code>GANTI_TOKEN_FONNTE</code></td><td>Token gateway lo</td><td><code>AbC123XyZ...</code></td></tr>
+        <tr><td><code>GANTI_NOMOR_WA_ADMIN</code></td><td>Nomor WA admin</td><td><code>628123456789</code></td></tr>
+        <tr><td><code>GANTI_SPREADSHEET_ID</code></td><td>ID Google Sheets</td><td><code>1AbCdEf...</code></td></tr>
+        <tr><td><code>GANTI_PLACE_ID</code></td><td>Place ID Google Maps</td><td><code>ChIJ...</code></td></tr>
+      </table>
+    </div>
+
+    <div class="box">
+      <h3>Cara ambil ID Google Sheets</h3>
+      <p>Buka spreadsheet lo di browser. Liat URL-nya:</p>
+<pre><code>https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOp/edit#gid=0
+                                       └────────┬────────┘
+                                   Ini yang di-copy</code></pre>
+    </div>
+
+    <div class="warn"><b>Format nomor WA:</b> Wajib <code>62</code> di depan. Bukan <code>08</code>. Jangan pakai tanda baca.<br>❌ <code>0812-3456-789</code> &nbsp;&nbsp; ✅ <code>628123456789</code></div>
+  </div>
+</section>
+
+<!-- ============ STEP 7 ============ -->
+<section id="aktif">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">7</div><h2>Aktifin &amp; Tes</h2></div>
+    <p class="step-p">Terakhir — nyalain dan pastiin jalan.</p>
+
+    <div class="box">
+      <ol class="steps">
+        <li>Klik <b>Save</b> (pojok kanan atas)</li>
+        <li>Klik tombol <b>Inactive</b> di kanan atas → jadi <b>Active</b></li>
+        <li>Tes: klik <b>Execute Workflow</b> (tombol play ▶)</li>
+        <li>Cek HP lo — harusnya ada WhatsApp masuk</li>
+        <li>Kalau masuk, <b>selesai!</b></li>
+      </ol>
+    </div>
+
+    <div class="box">
+      <h3>Cara cek gak ada yang ketinggalan</h3>
+      <p>Tekan <code>Ctrl + F</code> di halaman n8n, ketik <code>GANTI</code>.</p>
+      <p>Kalau ada hasil = <b>masih ada yang belum diganti</b>. Kalau gak ada = <b>beres</b>.</p>
+    </div>
+
+    <!-- ILLUSTRATION: active toggle -->
+    <div class="ill">
+      <svg viewBox="0 0 760 170" xmlns="http://www.w3.org/2000/svg">
+        <rect width="760" height="170" fill="#0f1520" rx="8"/>
+        <!-- top bar -->
+        <rect x="20" y="24" width="720" height="42" rx="8" fill="#141b26" stroke="#1f2a38"/>
+        <text x="36" y="50" fill="#e8b339" font-family="monospace" font-size="11" font-weight="700">n8n</text>
+        <text x="300" y="50" fill="#8b98a8" font-size="10">UMKM 01 — Auto-Reply WhatsApp</text>
+        <!-- inactive state -->
+        <rect x="580" y="32" width="70" height="26" rx="13" fill="#0d1219" stroke="#1f2a38"/>
+        <circle cx="593" cy="45" r="8" fill="#5f6b7c"/>
+        <text x="606" y="49" fill="#8b98a8" font-size="9">Inactive</text>
+        <text x="536" y="49" fill="#f85149" font-size="9">↓ klik</text>
+        <!-- arrow down -->
+        <path d="M615 68 L615 88" stroke="#e8b339" stroke-width="1.6"/>
+        <path d="M610 83 L615 90 L620 83" stroke="#e8b339" stroke-width="1.6" fill="none"/>
+        <!-- active state -->
+        <rect x="20" y="94" width="720" height="42" rx="8" fill="#141b26" stroke="#3fb950" stroke-width="1"/>
+        <text x="36" y="120" fill="#e8b339" font-family="monospace" font-size="11" font-weight="700">n8n</text>
+        <text x="300" y="120" fill="#8b98a8" font-size="10">UMKM 01 — Auto-Reply WhatsApp</text>
+        <rect x="580" y="102" width="70" height="26" rx="13" fill="rgba(63,185,80,.16)" stroke="#3fb950"/>
+        <circle cx="643" cy="115" r="8" fill="#3fb950"/>
+        <text x="590" y="119" fill="#3fb950" font-size="9">Active</text>
+        <text x="500" y="119" fill="#3fb950" font-size="9" font-weight="700">✓ SIAP</text>
+      </svg>
+      <div class="ill-cap">Klik toggle Inactive → Active. Hijau = jalan.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 8 ============ -->
+<section id="template">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">8</div><h2>Per Template — Fungsi &amp; Catatan</h2></div>
+    <p class="step-p">15 template: 9 UMKM + 6 crypto. Semua pakai WhatsApp (gak ada Telegram).</p>
+
+    <h3 style="font-size:15px;margin:22px 0 12px;color:var(--acc)">UMKM — 9 template</h3>
+    <div class="tpl-idx">
+      <div class="tpl-i"><div class="n">UMKM 01</div><b>Auto-Reply WhatsApp</b><span>12 node · Bot jawab pertanyaan otomatis 24 jam. Perlu set webhook Fonnte/Wablas.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 02</div><b>Order → Notifikasi</b><span>6 node · Order masuk → tercatat di Sheets → notif WA ke admin.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 03</div><b>Invoice PDF Otomatis</b><span>7 node · Bayar → invoice PDF jadi → dikirim ke WA sebagai dokumen.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 04</div><b>Laporan Harian</b><span>5 node · Jam 8 malam → rekap penjualan → kirim ke WA.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 05</div><b>Form Order → Notif</b><span>5 node · Google Form diisi → notif WA dalam 1 menit. 2 node WA.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 06</div><b>Minta Review Google</b><span>6 node · Order selesai +24 jam → pesan minta review. Perlu Place ID.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 07</div><b>Stok Alert</b><span>7 node · Cek stok tiap pagi → di bawah minimum → alert WA.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 08</div><b>Order Status Tracker</b><span>8 node · Customer chat nomor order → bot bales status + resi.</span></div>
+      <div class="tpl-i"><div class="n">UMKM 09</div><b>Birthday Wish</b><span>7 node · Customer ultah → ucapan + kode diskon otomatis ke WA.</span></div>
+    </div>
+
+    <h3 style="font-size:15px;margin:22px 0 12px;color:var(--acc)">Crypto — 6 template</h3>
+    <div class="tpl-idx">
+      <div class="tpl-i"><div class="n">CRYPTO 01</div><b>Price Alert</b><span>8 node · Harga target tercapai → notif WA. Pakai CoinGecko gratis.</span></div>
+      <div class="tpl-i"><div class="n">CRYPTO 02</div><b>Wallet Monitor</b><span>7 node · Pantau wallet 24 jam. Ada transaksi → WA masuk 1 menit.</span></div>
+      <div class="tpl-i"><div class="n">CRYPTO 03</div><b>Token Scanner</b><span>7 node · Scan token baru: likuiditas, holder, umur kontrak.</span></div>
+      <div class="tpl-i"><div class="n">CRYPTO 04</div><b>Gas Alert</b><span>8 node · Gas turun → alert. Swap pas murah.</span></div>
+      <div class="tpl-i"><div class="n">CRYPTO 05</div><b>Portfolio Report</b><span>9 node · Laporan portfolio harian ke WA tiap pagi.</span></div>
+      <div class="tpl-i"><div class="n">CRYPTO 06</div><b>NFT Watcher</b><span>7 node · Floor price, volume, listing baru. Alert kalau turun.</span></div>
+    </div>
+
+    <div class="tip"><b>Catatan template 01:</b> Perlu set webhook di dashboard gateway (Fonnte/Wablas) supaya pesan WhatsApp masuk diteruskan ke n8n. URL webhook ada di node <b>Pesan WhatsApp Masuk</b> — klik node itu, copy URL production.</div>
+
+    <div class="tip"><b>Catatan template 06:</b> Butuh <b>Place ID</b> Google Maps toko lo. Ambil di <code>developers.google.com/maps/documentation/javascript/examples/places-placeid-finder</code></div>
+  </div>
+</section>
+
+<!-- ============ STEP 9 ============ -->
+<section id="sheets">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">9</div><h2>Struktur Google Sheets</h2></div>
+    <p class="step-p">Bikin 3 spreadsheet. Header kolom harus persis biar template bisa baca.</p>
+
+    <div class="box">
+      <h3>Spreadsheet 1 — "Data Order"</h3>
+      <p>Dipakai template: 02, 04, 06, 08</p>
+      <table>
+        <tr><th>Kolom</th><th>Isi</th><th>Contoh</th></tr>
+        <tr><td><code>order_id</code></td><td>Nomor unik order</td><td>ORD-001</td></tr>
+        <tr><td><code>nama_pembeli</code></td><td>Nama customer</td><td>Budi Santoso</td></tr>
+        <tr><td><code>nomor_wa</code></td><td>Nomor WA customer</td><td>628123456789</td></tr>
+        <tr><td><code>produk</code></td><td>Barang dibeli</td><td>Kaos Polos Hitam</td></tr>
+        <tr><td><code>jumlah</code></td><td>Qty</td><td>2</td></tr>
+        <tr><td><code>total</code></td><td>Nilai order</td><td>150000</td></tr>
+        <tr><td><code>status</code></td><td>Status</td><td>Selesai / Dikirim / Proses</td></tr>
+        <tr><td><code>kurir</code></td><td>Nama kurir</td><td>JNE</td></tr>
+        <tr><td><code>resi</code></td><td>Nomor resi</td><td>JNE123456789</td></tr>
+        <tr><td><code>waktu</code></td><td>Tanggal &amp; jam</td><td>2026-10-27 14:30</td></tr>
+      </table>
+    </div>
+
+    <div class="box">
+      <h3>Spreadsheet 2 — "Data Stok"</h3>
+      <p>Dipakai template: 07</p>
+      <table>
+        <tr><th>Kolom</th><th>Isi</th><th>Contoh</th></tr>
+        <tr><td><code>produk</code></td><td>Nama produk</td><td>Kaos Polos Hitam</td></tr>
+        <tr><td><code>stok</code></td><td>Jumlah stok sekarang</td><td>3</td></tr>
+        <tr><td><code>minimum</code></td><td>Batas minimum sebelum alert</td><td>5</td></tr>
+      </table>
+    </div>
+
+    <div class="box">
+      <h3>Spreadsheet 3 — "Data Customer"</h3>
+      <p>Dipakai template: 09</p>
+      <table>
+        <tr><th>Kolom</th><th>Isi</th><th>Contoh</th></tr>
+        <tr><td><code>nama</code></td><td>Nama customer</td><td>Budi Santoso</td></tr>
+        <tr><td><code>nomor_wa</code></td><td>Nomor WA</td><td>628123456789</td></tr>
+        <tr><td><code>tanggal_lahir</code></td><td>Tanggal lahir (dd-MM)</td><td>15-03</td></tr>
+      </table>
+    </div>
+
+    <div class="tip"><b>Penting:</b> Nama kolom harus <b>persis sama</b> dan <b>huruf kecil semua</b>. Kalau beda, template gak akan nemu datanya.</div>
+  </div>
+</section>
+
+<!-- ============ STEP 10 ============ -->
+<section id="masalah">
+  <div class="wrap">
+    <div class="step-h"><div class="step-n">10</div><h2>Kalau Ada Masalah</h2></div>
+    <p class="step-p">9 masalah paling sering + solusinya.</p>
+
+    <div class="box">
+      <table>
+        <tr><th>Masalah</th><th>Penyebab</th><th>Solusi</th></tr>
+        <tr><td>Pesan WA gak terkirim</td><td>Token salah / saldo habis</td><td>Cek token di dashboard, cek saldo gateway</td></tr>
+        <tr><td>Pesan WA gak terkirim</td><td>Nomor format salah</td><td>Pastikan format <code>628xxx</code></td></tr>
+        <tr><td>Sheets gak terisi</td><td>Credential belum dipilih</td><td>Pilih credential Google di setiap node Sheets</td></tr>
+        <tr><td>Sheets gak terisi</td><td>Spreadsheet ID salah</td><td>Cek ID di URL spreadsheet</td></tr>
+        <tr><td>Sheets gak terisi</td><td>Nama kolom beda</td><td>Samain dengan struktur di Step 9</td></tr>
+        <tr><td>Workflow gak jalan</td><td>Status masih Inactive</td><td>Klik toggle jadi Active</td></tr>
+        <tr><td>Workflow error</td><td>Placeholder belum diganti</td><td>Ctrl+F, cari <code>GANTI</code></td></tr>
+        <tr><td>Bot gak bales pesan</td><td>Webhook gateway belum di-set</td><td>Set webhook di dashboard gateway ke URL n8n</td></tr>
+        <tr><td>PDF invoice gak terkirim</td><td>HTML invoice invalid</td><td>Cek node Buat HTML Invoice, pastikan HTML valid</td></tr>
+      </table>
+    </div>
+
+    <div class="tip"><b>Kalau tetap gagal:</b> Klik node yang merah → tab <b>"Error"</b> di panel → screenshot pesan error-nya → kirim ke yang setup.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>twist.automation — panduan setup template n8n untuk UMKM &amp; crypto.</p>
+    <p style="margin-top:6px">Semua template pakai WhatsApp · 15 template · 109 node</p>
+  </div>
+</footer>
+
+<script>
+/* scroll progress */
+(function(){
+  var p = document.getElementById('prog');
+  addEventListener('scroll', function(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    p.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+/* smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var id = a.getAttribute('href');
+    if (id.length < 2) return;
+    var el = document.querySelector(id);
+    if (!el) return;
+    e.preventDefault();
+    window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 64, behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>
