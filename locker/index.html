@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOCKER ROOM — Interactive 3D Jersey Rail</title>
+<meta name="description" content="Interactive 3D locker room. Pick a jersey from the rail, meet the player behind the number.">
+<style>
+  :root{
+    --bg:#0a0908; --bg2:#12100d; --card:#1a1713; --line:#2a251e;
+    --txt:#f0ebe0; --dim:#8a8175;
+    --acc:#e8b339; --acc2:#f5d076;
+    --red:#c8102e; --red2:#e02040;
+    --teal:#00838f; --teal2:#00a5ad;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;cursor:default}
+  canvas{display:block;position:fixed;inset:0;z-index:1}
+
+  /* ============ HUD ============ */
+  .hud{position:fixed;inset:0;z-index:10;pointer-events:none}
+  .hud > *{pointer-events:auto}
+
+  .topbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;
+    justify-content:space-between;padding:16px 22px;gap:14px}
+  .brand{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:3px;color:var(--txt)}
+  .brand span{color:var(--acc)}
+  .crest{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--dim);
+    border:1px solid var(--line);padding:5px 12px;border-radius:100px;background:rgba(10,9,8,.6)}
+  .top-r{display:flex;gap:8px}
+  .ico{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(10,9,8,.6);
+    display:grid;place-items:center;font-size:14px;color:var(--dim);transition:.25s;cursor:pointer}
+  .ico:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-2px)}
+
+  .caption{position:absolute;left:50%;top:22%;transform:translateX(-50%);text-align:center;
+    font-family:var(--mono);font-weight:800;letter-spacing:-.5px;line-height:1;
+    transition:opacity .5s,transform .5s;pointer-events:none;white-space:nowrap}
+  .caption .l1{display:block;font-size:clamp(22px,4.4vw,44px);color:var(--acc);
+    text-shadow:0 4px 24px rgba(232,179,57,.35)}
+  .caption .l2{display:block;font-size:clamp(11px,1.7vw,15px);color:var(--dim);
+    letter-spacing:4px;margin-top:10px;font-weight:400}
+  .caption.hide{opacity:0;transform:translateX(-50%) translateY(-14px)}
+
+  /* ============ PLAYER CARD ============ */
+  .pcard{position:absolute;right:26px;top:50%;transform:translateY(-50%) translateX(30px);
+    width:290px;background:linear-gradient(165deg,rgba(200,16,46,.14),rgba(26,23,19,.94));
+    border:1px solid rgba(200,16,46,.32);border-radius:18px;padding:22px;
+    backdrop-filter:blur(14px);opacity:0;pointer-events:none;
+    transition:opacity .45s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1)}
+  .pcard.on{opacity:1;transform:translateY(-50%) translateX(0);pointer-events:auto}
+  .pcard-top{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+  .pcard-flag{width:38px;height:27px;border-radius:4px;overflow:hidden;flex-shrink:0;
+    border:1px solid rgba(255,255,255,.14)}
+  .pcard-flag svg{display:block;width:100%;height:100%}
+  .pcard-num{width:46px;height:46px;border-radius:50%;background:var(--red);display:grid;place-items:center;
+    font-family:var(--mono);font-size:20px;font-weight:800;color:#fff;flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(200,16,46,.22)}
+  .pcard-name{font-size:19px;font-weight:800;letter-spacing:-.4px;line-height:1.15}
+  .pcard-pos{font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:1.6px;margin-top:3px}
+  .pcard-rows{margin-bottom:16px}
+  .prow{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;
+    border-bottom:1px solid rgba(42,37,30,.6)}
+  .prow:last-child{border-bottom:none}
+  .prow span{color:var(--dim)}
+  .prow b{font-weight:600;font-family:var(--mono)}
+  .pcard-stats{margin-bottom:18px}
+  .stat{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .stat:last-child{margin-bottom:0}
+  .stat-lbl{font-family:var(--mono);font-size:9.5px;color:var(--dim);width:52px;letter-spacing:1px;flex-shrink:0}
+  .stat-bar{flex:1;height:5px;background:rgba(42,37,30,.8);border-radius:100px;overflow:hidden}
+  .stat-fill{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--red2));
+    border-radius:100px;transition:width .8s cubic-bezier(.16,1,.3,1)}
+  .stat-val{font-family:var(--mono);font-size:11px;font-weight:700;width:24px;text-align:right;flex-shrink:0}
+  .pcard-nav{display:flex;gap:8px}
+  .pnav{flex:1;padding:9px;border-radius:9px;border:1px solid var(--line);background:rgba(10,9,8,.5);
+    font-size:12px;color:var(--dim);transition:.22s;text-align:center;cursor:pointer}
+  .pnav:hover{border-color:var(--acc);color:var(--acc)}
+  .pnav.back{flex:0 0 auto;padding:9px 14px}
+
+  /* ============ HINT ============ */
+  .hint{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+    font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:2px;
+    border:1px solid var(--line);padding:7px 16px;border-radius:100px;background:rgba(10,9,8,.7);
+    transition:opacity .4s;white-space:nowrap}
+  .hint.hide{opacity:0}
+
+  /* ============ FOOTER BAR ============ */
+  .footbar{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.82);
+    border-top:1px solid var(--line);padding:6px 22px;display:flex;justify-content:center;
+    gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:8.5px;color:#5a5348;letter-spacing:1.2px}
+
+  /* ============ LOADER ============ */
+  .loader{position:fixed;inset:0;background:var(--bg);z-index:100;display:grid;place-items:center;
+    transition:opacity .6s;font-family:var(--mono)}
+  .loader.done{opacity:0;pointer-events:none}
+  .loader-in{text-align:center}
+  .loader-in .wm{font-size:13px;letter-spacing:4px;color:var(--acc);margin-bottom:16px}
+  .loader-in .bar{width:180px;height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin:0 auto}
+  .loader-in .bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+
+  /* ============ MOBILE ============ */
+  @media(max-width:760px){
+    .pcard{right:14px;left:14px;width:auto;top:auto;bottom:44px;transform:translateY(20px)}
+    .pcard.on{transform:translateY(0)}
+    .caption{top:16%}
+    .topbar{padding:12px 14px}
+    .crest{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="loader-in">
+    <div class="wm">LOCKER ROOM</div>
+    <div class="bar"><i id="loadBar"></i></div>
+  </div>
+</div>
+
+<canvas id="c"></canvas>
+
+<div class="hud">
+  <div class="topbar">
+    <div class="brand">OFFWG<span>.</span></div>
+    <div class="crest">ASEAN CUP 2026 · FINAL</div>
+    <div class="top-r">
+      <div class="ico" id="btnReset" title="Reset view">⟲</div>
+      <div class="ico" id="btnSound" title="Sound">♪</div>
+    </div>
+  </div>
+
+  <div class="caption" id="caption">
+    <span class="l1">interactive 3D locker room</span>
+    <span class="l2">PICK ONE FROM THE RAIL</span>
+  </div>
+
+  <div class="pcard" id="pcard">
+    <div class="pcard-top">
+      <div class="pcard-flag" id="pFlag"></div>
+      <div class="pcard-num" id="pNum">10</div>
+      <div>
+        <div class="pcard-name" id="pName">Ragnar Oratmangoen</div>
+        <div class="pcard-pos" id="pPos">LEFT WINGER</div>
+      </div>
+    </div>
+    <div class="pcard-rows">
+      <div class="prow"><span>Klub</span><b id="pClub">—</b></div>
+      <div class="prow"><span>Usia</span><b id="pAge">—</b></div>
+      <div class="prow"><span>Tinggi</span><b id="pHeight">—</b></div>
+      <div class="prow"><span>Caps</span><b id="pCaps">—</b></div>
+    </div>
+    <div class="pcard-stats" id="pStats"></div>
+    <div class="pcard-nav">
+      <button class="pnav back" id="pBack">← Rail</button>
+      <button class="pnav" id="pPrev">‹ Prev</button>
+      <button class="pnav" id="pNext">Next ›</button>
+    </div>
+  </div>
+
+  <div class="hint" id="hint">KLIK JERSEY DI RAK · GESER BUAT PUTAR · SCROLL BUAT ZOOM</div>
+
+  <div class="footbar">
+    <span>UNOFFICIAL FAN TRIBUTE</span>
+    <span>NOT AFFILIATED WITH PESL, KELME OR FIFA</span>
+    <span>BUILT WITH ♥</span>
+    <span>POWERED BY TWIST</span>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ============================================================
+   PLAYERS
+============================================================ */
+const PLAYERS = [
+  { name:'Ragnar Oratmangoen', num:11, pos:'LEFT WINGER', club:'NEC Nijmegen',
+    age:27, height:'172 cm', caps:14, team:'red',
+    stats:{PAC:87,SHO:78,PAS:82,DRI:88,DEF:41,PHY:64} },
+  { name:'Thom Haye', num:14, pos:'CENTRAL MIDFIELD', club:'Almere City',
+    age:30, height:'184 cm', caps:22, team:'red',
+    stats:{PAC:71,SHO:74,PAS:86,DRI:80,DEF:70,PHY:78} },
+  { name:'Rafael Struick', num:9, pos:'STRIKER', club:'Brisbane Roar',
+    age:23, height:'186 cm', caps:8, team:'red',
+    stats:{PAC:84,SHO:80,PAS:62,DRI:76,DEF:32,PHY:74} },
+  { name:'Jordi Amat', num:4, pos:'CENTRE BACK', club:'Johor Darul',
+    age:34, height:'184 cm', caps:26, team:'red',
+    stats:{PAC:62,SHO:41,PAS:66,DRI:52,DEF:88,PHY:86} },
+  { name:'Maarten Paes', num:1, pos:'GOALKEEPER', club:'FC Dallas',
+    age:28, height:'191 cm', caps:12, team:'red',
+    stats:{PAC:58,SHO:22,PAS:48,DRI:52,DIV:86,REF:85} },
+  { name:'Marselino Ferdinan', num:7, pos:'ATTACKING MID', club:'Oxford United',
+    age:22, height:'176 cm', caps:16, team:'red',
+    stats:{PAC:83,SHO:76,PAS:84,DRI:90,DEF:38,PHY:58} },
+  { name:'Ivar Jenner', num:8, pos:'DEFENSIVE MID', club:'Utrecht',
+    age:22, height:'180 cm', caps:10, team:'teal',
+    stats:{PAC:74,SHO:62,PAS:82,DRI:76,DEF:80,PHY:76} },
+  { name:'Justin Hubner', num:3, pos:'CENTRE BACK', club:'Wolverhampton',
+    age:23, height:'187 cm', caps:9, team:'teal',
+    stats:{PAC:70,SHO:38,PAS:60,DRI:50,DEF:82,PHY:84} },
+  { name:'Arkhan Fikri', num:6, pos:'CENTRAL MIDFIELD', club:'Arema FC',
+    age:21, height:'174 cm', caps:6, team:'teal',
+    stats:{PAC:78,SHO:66,PAS:80,DRI:82,DEF:64,PHY:62} },
+  { name:'Hokky Caraka', num:19, pos:'STRIKER', club:'PSS Sleman',
+    age:22, height:'182 cm', caps:5, team:'teal',
+    stats:{PAC:85,SHO:78,PAS:58,DRI:78,DEF:30,PHY:70} }
+];
+
+const RED = 0xc8102e, TEAL = 0x00838f;
+
+/* ============================================================
+   RENDERER / SCENE / CAMERA
+============================================================ */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0908);
+scene.fog = new THREE.Fog(0x0a0908, 14, 34);
+
+const camera = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, .1, 100);
+camera.position.set(0, 1.55, 7.2);
+
+/* ============================================================
+   LIGHTING — warm spotlights from above
+============================================================ */
+scene.add(new THREE.AmbientLight(0x2a2018, .55));
+
+const key = new THREE.SpotLight(0xffb347, 55, 22, Math.PI/5.2, .45, 1.6);
+key.position.set(0, 6.2, 3.4);
+key.target.position.set(0, 1.1, 0);
+key.castShadow = true;
+key.shadow.mapSize.set(1024,1024);
+key.shadow.bias = -0.0005;
+scene.add(key, key.target);
+
+const fillL = new THREE.PointLight(0xff8c42, 12, 16, 2);
+fillL.position.set(-5.5, 3.2, 2.6);
+scene.add(fillL);
+
+const fillR = new THREE.PointLight(0xff8c42, 12, 16, 2);
+fillR.position.set(5.5, 3.2, 2.6);
+scene.add(fillR);
+
+const rim = new THREE.DirectionalLight(0x6b4a2a, .5);
+rim.position.set(0, 3, -6);
+scene.add(rim);
+
+/* ============================================================
+   LOCKER ROOM — wooden lockers + bench + floor
+============================================================ */
+function buildRoom(){
+  const g = new THREE.Group();
+
+  // floor — worn concrete
+  const floorMat = new THREE.MeshStandardMaterial({
+    color:0x1a1611, roughness:.94, metalness:.04
+  });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 22), floorMat);
+  floor.rotation.x = -Math.PI/2;
+  floor.receiveShadow = true;
+  g.add(floor);
+
+  // subtle floor grid (tiles)
+  const grid = new THREE.GridHelper(30, 30, 0x241e17, 0x1c1813);
+  grid.position.y = .01;
+  g.add(grid);
+
+  // back wall — dark acoustic panels
+  const wallMat = new THREE.MeshStandardMaterial({ color:0x14110d, roughness:.96 });
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(30, 12), wallMat);
+  wall.position.set(0, 6, -3.2);
+  wall.receiveShadow = true;
+  g.add(wall);
+
+  // lockers — vertical wooden slats
+  const woodMat = new THREE.MeshStandardMaterial({ color:0x3d2b1a, roughness:.82 });
+  const woodDark = new THREE.MeshStandardMaterial({ color:0x2e2013, roughness:.85 });
+  for (let i = 0; i < 22; i++){
+    const x = -10.5 + i * .98;
+    const h = 5.2 + (i % 3 === 0 ? .25 : 0);
+    const slat = new THREE.Mesh(new THREE.BoxGeometry(.9, h, .34), i % 2 ? woodMat : woodDark);
+    slat.position.set(x, h/2, -3.0);
+    slat.castShadow = true;
+    g.add(slat);
+  }
+
+  // bench — worn wood
+  const benchMat = new THREE.MeshStandardMaterial({ color:0x4a3520, roughness:.88 });
+  const bench = new THREE.Mesh(new THREE.BoxGeometry(13, .16, .62), benchMat);
+  bench.position.set(0, .46, -1.9);
+  bench.castShadow = true; bench.receiveShadow = true;
+  g.add(bench);
+
+  // bench legs
+  const legMat = new THREE.MeshStandardMaterial({ color:0x1a1410, roughness:.9, metalness:.3 });
+  [-5.6, -2.8, 0, 2.8, 5.6].forEach(x => {
+    const leg = new THREE.Mesh(new THREE.BoxGeometry(.12, .46, .5), legMat);
+    leg.position.set(x, .23, -1.9);
+    leg.castShadow = true;
+    g.add(leg);
+  });
+
+  return g;
+}
+scene.add(buildRoom());
+
+/* ============================================================
+   RAIL — metal bar with suspension wires
+============================================================ */
+const RAIL_Y = 2.5;
+const railMat = new THREE.MeshStandardMaterial({ color:0x8a8a8a, roughness:.35, metalness:.85 });
+const rail = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, 15.4, 12), railMat);
+rail.rotation.z = Math.PI/2;
+rail.position.set(0, RAIL_Y, -1.55);
+rail.castShadow = true;
+scene.add(rail);
+
+// rail end caps
+[-7.7, 7.7].forEach(x => {
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, .16, 10), railMat);
+  cap.rotation.z = Math.PI/2;
+  cap.position.set(x, RAIL_Y, -1.55);
+  scene.add(cap);
+});
+
+// suspension wires
+const wireMat = new THREE.MeshStandardMaterial({ color:0x555555, roughness:.5, metalness:.8 });
+[-5.6, 0, 5.6].forEach(x => {
+  const w = new THREE.Mesh(new THREE.CylinderGeometry(.008, .008, 3.6, 4), wireMat);
+  w.position.set(x, RAIL_Y + 1.8, -1.55);
+  scene.add(w);
+});
+
+/* ============================================================
+   JERSEY BUILDER — canvas texture with name + number
+============================================================ */
+function jerseyTexture(player, colorHex){
+  const W = 512, H = 640;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const x = cv.getContext('2d');
+
+  // base
+  x.fillStyle = colorHex;
+  x.fillRect(0, 0, W, H);
+
+  // subtle fabric noise
+  for (let i = 0; i < 2600; i++){
+    x.fillStyle = `rgba(0,0,0,${Math.random()*.05})`;
+    x.fillRect(Math.random()*W, Math.random()*H, 2, 2);
+  }
+  for (let i = 0; i < 1400; i++){
+    x.fillStyle = `rgba(255,255,255,${Math.random()*.035})`;
+    x.fillRect(Math.random()*W, Math.random()*H, 2, 2);
+  }
+
+  // collar
+  x.strokeStyle = 'rgba(255,255,255,.85)';
+  x.lineWidth = 9;
+  x.beginPath();
+  x.moveTo(W*.36, 8); x.quadraticCurveTo(W/2, 62, W*.64, 8);
+  x.stroke();
+
+  // shoulder trim
+  x.lineWidth = 5;
+  x.beginPath(); x.moveTo(W*.16, 96); x.lineTo(W*.84, 96); x.stroke();
+
+  // sleeve hems
+  x.lineWidth = 4;
+  [W*.12, W*.88].forEach(sx => {
+    x.beginPath(); x.moveTo(sx, 150); x.lineTo(sx, 300); x.stroke();
+  });
+
+  // sponsor mark
+  x.fillStyle = 'rgba(255,255,255,.5)';
+  x.font = '600 20px monospace';
+  x.textAlign = 'center';
+  x.fillText('OFFWG', W/2, 190);
+
+  // NAME (upper back)
+  x.fillStyle = '#ffffff';
+  x.font = '800 58px -apple-system, "Segoe UI", Roboto, sans-serif';
+  x.textAlign = 'center';
+  x.letterSpacing = '3px';
+  const name = player.name.toUpperCase();
+  // shrink to fit
+  let fs = 58;
+  while (x.measureText(name).width > W*.86 && fs > 30){
+    fs -= 2;
+    x.font = `800 ${fs}px -apple-system, "Segoe UI", Roboto, sans-serif`;
+  }
+  x.fillText(name, W/2, 300);
+
+  // NUMBER (below name, big)
+  x.font = '800 150px -apple-system, "Segoe UI", Roboto, sans-serif';
+  x.fillText(String(player.num), W/2, 452);
+
+  // league badge below number
+  x.strokeStyle = 'rgba(255,255,255,.6)';
+  x.lineWidth = 3;
+  x.beginPath(); x.arc(W/2, 520, 26, 0, Math.PI*2); x.stroke();
+  x.font = '700 22px monospace';
+  x.fillStyle = 'rgba(255,255,255,.8)';
+  x.fillText('IDN', W/2, 528);
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return tex;
+}
+
+function buildJersey(player, colorHex){
+  const g = new THREE.Group();
+  const tex = jerseyTexture(player, colorHex);
+
+  const front = new THREE.MeshStandardMaterial({
+    map: tex, roughness:.86, metalness:.02
+  });
+  const back = new THREE.MeshStandardMaterial({
+    color: colorHex, roughness:.86, metalness:.02
+  });
+  const trim = new THREE.MeshStandardMaterial({
+    color:0xf5f5f5, roughness:.7
+  });
+
+  // torso — slightly tapered box
+  const torso = new THREE.Mesh(new THREE.BoxGeometry(.92, 1.06, .30), [trim, trim, trim, trim, front, back]);
+  torso.position.y = 0;
+  torso.castShadow = true;
+  g.add(torso);
+
+  // shoulders
+  const shGeo = new THREE.BoxGeometry(1.02, .14, .30);
+  const sh = new THREE.Mesh(shGeo, trim);
+  sh.position.y = .56;
+  g.add(sh);
+
+  // sleeves
+  const sleeveGeo = new THREE.BoxGeometry(.26, .62, .28);
+  [-.56, .56].forEach(x => {
+    const s = new THREE.Mesh(sleeveGeo, back);
+    s.position.set(x, .24, 0);
+    s.rotation.z = x < 0 ? .16 : -.16;
+    s.castShadow = true;
+    g.add(s);
+  });
+
+  // collar
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(.17, .045, 8, 20, Math.PI), trim);
+  collar.position.y = .63;
+  collar.rotation.x = Math.PI/2;
+  g.add(collar);
+
+  // hanger
+  const hangerMat = new THREE.MeshStandardMaterial({ color:0xc99a63, roughness:.7 });
+  const bar = new THREE.Mesh(new THREE.CylinderGeometry(.022, .022, .86, 8), hangerMat);
+  bar.rotation.z = Math.PI/2;
+  bar.position.y = .72;
+  g.add(bar);
+  const hook = new THREE.Mesh(new THREE.TorusGeometry(.07, .016, 6, 14, Math.PI*1.4), hangerMat);
+  hook.position.y = .78;
+  g.add(hook);
+
+  return g;
+}
+
+/* ============================================================
+   PLACE JERSEYS ON THE RAIL
+============================================================ */
+const jerseyObjs = [];
+const SPACING = 1.42;
+const START_X = -(PLAYERS.length - 1) * SPACING / 2;
+
+PLAYERS.forEach((p, i) => {
+  const color = p.team === 'red' ? RED : TEAL;
+  const hex = '#' + color.toString(16).padStart(6, '0');
+  const j = buildJersey(p, color);
+  const x = START_X + i * SPACING;
+  j.position.set(x, RAIL_Y - .78, -1.55);
+  j.userData = { player: p, index: i, baseX: x, baseY: RAIL_Y - .78, phase: i * .7 };
+  scene.add(j);
+  jerseyObjs.push(j);
+});
+
+/* ============================================================
+   INTERACTION STATE
+============================================================ */
+let active = null;          // selected jersey group
+let hovered = null;
+let camMode = 'idle';       // idle | focus | rail
+let camTarget = new THREE.Vector3(0, 1.55, 7.2);
+let lookTarget = new THREE.Vector3(0, 1.7, -1.55);
+let curLook = new THREE.Vector3(0, 1.7, -1.55);
+
+/* ============================================================
+   RAYCASTER
+============================================================ */
+const ray = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let mouseDown = false, dragged = false, downX = 0, downY = 0;
+
+function pick(e){
+  mouse.x = (e.clientX / innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+  ray.setFromCamera(mouse, camera);
+  const hits = ray.intersectObjects(jerseyObjs, true);
+  if (!hits.length) return null;
+  let o = hits[0].object;
+  while (o.parent && !o.userData.index && o.userData.index !== 0) o = o.parent;
+  return o;
+}
+
+canvas.addEventListener('pointermove', e => {
+  if (mouseDown){
+    if (Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY) > 6) dragged = true;
+  }
+  const hit = pick(e);
+  hovered = hit;
+  canvas.style.cursor = hit ? 'pointer' : 'default';
+});
+
+canvas.addEventListener('pointerdown', e => {
+  mouseDown = true; dragged = false;
+  downX = e.clientX; downY = e.clientY;
+});
+
+canvas.addEventListener('pointerup', e => {
+  mouseDown = false;
+  if (dragged) return;
+  const hit = pick(e);
+  if (hit) selectJersey(hit);
+});
+
+canvas.addEventListener('pointerleave', () => { hovered = null; });
+
+/* ============================================================
+   SELECT / DESELECT
+============================================================ */
+const caption = document.getElementById('caption');
+const pcard = document.getElementById('pcard');
+const hint = document.getElementById('hint');
+
+function selectJersey(j){
+  active = j;
+  const i = j.userData.index;
+  const p = j.userData.player;
+
+  // camera: push in close to the chosen jersey
+  camMode = 'focus';
+  camTarget.set(j.userData.baseX * .55, 1.62, 4.35);
+  lookTarget.set(j.userData.baseX * .5, 1.62, -1.55);
+
+  // UI
+  caption.classList.add('hide');
+  hint.classList.add('hide');
+  showCard(p);
+  pcard.classList.add('on');
+}
+
+function backToRail(){
+  active = null;
+  camMode = 'rail';
+  camTarget.set(0, 1.55, 7.2);
+  lookTarget.set(0, 1.7, -1.55);
+  caption.classList.remove('hide');
+  hint.classList.remove('hide');
+  pcard.classList.remove('on');
+}
+
+function cycle(dir){
+  if (!active) return;
+  const i = (active.userData.index + dir + PLAYERS.length) % PLAYERS.length;
+  selectJersey(jerseyObjs[i]);
+}
+
+/* ============================================================
+   PLAYER CARD UI
+============================================================ */
+const IDN_FLAG = `<svg viewBox="0 0 38 27"><rect width="38" height="13.5" fill="#ce1126"/><rect y="13.5" width="38" height="13.5" fill="#fff"/></svg>`;
+
+function showCard(p){
+  document.getElementById('pFlag').innerHTML = IDN_FLAG;
+  document.getElementById('pNum').textContent = p.num;
+  document.getElementById('pName').textContent = p.name;
+  document.getElementById('pPos').textContent = p.pos;
+  document.getElementById('pClub').textContent = p.club;
+  document.getElementById('pAge').textContent = p.age + ' th';
+  document.getElementById('pHeight').textContent = p.height;
+  document.getElementById('pCaps').textContent = p.caps;
+
+  const box = document.getElementById('pStats');
+  box.innerHTML = '';
+  Object.entries(p.stats).forEach(([k, v]) => {
+    const row = document.createElement('div');
+    row.className = 'stat';
+    row.innerHTML = `<span class="stat-lbl">${k}</span>
+      <div class="stat-bar"><div class="stat-fill" data-v="${v}"></div></div>
+      <span class="stat-val">${v}</span>`;
+    box.appendChild(row);
+  });
+  requestAnimationFrame(() => {
+    box.querySelectorAll('.stat-fill').forEach(f => {
+      f.style.width = f.dataset.v + '%';
+    });
+  });
+}
+
+document.getElementById('pBack').addEventListener('click', backToRail);
+document.getElementById('pPrev').addEventListener('click', () => cycle(-1));
+document.getElementById('pNext').addEventListener('click', () => cycle(1));
+document.getElementById('btnReset').addEventListener('click', backToRail);
+document.getElementById('btnSound').addEventListener('click', function(){
+  this.style.color = this.style.color === 'rgb(232, 179, 57)' ? '' : 'var(--acc)';
+});
+
+/* ============================================================
+   KEYBOARD
+============================================================ */
+addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') cycle(-1);
+  else if (e.key === 'ArrowRight') cycle(1);
+  else if (e.key === 'Escape') backToRail();
+});
+
+/* ============================================================
+   ORBIT — drag to rotate the room view
+============================================================ */
+let orbitY = 0, orbitX = 0, orbitTY = 0, orbitTX = 0;
+canvas.addEventListener('pointermove', e => {
+  if (!mouseDown) return;
+  orbitTY += (e.movementX || 0) * .0035;
+  orbitTX = Math.max(-.3, Math.min(.3, orbitTX + (e.movementY || 0) * .002));
+});
+addEventListener('pointerup', () => { mouseDown = false; });
+
+/* ============================================================
+   ANIMATION LOOP
+============================================================ */
+const clock = new THREE.Clock();
+
+function animate(){
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  // idle sway — each jersey sways gently, staggered
+  jerseyObjs.forEach(j => {
+    const d = j.userData;
+    const sway = Math.sin(t * .55 + d.phase) * .028;
+    const sway2 = Math.sin(t * .31 + d.phase * 1.7) * .016;
+    j.rotation.z = sway;
+    j.rotation.x = sway2;
+
+    if (active === j){
+      // pull forward + face the camera
+      d.curZ = (d.curZ ?? 0) + (0.85 - (d.curZ ?? 0)) * .12;
+      d.curRY = (d.curRY ?? 0) + (0 - (d.curRY ?? 0)) * .12;
+      d.curS = (d.curS ?? 1) + (1.14 - (d.curS ?? 1)) * .12;
+      d.curY = (d.curY ?? d.baseY) + ((d.baseY + .06) - (d.curY ?? d.baseY)) * .12;
+    } else {
+      d.curZ = (d.curZ ?? 0) + (0 - (d.curZ ?? 0)) * .1;
+      d.curRY = (d.curRY ?? 0) + (0 - (d.curRY ?? 0)) * .1;
+      d.curS = (d.curS ?? 1) + (1 - (d.curS ?? 1)) * .1;
+      d.curY = (d.curY ?? d.baseY) + (d.baseY - (d.curY ?? d.baseY)) * .1;
+    }
+    j.position.z = -1.55 + (d.curZ ?? 0);
+    j.rotation.y = d.curRY ?? 0;
+    j.scale.setScalar(d.curS ?? 1);
+    j.position.y = d.curY ?? d.baseY;
+
+    // hover highlight
+    const isHover = hovered === j && active !== j;
+    d.curH = (d.curH ?? 0) + ((isHover ? 1 : 0) - (d.curH ?? 0)) * .15;
+    j.position.y += d.curH * .05;
+    j.scale.multiplyScalar(1 + d.curH * .03);
+  });
+
+  // camera easing
+  orbitY += (orbitTY - orbitY) * .08;
+  orbitX += (orbitTX - orbitX) * .08;
+
+  const cos = Math.cos(orbitY), sin = Math.sin(orbitY);
+  const px = camTarget.x * cos - camTarget.z * sin;
+  const pz = camTarget.x * sin + camTarget.z * cos;
+  camera.position.x += (px - camera.position.x) * .06;
+  camera.position.z += (pz - camera.position.z) * .06;
+  camera.position.y += ((camTarget.y + orbitX) - camera.position.y) * .06;
+
+  curLook.lerp(lookTarget, .07);
+  camera.lookAt(curLook);
+
+  // spotlight follows the active jersey
+  if (active){
+    key.target.position.x += (active.userData.baseX - key.target.position.x) * .08;
+    key.target.position.y = 1.1;
+  } else {
+    key.target.position.x += (0 - key.target.position.x) * .08;
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+
+/* ============================================================
+   RESIZE
+============================================================ */
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ============================================================
+   LOADER
+============================================================ */
+const bar = document.getElementById('loadBar');
+let lp = 0;
+const li = setInterval(() => {
+  lp = Math.min(100, lp + Math.random() * 18);
+  bar.style.width = lp + '%';
+  if (lp >= 100){
+    clearInterval(li);
+    setTimeout(() => document.getElementById('loader').classList.add('done'), 250);
+  }
+}, 90);
+
+// auto-hide the hint after a while
+setTimeout(() => hint.classList.add('hide'), 9000);
+</script>
+
+</body>
+</html>
