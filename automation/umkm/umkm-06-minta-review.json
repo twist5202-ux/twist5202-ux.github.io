@@ -6,8 +6,16 @@
         "pollTimes": {
           "mode": "everyMinute"
         },
-        "documentId": { "__rl": true, "value": "GANTI_SPREADSHEET_ID", "mode": "id" },
-        "sheetName": { "__rl": true, "value": "Orders", "mode": "name" },
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Orders",
+          "mode": "name"
+        },
         "event": "rowUpdated",
         "options": {}
       },
@@ -15,7 +23,10 @@
       "name": "Status Order Berubah",
       "type": "n8n-nodes-base.googleSheetsTrigger",
       "typeVersion": 1,
-      "position": [240, 320],
+      "position": [
+        240,
+        320
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "GANTI_CREDENTIAL_ID",
@@ -26,13 +37,20 @@
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
           "conditions": [
             {
               "id": "c1",
               "leftValue": "={{ $json['Status'] || $json['status'] }}",
               "rightValue": "SELESAI",
-              "operator": { "type": "string", "operation": "equals" }
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
             }
           ],
           "combinator": "and"
@@ -43,7 +61,10 @@
       "name": "Status = SELESAI?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [460, 320]
+      "position": [
+        460,
+        320
+      ]
     },
     {
       "parameters": {
@@ -54,13 +75,21 @@
       "name": "Tunggu 24 Jam",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
-      "position": [680, 220]
+      "position": [
+        680,
+        220
+      ]
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
-            { "id": "v1", "name": "pesan", "value": "=Halo {{ $json['Nama'] || $json['nama'] || 'Kak' }}! 👋\n\nTerima kasih sudah order di *[NAMA TOKO ANDA]* 🙏\n\nSemoga produknya puya ya!\n\nKalau ada waktu 1 menit, bantu kami kasih review di Google:\n👉 https://g.page/r/GANTI_PLACE_ID/review\n\nReview lo sangat membantu toko kecil seperti kami berkembang. Terima kasih banyak! ⭐", "type": "string" }
+            {
+              "id": "v1",
+              "name": "pesan",
+              "value": "=Halo {{ $json['Nama'] || $json['nama'] || 'Kak' }}! 👋\n\nTerima kasih sudah order di *[NAMA TOKO ANDA]* 🙏\n\nSemoga produknya puya ya!\n\nKalau ada waktu 1 menit, bantu kami kasih review di Google:\n👉 https://g.page/r/GANTI_PLACE_ID/review\n\nReview lo sangat membantu toko kecil seperti kami berkembang. Terima kasih banyak! ⭐",
+              "type": "string"
+            }
           ]
         },
         "options": {}
@@ -69,30 +98,54 @@
       "name": "Siapkan Pesan Review",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [900, 220]
+      "position": [
+        900,
+        220
+      ]
     },
     {
       "parameters": {
-        "operation": "sendMessage",
-        "chatId": "={{ $json['Chat ID'] || $json['chat_id'] || 'GANTI_CHAT_ID' }}",
-        "text": "={{ $json.pesan }}",
-        "additionalFields": { "parse_mode": "Markdown" }
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json['Chat ID'] || $json['chat_id'] || 'GANTI_NOMOR_WA_ADMIN' }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.pesan }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "send",
-      "name": "Kirim Minta Review",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [1120, 220],
-      "credentials": {
-        "telegramApi": {
-          "id": "GANTI_CREDENTIAL_ID",
-          "name": "Telegram Bot UMKM"
-        }
-      }
+      "name": "Kirim Minta Review (WhatsApp)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        220
+      ],
+      "notes": "Token Fonnte dari dashboard fonnte.com -> Device -> Token. Ganti GANTI_TOKEN_FONNTE.",
+      "notesInFlow": false
     },
     {
       "parameters": {
-        "content": "## UMKM 06 — Minta Review Otomatis\n\n**Kenapa ini paling worth buat client:**\nIni automation dengan ROI paling jelas. Review Google = pelanggan baru percaya = penjualan naik.\n\n**Alur:**\n1. Status order di Sheets diubah jadi *SELESAI*\n2. Tunggu 24 jam (biar customer sempat pakai produk)\n3. Kirim pesan minta review + link Google\n\n**Yang diedit:**\n- `[NAMA TOKO ANDA]`\n- `GANTI_PLACE_ID` → link review Google Business lo\n- `GANTI_SPREADSHEET_ID`\n\n**Cara dapat link review:**\n1. Google Business Profile → Minta review\n2. Copy link yang muncul\n\n**Catatan:**\nKalau customer belum ada di Telegram, ganti node kirim ke WhatsApp/Email.",
+        "content": "## UMKM 06 — Minta Review Otomatis\n\n**Kenapa ini paling worth buat client:**\nIni automation dengan ROI paling jelas. Review Google = pelanggan baru percaya = penjualan naik.\n\n**Alur:**\n1. Status order di Sheets diubah jadi *SELESAI*\n2. Tunggu 24 jam (biar customer sempat pakai produk)\n3. Kirim pesan minta review + link Google\n\n**Yang diedit:**\n- `[NAMA TOKO ANDA]`\n- `GANTI_PLACE_ID` → link review Google Business lo\n- `GANTI_SPREADSHEET_ID`\n\n**Cara dapat link review:**\n1. Google Business Profile → Minta review\n2. Copy link yang muncul\n\n**Catatan:**\nKalau customer belum ada di WhatsApp, ganti node kirim ke WhatsApp/Email.",
         "height": 400,
         "width": 620,
         "color": 5
@@ -101,21 +154,62 @@
       "name": "Panduan",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [160, 100]
+      "position": [
+        160,
+        100
+      ]
     }
   ],
   "connections": {
-    "Status Order Berubah": { "main": [[{ "node": "Status = SELESAI?", "type": "main", "index": 0 }]] },
+    "Status Order Berubah": {
+      "main": [
+        [
+          {
+            "node": "Status = SELESAI?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Status = SELESAI?": {
       "main": [
-        [{ "node": "Tunggu 24 Jam", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Tunggu 24 Jam",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     },
-    "Tunggu 24 Jam": { "main": [[{ "node": "Siapkan Pesan Review", "type": "main", "index": 0 }]] },
-    "Siapkan Pesan Review": { "main": [[{ "node": "Kirim Minta Review", "type": "main", "index": 0 }]] }
+    "Tunggu 24 Jam": {
+      "main": [
+        [
+          {
+            "node": "Siapkan Pesan Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Siapkan Pesan Review": {
+      "main": [
+        [
+          {
+            "node": "Kirim Minta Review (WhatsApp)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
-  "settings": { "executionOrder": "v1" },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "staticData": null,
   "pinData": {}
 }

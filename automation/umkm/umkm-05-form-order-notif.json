@@ -6,8 +6,16 @@
         "pollTimes": {
           "mode": "everyMinute"
         },
-        "documentId": { "__rl": true, "value": "GANTI_SPREADSHEET_ID", "mode": "id" },
-        "sheetName": { "__rl": true, "value": "Form Responses 1", "mode": "name" },
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Form Responses 1",
+          "mode": "name"
+        },
         "event": "rowAdded",
         "options": {}
       },
@@ -15,7 +23,10 @@
       "name": "Ada Isi Form Baru",
       "type": "n8n-nodes-base.googleSheetsTrigger",
       "typeVersion": 1,
-      "position": [240, 320],
+      "position": [
+        240,
+        320
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "GANTI_CREDENTIAL_ID",
@@ -31,49 +42,94 @@
       "name": "Format Notifikasi",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [460, 320]
+      "position": [
+        460,
+        320
+      ]
     },
     {
       "parameters": {
-        "operation": "sendMessage",
-        "chatId": "GANTI_CHAT_ID",
-        "text": "={{ $json.notif }}",
-        "additionalFields": { "parse_mode": "Markdown" }
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.notif }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "send",
-      "name": "Notifikasi Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [680, 220],
-      "credentials": {
-        "telegramApi": {
-          "id": "GANTI_CREDENTIAL_ID",
-          "name": "Telegram Bot UMKM"
-        }
-      }
+      "name": "Notifikasi WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        220
+      ],
+      "notes": "Token Fonnte dari dashboard fonnte.com -> Device -> Token. Ganti GANTI_TOKEN_FONNTE.",
+      "notesInFlow": false
     },
     {
       "parameters": {
-        "operation": "sendMessage",
-        "chatId": "GANTI_CHAT_ID_ADMIN",
-        "text": "=🔔 *ORDER BARU*\n\nNama: {{ $json.nama }}\n\n{{ $json.isi_lengkap }}\n\n_Balas sekarang sebelum kabur._",
-        "additionalFields": { "parse_mode": "Markdown" }
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "=🔔 *ORDER BARU*\n\nNama: {{ $json.nama }}\n\n{{ $json.isi_lengkap }}\n\n_Balas sekarang sebelum kabur._"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "send2",
-      "name": "Notifikasi Admin Pribadi",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [680, 420],
-      "credentials": {
-        "telegramApi": {
-          "id": "GANTI_CREDENTIAL_ID",
-          "name": "Telegram Bot UMKM"
-        }
-      }
+      "name": "Notifikasi Admin (WhatsApp)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        420
+      ],
+      "notes": "Token Fonnte dari dashboard fonnte.com -> Device -> Token. Ganti GANTI_TOKEN_FONNTE.",
+      "notesInFlow": false
     },
     {
       "parameters": {
-        "content": "## UMKM 05 — Google Form → Notifikasi\n\n**Cara pakai:**\n1. Bikin Google Form order (Nama, No HP, Produk, Alamat, dll)\n2. Link ke Google Sheet (Responses → Link to Sheets)\n3. Ganti `GANTI_SPREADSHEET_ID` dengan ID sheet itu\n4. Aktifkan workflow\n\n**Hasil:**\nSetiap ada yang isi form → lo dapat notifikasi Telegram dalam **1 menit**.\n\n**Kenapa ini worth buat client:**\n- Google Form gratis, gak perlu website\n- Order masuk langsung kabar, gak perlu cek sheet manual\n- Bisa 2 notifikasi: grup + admin pribadi\n\n**Yang diedit:**\n- `GANTI_SPREADSHEET_ID`\n- `GANTI_CHAT_ID` (grup/channel)\n- `GANTI_CHAT_ID_ADMIN` (HP lo)",
+        "content": "## UMKM 05 — Google Form → Notifikasi\n\n**Cara pakai:**\n1. Bikin Google Form order (Nama, No HP, Produk, Alamat, dll)\n2. Link ke Google Sheet (Responses → Link to Sheets)\n3. Ganti `GANTI_SPREADSHEET_ID` dengan ID sheet itu\n4. Aktifkan workflow\n\n**Hasil:**\nSetiap ada yang isi form → lo dapat notifikasi WhatsApp dalam **1 menit**.\n\n**Kenapa ini worth buat client:**\n- Google Form gratis, gak perlu website\n- Order masuk langsung kabar, gak perlu cek sheet manual\n- Bisa 2 notifikasi: grup + admin pribadi\n\n**Yang diedit:**\n- `GANTI_SPREADSHEET_ID`\n- `GANTI_NOMOR_WA_ADMIN` (grup/channel)\n- `GANTI_NOMOR_WA_ADMIN` (HP lo)",
         "height": 400,
         "width": 620,
         "color": 4
@@ -82,19 +138,44 @@
       "name": "Panduan",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [160, 100]
+      "position": [
+        160,
+        100
+      ]
     }
   ],
   "connections": {
-    "Ada Isi Form Baru": { "main": [[{ "node": "Format Notifikasi", "type": "main", "index": 0 }]] },
+    "Ada Isi Form Baru": {
+      "main": [
+        [
+          {
+            "node": "Format Notifikasi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Format Notifikasi": {
-      "main": [[
-        { "node": "Notifikasi Telegram", "type": "main", "index": 0 },
-        { "node": "Notifikasi Admin Pribadi", "type": "main", "index": 0 }
-      ]]
+      "main": [
+        [
+          {
+            "node": "Notifikasi WhatsApp",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notifikasi Admin (WhatsApp)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "settings": { "executionOrder": "v1" },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "staticData": null,
   "pinData": {}
 }

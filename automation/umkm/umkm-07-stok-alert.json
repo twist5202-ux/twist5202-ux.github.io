@@ -104,7 +104,7 @@
               "id": "a2",
               "name": "chat_id",
               "type": "string",
-              "value": "GANTI_CHAT_ID_TELEGRAM"
+              "value": "GANTI_NOMOR_WA_ADMIN"
             }
           ]
         },
@@ -121,21 +121,43 @@
     },
     {
       "parameters": {
-        "operation": "sendMessage",
-        "chatId": "={{ $json.chat_id }}",
-        "text": "={{ $json.pesan }}",
-        "additionalFields": {
-          "parse_mode": "Markdown"
-        }
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.nomor_wa }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.pesan }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "tg",
-      "name": "Kirim Alert Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
+      "name": "Kirim Alert WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         1340,
         300
-      ]
+      ],
+      "notes": "Token Fonnte dari dashboard fonnte.com -> Device -> Token. Ganti GANTI_TOKEN_FONNTE.",
+      "notesInFlow": false
     },
     {
       "parameters": {
@@ -202,14 +224,14 @@
       "main": [
         [
           {
-            "node": "Kirim Alert Telegram",
+            "node": "Kirim Alert WhatsApp",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Kirim Alert Telegram": {
+    "Kirim Alert WhatsApp": {
       "main": [
         [
           {

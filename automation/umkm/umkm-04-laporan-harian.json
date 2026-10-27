@@ -4,27 +4,46 @@
     {
       "parameters": {
         "rule": {
-          "interval": [{ "field": "cronExpression", "expression": "0 20 * * *" }]
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 20 * * *"
+            }
+          ]
         }
       },
       "id": "sched",
       "name": "Setiap Hari Jam 8 Malam",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [240, 320]
+      "position": [
+        240,
+        320
+      ]
     },
     {
       "parameters": {
         "operation": "read",
-        "documentId": { "__rl": true, "value": "GANTI_SPREADSHEET_ID", "mode": "id" },
-        "sheetName": { "__rl": true, "value": "Orders", "mode": "name" },
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Orders",
+          "mode": "name"
+        },
         "options": {}
       },
       "id": "read",
       "name": "Baca Semua Order",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [460, 320],
+      "position": [
+        460,
+        320
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "GANTI_CREDENTIAL_ID",
@@ -40,30 +59,54 @@
       "name": "Hitung Rekap",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [680, 320]
+      "position": [
+        680,
+        320
+      ]
     },
     {
       "parameters": {
-        "operation": "sendMessage",
-        "chatId": "GANTI_CHAT_ID",
-        "text": "={{ $json.laporan }}",
-        "additionalFields": { "parse_mode": "Markdown" }
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.laporan }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "send",
-      "name": "Kirim Laporan Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [900, 320],
-      "credentials": {
-        "telegramApi": {
-          "id": "GANTI_CREDENTIAL_ID",
-          "name": "Telegram Bot UMKM"
-        }
-      }
+      "name": "Kirim Laporan WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        320
+      ],
+      "notes": "Token Fonnte dari dashboard fonnte.com -> Device -> Token. Ganti GANTI_TOKEN_FONNTE.",
+      "notesInFlow": false
     },
     {
       "parameters": {
-        "content": "## UMKM 04 — Laporan Harian Otomatis\n\n**Alur:**\nSetiap hari jam 20.00 → baca Google Sheets → hitung rekap → kirim Telegram\n\n**Isi laporan:**\n- Total order hari ini\n- Total item terjual\n- Total pendapatan\n- Rincian per produk (urut pendapatan)\n\n**Yang diedit:**\n- `GANTI_SPREADSHEET_ID` → ID Google Sheet order lo\n- `GANTI_CHAT_ID` → chat ID Telegram lo\n\n**Butuh:**\n- Google Sheets credential (OAuth2)\n- Sheet dengan tab *Orders* (kolom: Tanggal, Produk, Jumlah, Total)\n\n**Bonus:**\nGanti cron di node *Setiap Hari Jam 8 Malam* untuk jam lain.\nFormat: menit jam * * * (waktu server UTC, WIB = UTC+7)",
+        "content": "## UMKM 04 — Laporan Harian Otomatis\n\n**Alur:**\nSetiap hari jam 20.00 → baca Google Sheets → hitung rekap → kirim WhatsApp\n\n**Isi laporan:**\n- Total order hari ini\n- Total item terjual\n- Total pendapatan\n- Rincian per produk (urut pendapatan)\n\n**Yang diedit:**\n- `GANTI_SPREADSHEET_ID` → ID Google Sheet order lo\n- `GANTI_NOMOR_WA_ADMIN` → chat ID WhatsApp lo\n\n**Butuh:**\n- Google Sheets credential (OAuth2)\n- Sheet dengan tab *Orders* (kolom: Tanggal, Produk, Jumlah, Total)\n\n**Bonus:**\nGanti cron di node *Setiap Hari Jam 8 Malam* untuk jam lain.\nFormat: menit jam * * * (waktu server UTC, WIB = UTC+7)",
         "height": 380,
         "width": 620,
         "color": 6
@@ -72,15 +115,50 @@
       "name": "Panduan",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [160, 100]
+      "position": [
+        160,
+        100
+      ]
     }
   ],
   "connections": {
-    "Setiap Hari Jam 8 Malam": { "main": [[{ "node": "Baca Semua Order", "type": "main", "index": 0 }]] },
-    "Baca Semua Order": { "main": [[{ "node": "Hitung Rekap", "type": "main", "index": 0 }]] },
-    "Hitung Rekap": { "main": [[{ "node": "Kirim Laporan Telegram", "type": "main", "index": 0 }]] }
+    "Setiap Hari Jam 8 Malam": {
+      "main": [
+        [
+          {
+            "node": "Baca Semua Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Semua Order": {
+      "main": [
+        [
+          {
+            "node": "Hitung Rekap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hitung Rekap": {
+      "main": [
+        [
+          {
+            "node": "Kirim Laporan WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
-  "settings": { "executionOrder": "v1" },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "staticData": null,
   "pinData": {}
 }
