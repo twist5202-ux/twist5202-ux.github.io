@@ -228,7 +228,7 @@ renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.18;
+renderer.toneMappingExposure = 1.22;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0908);
@@ -238,27 +238,27 @@ const camera = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, .1, 100);
 camera.position.set(0, 1.55, 7.2);
 
 /* ============================================================
-   LIGHTING
+   LIGHTING — dramatic top-down, warm
 ============================================================ */
-scene.add(new THREE.AmbientLight(0x2a2018, .6));
+scene.add(new THREE.AmbientLight(0x241a12, .5));
 
-const key = new THREE.SpotLight(0xffb347, 60, 22, Math.PI/5.0, .42, 1.5);
-key.position.set(0, 6.2, 3.4);
+const key = new THREE.SpotLight(0xffb347, 70, 22, Math.PI/4.6, .38, 1.4);
+key.position.set(0, 6.4, 3.2);
 key.target.position.set(0, 1.1, 0);
 key.castShadow = true;
 key.shadow.mapSize.set(1024,1024);
 key.shadow.bias = -0.0006;
 scene.add(key, key.target);
 
-const fillL = new THREE.PointLight(0xff8c42, 13, 16, 2);
-fillL.position.set(-5.5, 3.2, 2.6);
+const fillL = new THREE.PointLight(0xff8c42, 11, 16, 2);
+fillL.position.set(-5.5, 3.0, 2.6);
 scene.add(fillL);
 
-const fillR = new THREE.PointLight(0xff8c42, 13, 16, 2);
-fillR.position.set(5.5, 3.2, 2.6);
+const fillR = new THREE.PointLight(0xff8c42, 11, 16, 2);
+fillR.position.set(5.5, 3.0, 2.6);
 scene.add(fillR);
 
-const rim = new THREE.DirectionalLight(0x7a5230, .55);
+const rim = new THREE.DirectionalLight(0x8a5c30, .6);
 rim.position.set(0, 3, -6);
 scene.add(rim);
 
@@ -320,32 +320,33 @@ function buildRoom(){
 scene.add(buildRoom());
 
 /* ============================================================
-   RAIL
+   RAIL — brushed metal, thin
 ============================================================ */
 const RAIL_Y = 2.5;
-const railMat = new THREE.MeshStandardMaterial({ color:0x8a8a8a, roughness:.35, metalness:.85 });
-const rail = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, 15.4, 12), railMat);
+const railMat = new THREE.MeshStandardMaterial({ color:0x6a6a6a, roughness:.42, metalness:.9 });
+const rail = new THREE.Mesh(new THREE.CylinderGeometry(.028, .028, 15.4, 12), railMat);
 rail.rotation.z = Math.PI/2;
 rail.position.set(0, RAIL_Y, -1.55);
 rail.castShadow = true;
 scene.add(rail);
 
 [-7.7, 7.7].forEach(x => {
-  const cap = new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, .16, 10), railMat);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .14, 10), railMat);
   cap.rotation.z = Math.PI/2;
   cap.position.set(x, RAIL_Y, -1.55);
   scene.add(cap);
 });
 
-const wireMat = new THREE.MeshStandardMaterial({ color:0x555555, roughness:.5, metalness:.8 });
+const wireMat = new THREE.MeshStandardMaterial({ color:0x4a4a4a, roughness:.5, metalness:.85 });
 [-5.6, 0, 5.6].forEach(x => {
-  const w = new THREE.Mesh(new THREE.CylinderGeometry(.008, .008, 3.6, 4), wireMat);
+  const w = new THREE.Mesh(new THREE.CylinderGeometry(.007, .007, 3.6, 4), wireMat);
   w.position.set(x, RAIL_Y + 1.8, -1.55);
   scene.add(w);
 });
 
 /* ============================================================
-   JERSEY TEXTURE — cotton weave + name + number
+   JERSEY TEXTURE — synthetic mesh weave + name + number
+   Print follows the contour: drawn with a slight vertical bend.
 ============================================================ */
 function jerseyTexture(player, colorHex){
   const W = 512, H = 640;
@@ -356,52 +357,49 @@ function jerseyTexture(player, colorHex){
   x.fillStyle = colorHex;
   x.fillRect(0, 0, W, H);
 
-  // cotton jersey weave — fine crosshatch
-  x.globalAlpha = 0.045;
+  // synthetic mesh weave — fine crosshatch, slightly denser than cotton
+  x.globalAlpha = 0.05;
   x.strokeStyle = '#000'; x.lineWidth = 1;
   for (let i = 0; i < H; i += 3){ x.beginPath(); x.moveTo(0, i); x.lineTo(W, i); x.stroke(); }
   for (let i = 0; i < W; i += 3){ x.beginPath(); x.moveTo(i, 0); x.lineTo(i, H); x.stroke(); }
   x.globalAlpha = 1;
 
-  // noise
-  for (let i = 0; i < 2600; i++){
-    x.fillStyle = 'rgba(0,0,0,' + (Math.random()*0.045) + ')';
-    x.fillRect(Math.random()*W, Math.random()*H, 2, 2);
-  }
-  for (let i = 0; i < 1400; i++){
-    x.fillStyle = 'rgba(255,255,255,' + (Math.random()*0.035) + ')';
-    x.fillRect(Math.random()*W, Math.random()*H, 2, 2);
-  }
-
-  // soft vertical fold shading — ghost-mannequin centre channel
-  const fg = x.createLinearGradient(W*0.5, 0, W*0.5, H);
-  fg.addColorStop(0, 'rgba(0,0,0,0)');
-  fg.addColorStop(0.5, 'rgba(0,0,0,0.05)');
-  fg.addColorStop(1, 'rgba(0,0,0,0)');
-  x.fillStyle = fg;
+  // subtle sheen band across the shoulders
+  const sg = x.createLinearGradient(0, 0, 0, H);
+  sg.addColorStop(0, 'rgba(255,255,255,0.05)');
+  sg.addColorStop(0.22, 'rgba(255,255,255,0)');
+  sg.addColorStop(0.75, 'rgba(0,0,0,0.04)');
+  sg.addColorStop(1, 'rgba(0,0,0,0.09)');
+  x.fillStyle = sg;
   x.fillRect(0, 0, W, H);
 
-  // NAME
+  // noise
+  for (let i = 0; i < 2200; i++){
+    x.fillStyle = 'rgba(0,0,0,' + (Math.random()*0.04) + ')';
+    x.fillRect(Math.random()*W, Math.random()*H, 2, 2);
+  }
+
+  // NAME — bent slightly to follow the back curve
   x.fillStyle = '#ffffff';
   x.textAlign = 'center';
-  let fs = 54;
+  let fs = 52;
   const nm = player.name.toUpperCase();
   const setFs = () => { x.font = '800 ' + fs + 'px -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'; };
   setFs();
-  while (x.measureText(nm).width > W*.80 && fs > 24){ fs -= 2; setFs(); }
-  x.fillText(nm, W/2, 300);
+  while (x.measureText(nm).width > W*.78 && fs > 22){ fs -= 2; setFs(); }
+  x.save();
+  x.translate(W/2, 300);
+  x.transform(1, 0, -0.045, 1, 0, 0);        // slight arc, print follows the fabric
+  x.fillText(nm, 0, 0);
+  x.restore();
 
-  // NUMBER
-  x.font = '800 140px -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
-  x.fillText(String(player.num), W/2, 442);
-
-  // small league badge
-  x.strokeStyle = 'rgba(255,255,255,.45)';
-  x.lineWidth = 2.5;
-  x.beginPath(); x.arc(W/2, 508, 23, 0, Math.PI*2); x.stroke();
-  x.font = '700 19px monospace';
-  x.fillStyle = 'rgba(255,255,255,.65)';
-  x.fillText('IDN', W/2, 515);
+  // NUMBER — also arced
+  x.save();
+  x.translate(W/2, 440);
+  x.transform(1, 0, -0.035, 1, 0, 0);
+  x.font = '800 136px -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  x.fillText(String(player.num), 0, 0);
+  x.restore();
 
   const tex = new THREE.CanvasTexture(cv);
   tex.flipY = false;                       // CylinderGeometry emits uv.y = 1 - v
@@ -411,28 +409,28 @@ function jerseyTexture(player, colorHex){
 }
 
 /* ============================================================
-   TEE GEOMETRY — ghost-mannequin silhouette
-   Boxy, broad squared shoulders, short sleeves at 32°,
-   crew neck, straight hem with a slight centre-front dip.
+   JERSEY GEOMETRY — athletic silhouette from the reel
+   Broad squared shoulders, sleeves 35-45° down and out,
+   body 1.4:1 height-to-width, subtle hem taper.
+   Hangs with air — not flat, not filled out.
 ============================================================ */
-const H = 1.10, RAD = 0.485;
-const TH_A = -Math.PI * 0.62, TH_L = Math.PI * 1.24;   // -112° … +112°, back faces +Z
-const EDGE = 1.72;                                      // shoulder seam start
-const NECK_R = 0.235;                                   // crew-neck radius
+const H = 1.10, RAD = 0.46;
+const TH_A = -Math.PI * 0.60, TH_L = Math.PI * 1.20;   // -108° … +108°, back faces +Z
+const EDGE = 1.66;                                      // shoulder seam start
 
 function bodyRadius(t){
-  // 1 at chest, gentle A-line drift toward the hem
-  return 1.0 - 0.030 * t + 0.018 * (1 - t);
+  // consistent width chest to waist, subtle inward taper at the hem
+  return 1.0 - 0.028 * Math.max(0, t - 0.55) / 0.45;
 }
 
 function buildJersey(player, colorHex){
   const g = new THREE.Group();
   const col = new THREE.Color(colorHex);
   const tex = jerseyTexture(player, colorHex);
-  const ribMat = new THREE.MeshStandardMaterial({ color: col.clone().lerp(new THREE.Color(0xffffff), .10), roughness:.92 });
+  const trimMat = new THREE.MeshStandardMaterial({ color: 0xf2ede2, roughness:.74 });
 
   /* ---------- BODY: deformed open cylinder ---------- */
-  const geo = new THREE.CylinderGeometry(RAD, RAD, H, 48, 26, true, TH_A, TH_L);
+  const geo = new THREE.CylinderGeometry(RAD, RAD, H, 52, 28, true, TH_A, TH_L);
   const pos = geo.attributes.position;
 
   for (let i = 0; i < pos.count; i++){
@@ -441,61 +439,53 @@ function buildJersey(player, colorHex){
     const t   = (oy + H/2) / H;
     const a   = Math.abs(th);
 
-    let x = ox * 0.80;                       // boxy torso cross-section
+    let x = ox * 0.78;                       // athletic torso cross-section
     let z = oz;
     let y = oy;
 
     const taper = bodyRadius(t);
     x *= taper; z *= taper;
 
-    // shoulder seam: broad and squared, drops toward the front
+    // squared structured shoulders — seam drops toward the front
     if (a > EDGE){
-      const s = Math.min(1, (a - EDGE) / (Math.PI*0.62 - EDGE));
-      y -= 0.155 * s * t;
+      const s = Math.min(1, (a - EDGE) / (Math.PI*0.60 - EDGE));
+      y -= 0.175 * s * t;
     }
 
     // crew neckline: circular cut at the back centre
-    const neckCut = NECK_R * (1 - 0.18 * t);
-    if (a < 0.72){
-      const d = Math.cos(th);
-      if (d > 0.55){
-        const k = (d - 0.55) / 0.45;
-        y -= neckCut * k * k * (1 - t * 0.25);
-      }
+    const d = Math.cos(th);
+    if (d > 0.50){
+      const k = (d - 0.50) / 0.50;
+      y -= 0.20 * k * k * (1 - t * 0.22);
     }
 
-    // hem: straight with a slight centre-front dip
-    if (t < 0.06){
-      const dip = 0.028 * (1 - Math.abs(th) / Math.PI);
-      y -= dip * (1 - t / 0.06);
-    }
+    // hangs with air: slight forward projection, not flat, not stuffed
+    z *= 1.0 + 0.055 * (1 - t * 0.5);
 
-    // ghost-mannequin puff: front and back panels pushed apart
-    z *= 1.0 + 0.10 * (1 - t * 0.55);
-
-    // soft gravity folds
-    const w = Math.sin(th*3.0)*0.011 + Math.sin(th*5.1+1.1)*0.006;
-    x += w * (1 - t*0.35);
-    z += w * 0.55 * (1 - t*0.35);
+    // soft vertical gravity folds — rounded, organic, asymmetric
+    const w  = Math.sin(th*3.0 + 0.3)*0.012 + Math.sin(th*5.1+1.1)*0.006;
+    const w2 = Math.sin(th*2.1 - 0.6)*0.008;
+    x += (w + w2) * (1 - t*0.3);
+    z += w * 0.5 * (1 - t*0.3);
 
     pos.setXYZ(i, x, y, z);
   }
   geo.computeVertexNormals();
 
   const body = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
-    map: tex, roughness:.90, metalness:.02, side: THREE.FrontSide
+    map: tex, roughness:.88, metalness:.03, side: THREE.FrontSide
   }));
   body.castShadow = true;
   g.add(body);
 
-  /* ---------- INNER SHELL: fabric thickness through the neck ---------- */
+  /* ---------- INNER SHELL: fabric thickness ---------- */
   const inner = new THREE.Mesh(geo.clone(), new THREE.MeshStandardMaterial({
-    color: col.clone().multiplyScalar(.30), roughness:.96, side: THREE.BackSide
+    color: col.clone().multiplyScalar(.28), roughness:.96, side: THREE.BackSide
   }));
-  inner.scale.set(.90, 1.0, .90);
+  inner.scale.set(.91, 1.0, .91);
   g.add(inner);
 
-  /* ---------- RIBBED CREW COLLAR ---------- */
+  /* ---------- RIBBED CREW COLLAR with white trim ---------- */
   const np = [];
   const N = 48;
   for (let i = 0; i < N; i++){
@@ -503,113 +493,81 @@ function buildJersey(player, colorHex){
     const a  = Math.abs(th);
     let y = H/2;
     if (a > EDGE){
-      const s = Math.min(1, (a - EDGE) / (Math.PI*0.62 - EDGE));
-      y -= 0.155 * s;
+      const s = Math.min(1, (a - EDGE) / (Math.PI*0.60 - EDGE));
+      y -= 0.175 * s;
     }
-    const d = Math.cos(th);
-    if (a < 0.72 && d > 0.55){
-      const k = (d - 0.55) / 0.45;
-      y -= NECK_R * (1 - 0.18) * k * k;
+    const dd = Math.cos(th);
+    if (dd > 0.50){
+      const k = (dd - 0.50) / 0.50;
+      y -= 0.20 * k * k;
     }
     const r = RAD * bodyRadius(1);
-    np.push(new THREE.Vector3(Math.sin(th)*r*0.80, y + 0.006, Math.cos(th)*r));
+    np.push(new THREE.Vector3(Math.sin(th)*r*0.78, y + 0.006, Math.cos(th)*r));
   }
   const collar = new THREE.Mesh(
-    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(np, true), 64, 0.038, 8, true),
-    ribMat
+    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(np, true), 64, 0.036, 8, true),
+    trimMat
   );
   collar.castShadow = true;
   g.add(collar);
 
-  /* ---------- SHORT SLEEVES: 32° down and out, boxy, near-straight ---------- */
+  /* ---------- SLEEVES: 35-45° down and out, short-medium ---------- */
   function makeSleeve(){
-    const L = 0.42, R1 = 0.225, R2 = 0.205;      // minimal taper — boxy cut
-    const sg = new THREE.CylinderGeometry(R2, R1, L, 24, 10, true);
+    const L = 0.50, R1 = 0.215, R2 = 0.175;
+    const sg = new THREE.CylinderGeometry(R2, R1, L, 24, 12, true);
     const sp = sg.attributes.position;
     for (let i = 0; i < sp.count; i++){
       const ox = sp.getX(i), oy = sp.getY(i), oz = sp.getZ(i);
       const t  = (oy + L/2) / L;
       const th = Math.atan2(ox, oz);
       let x = ox * 0.82, z = oz;
-      const tp = 1.0 - 0.05 * t;
+      const tp = 1.0 - 0.07 * t;
       x *= tp; z *= tp;
-      z += 0.040 * Math.sin(t * Math.PI);          // slight forward bow
-      x += Math.sin(th*2.4) * 0.008 * (1 - t*0.4); // drape
+      z += 0.045 * Math.sin(t * Math.PI);           // forward bow
+      x += Math.sin(th*2.4) * 0.009 * (1 - t*0.4);  // drape
       sp.setXYZ(i, x, oy, z);
     }
     sg.computeVertexNormals();
     const m = new THREE.Mesh(sg, new THREE.MeshStandardMaterial({
-      color: col, roughness:.90, metalness:.02, side: THREE.FrontSide
+      color: col, roughness:.88, metalness:.03, side: THREE.FrontSide
     }));
     m.castShadow = true;
 
-    // folded double-stitch hem — no ribbing
-    const hem = new THREE.Mesh(new THREE.TorusGeometry(0.208, 0.013, 8, 24), ribMat);
+    // sleeve hem band
+    const hem = new THREE.Mesh(new THREE.TorusGeometry(0.178, 0.014, 8, 24), trimMat);
     hem.rotation.x = Math.PI/2;
-    hem.position.y = -L/2 + 0.010;
+    hem.position.y = -L/2 + 0.011;
     m.add(hem);
     return m;
   }
 
   const sR = makeSleeve();
-  sR.position.set(0.455, 0.215, 0.010);
-  sR.rotation.z = 0.56;                            // ~32°
-  sR.rotation.x = -0.06;
+  sR.position.set(0.435, 0.235, 0.010);
+  sR.rotation.z = 0.66;                            // ~38°
+  sR.rotation.x = -0.07;
   g.add(sR);
 
   const sL = makeSleeve();
-  sL.position.set(-0.455, 0.215, 0.010);
-  sL.rotation.z = -0.56;
-  sL.rotation.x = -0.06;
+  sL.position.set(-0.435, 0.235, 0.010);
+  sL.rotation.z = -0.66;
+  sL.rotation.x = -0.07;
   g.add(sL);
 
-  /* ---------- HEM BAND: double-needle stitch line ---------- */
-  const hemPts = [];
-  const HN = 44;
-  for (let i = 0; i < HN; i++){
-    const th = TH_A + (i/HN) * TH_L;
-    const r = RAD * bodyRadius(0);
-    hemPts.push(new THREE.Vector3(
-      Math.sin(th) * r * 0.80,
-      -H/2 + 0.052,
-      Math.cos(th) * r * (1.0 + 0.10)
-    ));
-  }
-  const hemBand = new THREE.Mesh(
-    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(hemPts, true), 60, 0.010, 6, true),
-    ribMat
-  );
-  g.add(hemBand);
-
-  /* ---------- HANGER: light wood, contoured, black hook ---------- */
-  const woodMat = new THREE.MeshStandardMaterial({ color: 0xd9c3a0, roughness:.68 });
-  const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.80, 10), woodMat);
-  bar.rotation.z = Math.PI/2;
-  bar.position.y = 0.425;
-  g.add(bar);
-
-  // contoured ends that rise where the wood hooks over the shoulders
-  [-0.40, 0.40].forEach(x => {
-    const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.026, 0.10, 8), woodMat);
-    tip.rotation.z = x < 0 ? 0.30 : -0.30;
-    tip.position.set(x, 0.437, 0);
-    g.add(tip);
-  });
-
-  // black metal hook — narrow S curve
+  /* ---------- HANGER: simple hook, no wooden bar ---------- */
+  const hookMat = new THREE.MeshStandardMaterial({ color: 0x5a5a5a, roughness:.38, metalness:.9 });
   const hookPts = [];
-  for (let i = 0; i <= 22; i++){
-    const u = i / 22;
-    const ang = Math.PI * 1.35 * u;
+  for (let i = 0; i <= 20; i++){
+    const u = i / 20;
+    const ang = Math.PI * 1.25 * u;
     hookPts.push(new THREE.Vector3(
-      Math.sin(ang) * 0.055,
-      0.445 + u * 0.145,
-      Math.cos(ang) * 0.030 - 0.012
+      Math.sin(ang) * 0.045,
+      0.415 + u * 0.135,
+      Math.cos(ang) * 0.026 - 0.010
     ));
   }
   const hook = new THREE.Mesh(
-    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(hookPts), 40, 0.011, 6, false),
-    new THREE.MeshStandardMaterial({ color: 0x141414, roughness:.45, metalness:.55 })
+    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(hookPts), 36, 0.010, 6, false),
+    hookMat
   );
   g.add(hook);
 
@@ -776,11 +734,13 @@ function animate(){
   jerseyObjs.forEach(j => {
     const d = j.userData;
 
-    // idle sway — two stacked sines, staggered per jersey
-    const sway  = Math.sin(t * 0.55 + d.phase) * 0.030;
-    const sway2 = Math.sin(t * 0.31 + d.phase * 1.7) * 0.017;
+    // idle sway — asymmetric, organic, like real hanging fabric
+    const sway  = Math.sin(t * 0.55 + d.phase) * 0.032;
+    const sway2 = Math.sin(t * 0.31 + d.phase * 1.7) * 0.018;
+    const sway3 = Math.sin(t * 0.77 + d.phase * 0.6) * 0.008;
     j.rotation.z = sway;
     j.rotation.x = sway2;
+    j.rotation.y = sway3;
 
     const isActive = active === j;
     const tgtZ  = isActive ? 0.85 : 0;
