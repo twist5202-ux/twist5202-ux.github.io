@@ -1,0 +1,229 @@
+{
+  "name": "UMKM 07 - Stok Alert (Inventory Monitor)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "sched",
+      "name": "Cek Stok Tiap Pagi",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "sheets",
+      "name": "Ambil Data Stok",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        460,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Stok",
+        "options": {}
+      },
+      "id": "split",
+      "name": "Cek Per Produk",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        680,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond1",
+              "leftValue": "={{ $json.stok }}",
+              "rightValue": "={{ $json.minimum }}",
+              "operator": {
+                "type": "number",
+                "operation": "smaller"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if",
+      "name": "Stok Di Bawah Minimum?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "pesan",
+              "type": "string",
+              "value": "=STOK MENIPIS\\n\\nProduk: {{ $json.produk }}\\nSisa stok: {{ $json.stok }} unit\\nMinimum: {{ $json.minimum }} unit\\n\\nRestock sekarang sebelum kehabisan."
+            },
+            {
+              "id": "a2",
+              "name": "chat_id",
+              "type": "string",
+              "value": "GANTI_CHAT_ID_TELEGRAM"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set",
+      "name": "Siapin Pesan Alert",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.pesan }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "tg",
+      "name": "Kirim Alert Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=Alert terkirim untuk: {{ $json.produk }}",
+        "options": {}
+      },
+      "id": "resp",
+      "name": "Respon",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1560,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Stok Tiap Pagi": {
+      "main": [
+        [
+          {
+            "node": "Ambil Data Stok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Data Stok": {
+      "main": [
+        [
+          {
+            "node": "Cek Per Produk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Per Produk": {
+      "main": [
+        [
+          {
+            "node": "Stok Di Bawah Minimum?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stok Di Bawah Minimum?": {
+      "main": [
+        [
+          {
+            "node": "Siapin Pesan Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Siapin Pesan Alert": {
+      "main": [
+        [
+          {
+            "node": "Kirim Alert Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim Alert Telegram": {
+      "main": [
+        [
+          {
+            "node": "Respon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

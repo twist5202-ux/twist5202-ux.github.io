@@ -1,0 +1,100 @@
+{
+  "name": "UMKM 05 — Form Order (Google Form) → Notifikasi + Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "mode": "everyMinute"
+        },
+        "documentId": { "__rl": true, "value": "GANTI_SPREADSHEET_ID", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Form Responses 1", "mode": "name" },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "id": "trigger",
+      "name": "Ada Isi Form Baru",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [240, 320],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GANTI_CREDENTIAL_ID",
+          "name": "Google Sheets UMKM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ambil semua field dari form (nama kolom dinamis)\nconst j = $json;\nconst skip = ['Timestamp', 'Waktu', 'Nomor'];\n\nlet isi = '';\nfor (const [k, v] of Object.entries(j)) {\n  if (skip.some(s => k.toLowerCase().includes(s.toLowerCase()))) continue;\n  isi += '*' + k + ':* ' + (v || '-') + '\\n';\n}\n\nconst nama = j['Nama'] || j['Nama Lengkap'] || j['Name'] || 'Pelanggan';\n\nreturn [{\n  json: {\n    notif: '📩 *ORDER BARU DARI FORM*\\n\\nDari: ' + nama + '\\n\\n' + isi + '\\nSegera ditindaklanjuti!',\n    nama: nama,\n    isi_lengkap: isi\n  }\n}];"
+      },
+      "id": "format",
+      "name": "Format Notifikasi",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 320]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID",
+        "text": "={{ $json.notif }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Notifikasi Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [680, 220],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_CREDENTIAL_ID",
+          "name": "Telegram Bot UMKM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID_ADMIN",
+        "text": "=🔔 *ORDER BARU*\n\nNama: {{ $json.nama }}\n\n{{ $json.isi_lengkap }}\n\n_Balas sekarang sebelum kabur._",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send2",
+      "name": "Notifikasi Admin Pribadi",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [680, 420],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_CREDENTIAL_ID",
+          "name": "Telegram Bot UMKM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## UMKM 05 — Google Form → Notifikasi\n\n**Cara pakai:**\n1. Bikin Google Form order (Nama, No HP, Produk, Alamat, dll)\n2. Link ke Google Sheet (Responses → Link to Sheets)\n3. Ganti `GANTI_SPREADSHEET_ID` dengan ID sheet itu\n4. Aktifkan workflow\n\n**Hasil:**\nSetiap ada yang isi form → lo dapat notifikasi Telegram dalam **1 menit**.\n\n**Kenapa ini worth buat client:**\n- Google Form gratis, gak perlu website\n- Order masuk langsung kabar, gak perlu cek sheet manual\n- Bisa 2 notifikasi: grup + admin pribadi\n\n**Yang diedit:**\n- `GANTI_SPREADSHEET_ID`\n- `GANTI_CHAT_ID` (grup/channel)\n- `GANTI_CHAT_ID_ADMIN` (HP lo)",
+        "height": 400,
+        "width": 620,
+        "color": 4
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Ada Isi Form Baru": { "main": [[{ "node": "Format Notifikasi", "type": "main", "index": 0 }]] },
+    "Format Notifikasi": {
+      "main": [[
+        { "node": "Notifikasi Telegram", "type": "main", "index": 0 },
+        { "node": "Notifikasi Admin Pribadi", "type": "main", "index": 0 }
+      ]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}
