@@ -576,21 +576,88 @@ function buildJersey(player, colorHex){
 
 /* ============================================================
    PLACE JERSEYS ON THE RAIL
+   Loads the real 3D jersey model (GLB) once, then clones it
+   per player and tints the clone with the team colour.
 ============================================================ */
 const jerseyObjs = [];
 const SPACING = 1.42;
 const START_X = -(PLAYERS.length - 1) * SPACING / 2;
 
-PLAYERS.forEach((p, i) => {
-  const color = p.team === 'red' ? RED : TEAL;
-  const hex = '#' + color.toString(16).padStart(6, '0');
-  const j = buildJersey(p, hex);
-  const x = START_X + i * SPACING;
-  j.position.set(x, RAIL_Y - 0.78, -1.55);
-  j.userData = { player: p, index: i, baseX: x, baseY: RAIL_Y - 0.78, phase: i * 0.7 };
-  scene.add(j);
-  jerseyObjs.push(j);
+let BASE_MODEL = null;      // the loaded GLB scene
+let MODEL_READY = false;
+
+const GLTFLoader = (await import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js')).GLTFLoader;
+
+new GLTFLoader().load('model/jersey.glb', (gltf) => {
+  BASE_MODEL = gltf.scene;
+
+  // normalise: centre it and scale to the rail height
+  const box = new THREE.Box3().setFromObject(BASE_MODEL);
+  const size = new THREE.Vector3();
+  const centre = new THREE.Vector3();
+  box.getSize(size);
+  box.getCenter(centre);
+
+  const targetH = 1.10;
+  const s = targetH / size.y;
+  BASE_MODEL.scale.setScalar(s);
+
+  // re-measure after scaling so the centring is correct
+  const box2 = new THREE.Box3().setFromObject(BASE_MODEL);
+  const c2 = new THREE.Vector3();
+  box2.getCenter(c2);
+  BASE_MODEL.position.x -= c2.x;
+  BASE_MODEL.position.z -= c2.z;
+
+  // enable shadows on every mesh
+  BASE_MODEL.traverse(o => {
+    if (o.isMesh){
+      o.castShadow = true;
+      o.receiveShadow = false;
+      // keep the original texture but allow tinting
+      if (o.material){
+        o.material = o.material.clone();
+      }
+    }
+  });
+
+  MODEL_READY = true;
+  buildAllJerseys();
+  document.getElementById('loader').classList.add('done');
+}, undefined, (err) => {
+  console.warn('GLB load failed, falling back to procedural', err);
+  buildAllJerseys(true);
+  document.getElementById('loader').classList.add('done');
 });
+
+function buildAllJerseys(fallback){
+  PLAYERS.forEach((p, i) => {
+    const color = p.team === 'red' ? RED : TEAL;
+    const hex = '#' + color.toString(16).padStart(6, '0');
+    let j;
+
+    if (MODEL_READY && BASE_MODEL){
+      j = BASE_MODEL.clone(true);
+      // tint: multiply the base colour by the team colour
+      j.traverse(o => {
+        if (o.isMesh && o.material){
+          o.material = o.material.clone();
+          if (o.material.color){
+            o.material.color.set(color);
+          }
+        }
+      });
+    } else {
+      j = buildJersey(p, hex);
+    }
+
+    const x = START_X + i * SPACING;
+    j.position.set(x, RAIL_Y - 0.78, -1.55);
+    j.userData = { player: p, index: i, baseX: x, baseY: RAIL_Y - 0.78, phase: i * 0.7 };
+    scene.add(j);
+    jerseyObjs.push(j);
+  });
+}
 
 /* ============================================================
    INTERACTION STATE
@@ -799,7 +866,7 @@ addEventListener('resize', () => {
 });
 
 /* ============================================================
-   LOADER
+   LOADER — auto-hide after 4s even if the GLB is slow
 ============================================================ */
 const bar = document.getElementById('loadBar');
 let lp = 0;
@@ -811,6 +878,9 @@ const li = setInterval(() => {
     setTimeout(() => document.getElementById('loader').classList.add('done'), 250);
   }
 }, 90);
+
+// safety: never leave the loader up longer than 4s
+setTimeout(() => document.getElementById('loader').classList.add('done'), 4000);
 
 setTimeout(() => hint.classList.add('hide'), 9000);
 </script>
