@@ -438,7 +438,7 @@ def main():
     build_portfolio()
 
     # Copy the n8n template storefronts (static, hand-maintained)
-    for store in ("n8n", "n8n-crypto", "automation", "twist", "fashion", "panduan", "demo", "locker"):
+    for store in ("n8n", "n8n-crypto", "automation", "twist", "fashion", "panduan", "demo", "locker", "macro"):
         src = ROOT / store
         if not src.is_dir():
             continue
