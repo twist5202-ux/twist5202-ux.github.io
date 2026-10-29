@@ -1,0 +1,179 @@
+{
+  "name": "UMKM 12 — Follow-Up Pembayaran (Belum Bayar → Ingatkan)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Order Belum Bayar",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nreturn rows.filter(r => r.status === 'menunggu_bayar')\n  .map(r => ({ json: r }));\n"
+      },
+      "id": "n3",
+      "name": "Filter Belum Bayar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "Halo {{$json.nama}} 👋\\n\\nOrder *{{$json.order_id}}* masih menunggu pembayaran:\\n\\nProduk : {{$json.produk}}\\nTotal  : Rp {{$json.total}}\\n\\nSegera selesaikan pembayaran sebelum pesanan dibatalkan otomatis.\\n\\nButuh bantuan? Balas pesan ini."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Ingatkan Bayar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Catat Waktu Follow-Up",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 09:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Order Belum Bayar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Order Belum Bayar": {
+      "main": [
+        [
+          {
+            "node": "Filter Belum Bayar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Belum Bayar": {
+      "main": [
+        [
+          {
+            "node": "Ingatkan Bayar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ingatkan Bayar": {
+      "main": [
+        [
+          {
+            "node": "Catat Waktu Follow-Up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

@@ -1,0 +1,220 @@
+{
+  "name": "UMKM 11 — Cart Reminder (Keranjang Ditinggalkan → Follow Up)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap 1 Jam",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Cart Tertinggal",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = Date.now();\nconst abandoned = rows.filter(r => {\n  const t = new Date(r.waktu).getTime();\n  const jam = (now - t) / 3600000;\n  return jam >= 3 && r.status === 'cart';\n});\nreturn abandoned.map(r => ({ json: r }));\n"
+      },
+      "id": "n3",
+      "name": "Filter > 3 Jam & Belum Bayar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{$json.jam}}",
+              "rightValue": "3",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Sudah > 3 Jam?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "Halo {{$json.nama}} 👋\\n\\nKami liat lo ninggalin produk di keranjang:\\n*{{$json.produk}}*\\n\\nMasih mau lanjut? Balas pesan ini, kami bantu proses order-nya.\\n\\nAda promo hari ini lho 🎁"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Kirim Reminder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        760,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Tandai Sudah Dikirim",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1000,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 1 Jam": {
+      "main": [
+        [
+          {
+            "node": "Baca Cart Tertinggal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Cart Tertinggal": {
+      "main": [
+        [
+          {
+            "node": "Filter > 3 Jam & Belum Bayar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter > 3 Jam & Belum Bayar": {
+      "main": [
+        [
+          {
+            "node": "Sudah > 3 Jam?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sudah > 3 Jam?": {
+      "main": [
+        [
+          {
+            "node": "Kirim Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim Reminder": {
+      "main": [
+        [
+          {
+            "node": "Tandai Sudah Dikirim",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}
