@@ -1,0 +1,105 @@
+{
+  "name": "PRODUKTIVITAS 03 — Water & Break Reminder (Jangan Lupa Minum)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9-17/2 * * 1-6"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap 2 Jam Jam Kerja",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst pesan = [\n  '💧 Minum air dulu! Udah 2 jam lo gak minum.',\n  '🧴 Istirahat sebentar. Liat jauh 20 detik buat mata.',\n  '🚶 Jalan sebentar. Jangan duduk terus.',\n  '💧 Minum air. Tubuh lo butuh.',\n  '🧘 Stretch 1 menit. Leher & bahu lo tegang.',\n  '💧 Air lagi dong. Target 8 gelas sehari.',\n];\nconst i = Math.floor(Math.random() * pesan.length);\nreturn [{ json: { pesan: pesan[i] } }];\n"
+      },
+      "id": "n2",
+      "name": "Pesan Acak",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.pesan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Kirim Pengingat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap 2 Jam Jam Kerja": {
+      "main": [
+        [
+          {
+            "node": "Pesan Acak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pesan Acak": {
+      "main": [
+        [
+          {
+            "node": "Kirim Pengingat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

@@ -1,0 +1,130 @@
+{
+  "name": "CREATOR 03 — Laporan Engagement Mingguan (Multi Platform)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap Senin 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=GANTI_CHANNEL_ID&key=GANTI_API_KEY_YOUTUBE",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Statistik Channel YouTube",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst d = $input.first().json;\nconst s = d.items?.[0]?.statistics || {};\nconst subs = Number(s.subscriberCount || 0);\nconst views = Number(s.viewCount || 0);\nconst videos = Number(s.videoCount || 0);\nconst avg = videos > 0 ? Math.round(views / videos) : 0;\n\nlet out = 'LAPORAN MINGGUAN\\n================\\n\\n';\nout += 'YOUTUBE\\n';\nout += '  Subscriber : ' + subs.toLocaleString('id') + '\\n';\nout += '  Total view : ' + views.toLocaleString('id') + '\\n';\nout += '  Video      : ' + videos + '\\n';\nout += '  Rata-view  : ' + avg.toLocaleString('id') + '\\n\\n';\nout += 'Target minggu depan: +' + Math.max(100, Math.round(subs * 0.05)) + ' subscriber';\nreturn [{ json: { laporan: out } }];\n"
+      },
+      "id": "n3",
+      "name": "Susun Laporan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.laporan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Kirim Laporan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap Senin 08:00": {
+      "main": [
+        [
+          {
+            "node": "Statistik Channel YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Statistik Channel YouTube": {
+      "main": [
+        [
+          {
+            "node": "Susun Laporan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Susun Laporan": {
+      "main": [
+        [
+          {
+            "node": "Kirim Laporan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

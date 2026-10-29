@@ -1,0 +1,139 @@
+{
+  "name": "PRODUKTIVITAS 02 — Expense Tracker (Catat Pengeluaran dari WA)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "catat-pengeluaran",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Pesan Pengeluaran Masuk",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        300
+      ],
+      "webhookId": "catat-pengeluaran"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst msg = $input.first().json.message || '';\n// format: \"beli kopi 25rb\" atau \"beli kopi 25000\"\nconst m = msg.match(/(\\d+)\\s*(rb|ribu|k)?/i);\nlet jumlah = 0;\nif (m) {\n  jumlah = Number(m[1]);\n  if (m[2]) jumlah *= 1000;\n}\nconst keterangan = msg.replace(/(\\d+)\\s*(rb|ribu|k)?/i, '').trim() || 'lainnya';\n\nlet kategori = 'lainnya';\nconst k = keterangan.toLowerCase();\nif (/makan|minum|kopi|ayam|nasgor|warteg|jajan/.test(k)) kategori = 'makan';\nelse if (/bensin|grab|gojek|transport|parkir|tol/.test(k)) kategori = 'transport';\nelse if (/pulsa|token|listrik|internet|wifi/.test(k)) kategori = 'tagihan';\nelse if (/baju|sepatu|belanja|shopee|tokped/.test(k)) kategori = 'belanja';\n\nreturn [{ json: {\n  jumlah,\n  keterangan,\n  kategori,\n  waktu: new Date().toLocaleString('id')\n} }];\n"
+      },
+      "id": "n2",
+      "name": "Parse Jumlah & Kategori",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Pengeluaran",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Catat ke Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "✅ Tercatat\\n\\nKeterangan : {{$json.keterangan}}\\nJumlah     : Rp {{$json.jumlah}}\\nKategori   : {{$json.kategori}}\\nWaktu      : {{$json.waktu}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Konfirmasi Tercatat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Pesan Pengeluaran Masuk": {
+      "main": [
+        [
+          {
+            "node": "Parse Jumlah & Kategori",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Jumlah & Kategori": {
+      "main": [
+        [
+          {
+            "node": "Catat ke Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat ke Sheets": {
+      "main": [
+        [
+          {
+            "node": "Konfirmasi Tercatat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

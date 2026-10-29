@@ -1,0 +1,171 @@
+{
+  "name": "DEVOPS 02 — SSL Certificate Expiry Checker",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Hari 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://GANTI_DOMAIN_LO.com",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Cek Sertifikat SSL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// n8n HTTP node mengembalikan header TLS pada metadata\nconst meta = $input.first().json;\n// fallback: hitung manual dari tanggal yang di-set\nconst expiry = new Date('GANTI_TANGGAL_EXPIRY');   // ganti dengan tanggal asli\nconst now = new Date();\nconst sisa = Math.ceil((expiry - now) / 86400000);\n\nlet out = 'SSL CERTIFICATE\\n================\\n';\nout += 'Domain  : GANTI_DOMAIN_LO.com\\n';\nout += 'Expiry  : ' + expiry.toLocaleDateString('id') + '\\n';\nout += 'Sisa    : ' + sisa + ' hari\\n\\n';\nif (sisa <= 7) out += '🔴 SANGAT DARURAT — perbarui SEKARANG';\nelse if (sisa <= 14) out += '🟠 Segera perbarui (kurang dari 2 minggu)';\nelse if (sisa <= 30) out += '🟡 Rencanakan perpanjangan';\nelse out += '🟢 Masih aman';\nreturn [{ json: { laporan: out, sisa } }];\n"
+      },
+      "id": "n3",
+      "name": "Hitung Sisa Hari",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{$json.sisa}}",
+              "rightValue": "14",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Sisa <= 14 Hari?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.laporan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Alert SSL Akan Expired",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Hari 07:00": {
+      "main": [
+        [
+          {
+            "node": "Cek Sertifikat SSL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Sertifikat SSL": {
+      "main": [
+        [
+          {
+            "node": "Hitung Sisa Hari",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hitung Sisa Hari": {
+      "main": [
+        [
+          {
+            "node": "Sisa <= 14 Hari?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sisa <= 14 Hari?": {
+      "main": [
+        [
+          {
+            "node": "Alert SSL Akan Expired",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}
