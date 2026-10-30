@@ -1,0 +1,286 @@
+{
+  "name": "EVENT 01 — RSVP + Reminder Undangan (Wedding/Event)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "ev-rsvp",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "RSVP Masuk",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "ev-rsvp"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  nama: b.nama || 'Tamu',\n  wa: String(b.wa || b.phone || '').replace(/[^0-9]/g, ''),\n  event: b.nama_event || 'Acara',\n  tanggal: b.tanggal || '-',\n  jam: b.jam || '-',\n  lokasi: b.lokasi || '-',\n  jumlah: Number(b.jumlah_orang || 1),\n  konfirmasi: (b.hadir || 'ya').toLowerCase() === 'ya' ? 'hadir' : 'tidak hadir',\n  waktu: new Date().toLocaleString('id-ID')\n}}];\n"
+      },
+      "id": "n2",
+      "name": "Normalize Tamu",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Samakan format RSVP."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "RSVP",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Catat RSVP",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{ $json.konfirmasi }}",
+              "rightValue": "hadir",
+              "operator": {
+                "type": "string",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Hadir?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "Terima kasih atas konfirmasinya, {{$json.nama}} 🙏\\n\\nKami tunggu kehadiran lo di:\\n{{$json.event}}\\n📅 {{$json.tanggal}} · {{$json.jam}}\\n📍 {{$json.lokasi}}\\n\\nJumlah: {{$json.jumlah}} orang"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Terima Kasih (Hadir)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "Terima kasih sudah kabari, {{$json.nama}}.\\n\\nKami hormati keputusan lo. Doa restu lo sudah sangat berarti buat kami.\\n\\nSampai jumpa di kesempatan lain 💛"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Konfirmasi Tidak Hadir",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "RSVP BARU\\n========\\nNama    : {{$('Normalize Tamu').first().json.nama}}\\nEvent   : {{$('Normalize Tamu').first().json.event}}\\nStatus  : {{$('Normalize Tamu').first().json.konfirmasi}}\\nJumlah  : {{$('Normalize Tamu').first().json.jumlah}} orang\\n\\nTotal tamu tercatat di Sheets."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Notif EO",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "RSVP Masuk": {
+      "main": [
+        [
+          {
+            "node": "Normalize Tamu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Tamu": {
+      "main": [
+        [
+          {
+            "node": "Catat RSVP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat RSVP": {
+      "main": [
+        [
+          {
+            "node": "Hadir?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hadir?": {
+      "main": [
+        [
+          {
+            "node": "Terima Kasih (Hadir)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Konfirmasi Tidak Hadir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Terima Kasih (Hadir)": {
+      "main": [
+        [
+          {
+            "node": "Notif EO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Konfirmasi Tidak Hadir": {
+      "main": [
+        [
+          {
+            "node": "Notif EO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

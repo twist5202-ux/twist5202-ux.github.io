@@ -1,0 +1,319 @@
+{
+  "name": "FNB 01 — Reservasi Meja (Auto Konfirmasi + Reminder)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "fnb-reservasi",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Form Reservasi",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "fnb-reservasi"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  nama: b.nama || 'Pelanggan',\n  wa: String(b.wa || b.phone || '').replace(/[^0-9]/g, ''),\n  jumlah: Number(b.jumlah_orang || b.pax || 2),\n  tanggal: b.tanggal || '-',\n  jam: b.jam || '-',\n  catatan: b.catatan || '-',\n  waktu_daftar: new Date().toLocaleString('id-ID')\n}}];\n"
+      },
+      "id": "n2",
+      "name": "Normalize Reservasi",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Samakan format form reservasi."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Reservasi",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Catat Reservasi",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "RESERVASI DITERIMA ✅\\n====================\\nNama    : {{$json.nama}}\\nJumlah  : {{$json.jumlah}} orang\\nTanggal: {{$json.tanggal}}\\nJam     : {{$json.jam}}\\nCatatan : {{$json.catatan}}\\n\\nKami tunggu kedatangannya. Kalau ada perubahan, balas chat ini ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Konfirmasi Reservasi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "RESERVASI BARU\\n=============\\nNama    : {{$('Normalize Reservasi').first().json.nama}}\\nJumlah  : {{$('Normalize Reservasi').first().json.jumlah}} orang\\nTanggal: {{$('Normalize Reservasi').first().json.tanggal}}\\nJam     : {{$('Normalize Reservasi').first().json.jam}}\\nCatatan : {{$('Normalize Reservasi').first().json.catatan}}\\n\\nSiapkan meja."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Notif Resto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n6",
+      "name": "Reminder H-1 Jam 10:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Reservasi",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Baca Reservasi Besok",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        420,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst besok = new Date(Date.now() + 86400000).toISOString().slice(0, 10);\nreturn rows.filter(r => String(r.tanggal || '').slice(0, 10) === besok)\n  .map(r => ({ json: r }));\n"
+      },
+      "id": "n8",
+      "name": "Filter Reservasi Besok",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        500
+      ],
+      "notes": "Ambil reservasi yang tanggalnya besok."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "PENGINGAT RESERVASI BESOK ⏰\\n==========================\\nNama    : {{$json.nama}}\\nJumlah  : {{$json.jumlah}} orang\\nJam     : {{$json.jam}}\\n\\nKami tunggu besok ya. Kalau berubah rencana, mohon kabari."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n9",
+      "name": "Reminder ke Pelanggan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Form Reservasi": {
+      "main": [
+        [
+          {
+            "node": "Normalize Reservasi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Reservasi": {
+      "main": [
+        [
+          {
+            "node": "Catat Reservasi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat Reservasi": {
+      "main": [
+        [
+          {
+            "node": "Konfirmasi Reservasi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Konfirmasi Reservasi": {
+      "main": [
+        [
+          {
+            "node": "Notif Resto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reminder H-1 Jam 10:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Reservasi Besok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Reservasi Besok": {
+      "main": [
+        [
+          {
+            "node": "Filter Reservasi Besok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Reservasi Besok": {
+      "main": [
+        [
+          {
+            "node": "Reminder ke Pelanggan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

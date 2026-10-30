@@ -1,0 +1,390 @@
+{
+  "name": "EVENT 03 — Seating Plan + Doorprize Draw Otomatis",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "ev-checkin",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Check-in Tamu",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "ev-checkin"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nconst nama = String(b.nama || '').toLowerCase().trim();\nconst rows = $('Baca Daftar Tamu').all().map(r => r.json);\n\nconst ketemu = rows.find(r =>\n  String(r.nama || '').toLowerCase().trim() === nama);\n\nif (!ketemu) {\n  return [{ json: { ditemukan: false, nama: b.nama } }];\n}\nreturn [{ json: { ditemukan: true, ...ketemu } }];\n"
+      },
+      "id": "n2",
+      "name": "Cek Tamu Terdaftar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Cocokkan nama tamu dengan daftar RSVP."
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "RSVP",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Baca Daftar Tamu",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{ $json.ditemukan ? 1 : 0 }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "number",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Terdaftar?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "Selamat datang, {{$json.nama}}! 🎊\\n\\nCheck-in berhasil.\\nMeja : {{$json.meja || 'akan diinformasikan'}}\\nNomor doorprize: {{$json.nomor_doorprize || '-'}}\\n\\nSelamat menikmati acara 💛"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Selamat Datang",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "TAMU TIDAK TERDAFTAR ⚠️\\n======================\\nNama : {{$json.nama}}\\n\\nPerlu dicek manual di meja registrasi."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Notif Panitia (Tamu Tak Terdaftar)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Kehadiran",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Catat Kehadiran",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 21 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n8",
+      "name": "Draw Doorprize Tiap Acara Selesai",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Kehadiran",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n9",
+      "name": "Baca Yang Hadir",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        420,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst pool = rows.filter(r => r.nama);\nif (pool.length < 3) return [{ json: { skip: true } }];\n\nconst pemenang = [];\nconst salinan = [...pool];\nfor (let i = 0; i < 3 && salinan.length > 0; i++) {\n  const idx = Math.floor(Math.random() * salinan.length);\n  pemenang.push(salinan.splice(idx, 1)[0]);\n}\n\nlet out = 'PEMENANG DOORPRIZE 🎁\\n===================\\n\\n';\npemenang.forEach((p, i) => {\n  out += (i + 1) + '. ' + p.nama + ' — ' + (p.meja || 'meja -') + '\\n';\n});\nreturn [{ json: { skip: false, hasil: out } }];\n"
+      },
+      "id": "n10",
+      "name": "Undi 3 Pemenang",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        620
+      ],
+      "notes": "Undi 3 pemenang acak dari yang hadir."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{ $('Undi 3 Pemenang').first().json.hasil }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n11",
+      "name": "Umumkan Pemenang",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        620
+      ]
+    }
+  ],
+  "connections": {
+    "Check-in Tamu": {
+      "main": [
+        [
+          {
+            "node": "Cek Tamu Terdaftar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Daftar Tamu": {
+      "main": [
+        [
+          {
+            "node": "Cek Tamu Terdaftar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Tamu Terdaftar": {
+      "main": [
+        [
+          {
+            "node": "Terdaftar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Terdaftar?": {
+      "main": [
+        [
+          {
+            "node": "Selamat Datang",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notif Panitia (Tamu Tak Terdaftar)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selamat Datang": {
+      "main": [
+        [
+          {
+            "node": "Catat Kehadiran",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draw Doorprize Tiap Acara Selesai": {
+      "main": [
+        [
+          {
+            "node": "Baca Yang Hadir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Yang Hadir": {
+      "main": [
+        [
+          {
+            "node": "Undi 3 Pemenang",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Undi 3 Pemenang": {
+      "main": [
+        [
+          {
+            "node": "Umumkan Pemenang",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

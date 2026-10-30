@@ -1,0 +1,296 @@
+{
+  "name": "AICONTENT 02 — Caption Sosmed Harian (IG/TikTok/FB)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap Pagi 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "IdeKonten",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Ide Konten",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst belum = rows.filter(r => (r.status || 'baru') === 'baru');\nif (belum.length === 0) return [{ json: { skip: true } }];\nconst pilih = belum[Math.floor(Math.random() * belum.length)];\nreturn [{ json: { skip: false, ...pilih } }];\n"
+      },
+      "id": "n3",
+      "name": "Pilih Ide Belum Dipakai",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Pilih 1 ide acak yang belum dipakai."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{ $json.skip ? 1 : 0 }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Ada Ide?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "GANTI_BASE_URL_AI/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer GANTI_API_KEY_AI"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'GANTI_MODEL_AI', messages: [{ role: 'system', content: Kamu social media manager. Buat caption Instagram/TikTok bahasa Indonesia. Format: hook kuat di baris pertama, isi 2-3 kalimat, pertanyaan buat engagement, lalu 5-8 hashtag yang relevan. Tone: santai, manusiawi, bukan korporat. Maksimal 100 kata. }], temperature: 0.7, max_tokens: 500 }) }}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "n5",
+      "name": "Generate Caption",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst r = $input.first().json;\nconst teks = r.choices?.[0]?.message?.content || r.message?.content || '';\nreturn [{ json: { caption: teks.trim() } }];\n"
+      },
+      "id": "n6",
+      "name": "Ambil Caption",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ],
+      "notes": "Ekstrak caption dari respons AI."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "CAPTION HARI INI 📱\\n==================\\n\\n{{$('Ambil Caption').first().json.caption}}\\n\\nCopy-paste, tempel, posting."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Kirim Caption ke Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1140,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "IdeKonten",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "ide"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "n8",
+      "name": "Tandai Ide Terpakai",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1380,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap Pagi 08:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Ide Konten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Ide Konten": {
+      "main": [
+        [
+          {
+            "node": "Pilih Ide Belum Dipakai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pilih Ide Belum Dipakai": {
+      "main": [
+        [
+          {
+            "node": "Ada Ide?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ada Ide?": {
+      "main": [
+        [
+          {
+            "node": "Generate Caption",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Caption": {
+      "main": [
+        [
+          {
+            "node": "Ambil Caption",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Caption": {
+      "main": [
+        [
+          {
+            "node": "Kirim Caption ke Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim Caption ke Admin": {
+      "main": [
+        [
+          {
+            "node": "Tandai Ide Terpakai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

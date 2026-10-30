@@ -1,0 +1,243 @@
+{
+  "name": "MARKETPLACE 01 — Multi-Platform Order Sync (Shopee/Tokopedia/TikTok)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/15 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap 15 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://developer.shopeemobile.com/api/v2/order/get_order_list?order_status=READY_TO_SHIP&time_range_field=create_time&time_from=GANTI_TIMESTAMP_FROM&time_to=GANTI_TIMESTAMP_TO&page_size=50",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_SIGN_SHOPEE"
+            }
+          ]
+        }
+      },
+      "id": "n2",
+      "name": "Ambil Order Shopee",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -60,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://fs.tokopedia.net/v2/order/list?from_date=GANTI_FROM_DATE&to_date=GANTI_TO_DATE&shop_id=GANTI_SHOP_ID&fs_id=GANTI_FS_ID",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer GANTI_TOKEN_TOKOPEDIA"
+            }
+          ]
+        }
+      },
+      "id": "n3",
+      "name": "Ambil Order Tokopedia",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -60,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst shopee = $('Ambil Order Shopee').first().json.response?.order_list || [];\nconst tokped = $('Ambil Order Tokopedia').first().json.data || [];\n\nconst out = [];\nfor (const o of shopee) {\n  out.push({ json: {\n    sumber: 'Shopee',\n    order_id: o.order_sn,\n    pembeli: o.buyer_user_name,\n    total: o.total_amount,\n    status: o.order_status,\n    kurir: o.shipping_carrier,\n    resi: o.package_number || '-'\n  }});\n}\nfor (const o of tokped) {\n  out.push({ json: {\n    sumber: 'Tokopedia',\n    order_id: o.invoice_ref_num,\n    pembeli: o.buyer_full_name,\n    total: o.total_price,\n    status: o.order_status,\n    kurir: o.shipping_agency || '-',\n    resi: o.shipping_receipt || '-'\n  }});\n}\nreturn out;\n"
+      },
+      "id": "n4",
+      "name": "Gabung & Normalisasi Order",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Samakan format order dari berbagai platform."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Order",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Catat ke Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst all = $input.all().map(r => r.json);\nconst shopee = all.filter(o => o.sumber === 'Shopee').length;\nconst tokped = all.filter(o => o.sumber === 'Tokopedia').length;\nconst omzet = all.reduce((s, o) => s + (Number(o.total) || 0), 0);\n\nlet out = 'ORDER BARU MASUK\\n================\\n\\n';\nout += 'Shopee    : ' + shopee + ' order\\n';\nout += 'Tokopedia : ' + tokped + ' order\\n';\nout += 'Total     : ' + all.length + ' order\\n';\nout += 'Omzet     : Rp ' + omzet.toLocaleString('id') + '\\n\\n';\nout += 'Semua tercatat di Sheets.';\nreturn [{ json: { laporan: out } }];\n"
+      },
+      "id": "n6",
+      "name": "Susun Ringkasan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.laporan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Notif Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 15 Menit": {
+      "main": [
+        [
+          {
+            "node": "Ambil Order Shopee",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ambil Order Tokopedia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Order Shopee": {
+      "main": [
+        [
+          {
+            "node": "Gabung & Normalisasi Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Order Tokopedia": {
+      "main": [
+        [
+          {
+            "node": "Gabung & Normalisasi Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gabung & Normalisasi Order": {
+      "main": [
+        [
+          {
+            "node": "Catat ke Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat ke Sheets": {
+      "main": [
+        [
+          {
+            "node": "Susun Ringkasan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Susun Ringkasan": {
+      "main": [
+        [
+          {
+            "node": "Notif Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

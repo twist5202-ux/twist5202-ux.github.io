@@ -1,0 +1,232 @@
+{
+  "name": "EDUCATION 03 — Laporan Kehadiran Mingguan (Orang Tua)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 17 * * 5"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap Jumat 17:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Absensi",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Absensi",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst per = {};\nfor (const r of rows) {\n  const k = r.nama_siswa;\n  if (!per[k]) per[k] = { nama: k, hadir: 0, total: 0, wa: r.wa };\n  per[k].total++;\n  if ((r.status || '').toLowerCase() === 'hadir') per[k].hadir++;\n}\nreturn Object.values(per).map(p => {\n  const pct = p.total > 0 ? Math.round(p.hadir / p.total * 100) : 0;\n  return { json: { ...p, persen: pct } };\n});\n"
+      },
+      "id": "n3",
+      "name": "Hitung Kehadiran per Siswa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Hitung persentase kehadiran tiap siswa."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{ $json.persen }}",
+              "rightValue": "75",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Kehadiran < 75%?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "LAPORAN KEHADIRAN 📋\\n====================\\nSiswa   : {{$json.nama}}\\nHadir   : {{$json.hadir}} dari {{$json.total}} pertemuan\\nPersen  : {{$json.persen}}%\\n\\nKehadiran di bawah 75%. Mohon perhatiannya — kehadiran berpengaruh ke pemahaman materi. Kalau ada kendala, silakan hubungi kami."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Alert Orang Tua (Absen Banyak)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "REKAP KEHADIRAN MINGGUAN\\n========================\\nTotal siswa dilaporkan: {{$('Hitung Kehadiran per Siswa').all().length}}\\nYang perlu perhatian (< 75%) sudah dikabari orang tuanya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Rekap ke Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap Jumat 17:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Absensi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Absensi": {
+      "main": [
+        [
+          {
+            "node": "Hitung Kehadiran per Siswa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hitung Kehadiran per Siswa": {
+      "main": [
+        [
+          {
+            "node": "Kehadiran < 75%?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kehadiran < 75%?": {
+      "main": [
+        [
+          {
+            "node": "Alert Orang Tua (Absen Banyak)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Orang Tua (Absen Banyak)": {
+      "main": [
+        [
+          {
+            "node": "Rekap ke Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}
