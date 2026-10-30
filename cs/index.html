@@ -326,7 +326,7 @@ footer a:hover{color:var(--gold)}
 
     <div class="stats">
       <div class="stat rv"><span class="n" data-count="41">0</span><span class="l">Template n8n</span></div>
-      <div class="stat rv"><span class="n" data-count="3">0</span><span class="l">Pemicu Eskalasi</span></div>
+      <div class="stat rv"><span class="n" data-count="4">0</span><span class="l">Pemicu Eskalasi</span></div>
       <div class="stat rv"><span class="n">24/7</span><span class="l">AI Aktif</span></div>
       <div class="stat rv"><span class="n">&lt;2s</span><span class="l">Respon AI</span></div>
     </div>
@@ -407,6 +407,8 @@ footer a:hover{color:var(--gold)}
             <button id="adminBtn" disabled>Kirim</button>
           </div>
           <div class="admin-hint" id="adminHint">⏳ menunggu eskalasi — customer kirim "komplain" / "refund" / "orang"</div>
+          <button id="autoTutupBtn" class="btn btn-ghost" style="display:none;width:100%;justify-content:center;margin-top:8px;padding:9px 16px;font-size:12px">⏱️ Simulasi Auto-Tutup (customer diam 15 menit)</button>
+          <div class="admin-hint" id="autoTutupTimer" style="display:none;color:var(--org)"></div>
         </div>
 
       </div>
@@ -419,8 +421,8 @@ footer a:hover{color:var(--gold)}
   <div class="wrap">
     <div class="sec-head rv">
       <div class="k">// Auto Escalation</div>
-      <h2>3 pemicu switch ke manusia</h2>
-      <p>Sistem tahu kapan harus nyerah. Tidak perlu admin pantau chat terus.</p>
+      <h2>4 pemicu switch ke manusia</h2>
+      <p>Sistem tahu kapan harus nyerah — dan kapan harus ambil alih lagi. Tidak perlu admin pantau chat terus.</p>
     </div>
 
     <div class="trig rv">
@@ -440,6 +442,59 @@ footer a:hover{color:var(--gold)}
         <span><b>AI nggak yakin</b><br><span class="d">Jawaban mengandung kata ragu</span></span>
         <span class="d">"tidak tahu" · "cek dulu" · "di luar"</span>
       </div>
+    </div>
+
+    <div class="trig rv" style="margin-top:16px">
+      <div class="trig-row hd"><span>#</span><span>Pemicu</span><span>Contoh</span></div>
+      <div class="trig-row">
+        <span class="n">4</span>
+        <span><b>Customer diam terlalu lama</b><br><span class="d">Sesi human-mode dibiarkan menggantung → dibalikin ke bot otomatis</span></span>
+        <span class="d">customer gak bales <code>15 menit</code> → mode balik ke <code>ai</code></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUTO-TUTUP ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// Auto-Tutup</div>
+      <h2>Customer diam → otomatis balik ke bot</h2>
+      <p>Sesi yang dibiarin menggantung itu masalah: customer nunggu, admin lupa,
+         bot gak bisa jawab. Sistem nutup sendiri.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step rv">
+        <div class="num">STEP 01</div>
+        <div class="ico">👤</div>
+        <h4>Mode Human Aktif</h4>
+        <p>Eskalasi terjadi. Admin pegang sesi. Setiap pesan customer dicatat ke tab History.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 02</div>
+        <div class="ico">⏱️</div>
+        <h4>Watchdog Cek Tiap 2 Menit</h4>
+        <p>Hitung waktu pesan customer terakhir per nomor. Kalau diam ≥ threshold (default 15 menit), tandai.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 03</div>
+        <div class="ico">🔄</div>
+        <h4>Balik ke AI</h4>
+        <p>Mode ditulis ulang jadi <b>ai</b>. Admin dapat notif sesi ditutup otomatis.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 04</div>
+        <div class="ico">🤖</div>
+        <h4>Bot Jawab Lagi</h4>
+        <p>Customer chat lagi → AI yang bales. Gak ada sesi nyangkut selamanya.</p>
+      </div>
+    </div>
+
+    <div class="note rv" style="background:var(--card);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:16px 20px;font-size:13px;color:var(--dim);line-height:1.7;margin-top:20px">
+      <b style="color:var(--txt)">Threshold bisa diatur.</b> Ganti <code style="font-family:var(--mono);font-size:11.5px;color:var(--gold2);background:rgba(232,179,57,.08);padding:2px 6px;border-radius:4px">GANTI_MENIT_AUTO_TUTUP</code>
+      di node <b style="color:var(--txt)">Cek Auto-Tutup</b>. Default 15 menit. Mau 5 menit, 30 menit, 1 jam — terserah lo.
     </div>
   </div>
 </section>
@@ -485,8 +540,8 @@ footer a:hover{color:var(--gold)}
       <div class="flow-step rv">
         <div class="num">STEP 06</div>
         <div class="ico">⏰</div>
-        <h4>Watchdog</h4>
-        <p>Tiap 5 menit dicek. Admin lupa bales &gt;10 menit → diingatkan. Customer tunggu &gt;30 menit → dapat kabar.</p>
+        <h4>Watchdog + Auto-Tutup</h4>
+        <p>Tiap 2 menit dicek. Admin lupa bales &gt;10 menit → diingatkan. Customer diam &gt;15 menit → sesi ditutup, balik ke AI.</p>
       </div>
     </div>
   </div>
@@ -924,6 +979,57 @@ function adminSend(){
   addLog('Teruskan ke Customer', 'pesan admin diteruskan', 'ok');
   addLog('Update Sheets', 'last_human_reply diperbarui');
 }
+
+/* ---- SIMULASI AUTO-TUTUP ---- */
+var autoBtn = document.getElementById('autoTutupBtn');
+var autoTimer = document.getElementById('autoTutupTimer');
+var autoRunning = false;
+
+autoBtn.addEventListener('click', function(){
+  if (autoRunning || mode !== 'human') return;
+  autoRunning = true;
+  autoBtn.style.display = 'none';
+  autoTimer.style.display = 'block';
+
+  var detik = 0;
+  var total = 15;   // simulasi 15 menit = 15 detik
+  addLog('Watchdog', 'auto-tutup armed · threshold 15 menit · cek tiap 2 menit', 'gold');
+
+  var iv = setInterval(function(){
+    detik++;
+    var sisa = total - detik;
+    autoTimer.textContent = '⏱️ simulasi: ' + sisa + ' menit lagi sebelum auto-tutup...';
+
+    if (detik % 2 === 0 && detik < total){
+      addLog('Watchdog', 'cek diam — customer belum bales (' + detik + ' menit)');
+    }
+
+    if (detik >= total){
+      clearInterval(iv);
+      addLog('Cek Auto-Tutup', 'customer diam 15 menit → tutup sesi', 'esc');
+      setMode('ai');
+      addLog('Set Mode AI', 'Sheets diupdate → mode = ai', 'ok');
+      addMsg('sys', '⏱️ Sesi ditutup otomatis — customer diam 15 menit');
+      addMsg('out', 'Sepertinya lo lagi sibuk. Kalau butuh bantuan lagi, chat aja kapan aja — saya siap bantu 24 jam.');
+      addLog('Notif Admin', 'admin diberitahu sesi ditutup otomatis', 'gold');
+      autoTimer.style.display = 'none';
+      autoRunning = false;
+    }
+  }, 1000);
+});
+
+/* tampilkan tombol auto-tutup saat mode human */
+var _origSetMode = setMode;
+setMode = function(m){
+  _origSetMode(m);
+  if (m === 'human'){
+    autoBtn.style.display = 'block';
+  } else {
+    autoBtn.style.display = 'none';
+    autoTimer.style.display = 'none';
+    autoRunning = false;
+  }
+};
 
 custBtn.addEventListener('click', customerSend);
 custIn.addEventListener('keydown', function(e){ if(e.key==='Enter') customerSend(); });
