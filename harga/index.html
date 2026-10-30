@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harga & Paket — Template n8n + Jasa Setup | twist.automation</title>
+<meta name="description" content="Pilih sesuai kebutuhan: beli template JSON buat dipasang sendiri, atau bayar jasa setup sampai jadi. Harga jelas, tanpa biaya tersembunyi.">
+<style>
+:root{
+  --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --card2:#1a2332;
+  --line:#1f2a38; --line2:#2a3648;
+  --txt:#e6edf3; --dim:#8b98a8; --dim2:#5c6a7d;
+  --gold:#e8b339; --gold2:#f5d076;
+  --wa:#25d366; --wa2:#128c7e;
+  --grn:#3fb950; --red:#f85149; --blu:#58a6ff; --pur:#bc8cff; --org:#f0883e;
+  --mono:'Consolas','SF Mono',ui-monospace,monospace;
+  --sans:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;overflow-x:hidden;min-height:100vh}
+::selection{background:rgba(232,179,57,.3)}
+
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45}
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--wa));z-index:100;width:0;transition:width .1s}
+#glow{position:fixed;width:340px;height:340px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(232,179,57,.05) 0%,transparent 70%);transform:translate(-50%,-50%)}
+
+.wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 20px}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(10,14,20,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);padding:14px 0}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:var(--mono);font-size:15px;color:var(--gold);letter-spacing:.5px;text-decoration:none}
+.logo b{color:var(--txt)}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--dim);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:8px;
+  border:1px solid transparent;transition:.2s;white-space:nowrap}
+.nav-links a:hover{color:var(--txt);border-color:var(--line2);background:var(--card)}
+
+.hero{padding:60px 0 36px;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
+  color:var(--gold);border:1px solid rgba(232,179,57,.3);padding:6px 16px;border-radius:100px;
+  margin-bottom:22px;background:rgba(232,179,57,.06)}
+.hero h1{font-size:clamp(28px,5vw,48px);font-weight:800;line-height:1.12;letter-spacing:-1.2px;margin-bottom:16px}
+.hero h1 .g{background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--dim);font-size:clamp(14px,2vw,17px);max-width:600px;margin:0 auto 28px}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:12px;font-size:14px;
+  font-weight:600;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:.22s;font-family:var(--sans)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#d4a02e);color:#0a0e14;box-shadow:0 4px 20px rgba(232,179,57,.22)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(232,179,57,.32)}
+.btn-ghost{background:var(--card);color:var(--txt);border-color:var(--line2)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-wa{background:var(--wa);color:#04120a}
+.btn-wa:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.3)}
+.btn-blu{background:var(--blu);color:#04101f}
+.btn-blu:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(88,166,255,.3)}
+
+section{padding:44px 0}
+.sec-head{margin-bottom:26px}
+.sec-head .k{font-family:var(--mono);font-size:12px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase}
+.sec-head h2{font-size:clamp(21px,3.4vw,30px);font-weight:700;letter-spacing:-.6px;margin-top:6px}
+.sec-head p{color:var(--dim);font-size:15px;margin-top:8px;max-width:620px}
+
+/* ---------- SEGMENT SWITCHER ---------- */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+@media(max-width:820px){.seg{grid-template-columns:1fr}}
+.seg-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 24px;
+  cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+.seg-card:hover{border-color:var(--line2);transform:translateY(-3px)}
+.seg-card.on{border-color:var(--gold);background:linear-gradient(180deg,rgba(232,179,57,.06),var(--card))}
+.seg-card.on.blue{border-color:var(--blu);background:linear-gradient(180deg,rgba(88,166,255,.06),var(--card))}
+.seg-card .ico{font-size:30px;margin-bottom:12px}
+.seg-card h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.seg-card .who{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-bottom:14px;line-height:1.7}
+.seg-card .price{font-family:var(--mono);font-size:26px;font-weight:800;color:var(--gold)}
+.seg-card.blue .price{color:var(--blu)}
+.seg-card .price small{font-size:12px;color:var(--dim);font-weight:400}
+.seg-card .pick{position:absolute;top:16px;right:16px;font-family:var(--mono);font-size:10px;
+  padding:3px 10px;border-radius:100px;border:1px solid var(--line2);color:var(--dim2);transition:.2s}
+.seg-card.on .pick{border-color:var(--gold);color:var(--gold);background:rgba(232,179,57,.1)}
+.seg-card.on.blue .pick{border-color:var(--blu);color:var(--blu);background:rgba(88,166,255,.1)}
+
+/* ---------- PRICE PANELS ---------- */
+.panel{display:none}
+.panel.on{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.tier{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 22px;
+  display:flex;flex-direction:column;position:relative;transition:.25s}
+.tier:hover{border-color:var(--line2);transform:translateY(-3px)}
+.tier.pop{border-color:rgba(232,179,57,.42);background:linear-gradient(180deg,rgba(232,179,57,.05),var(--card))}
+.tier.pop.b{border-color:rgba(88,166,255,.42);background:linear-gradient(180deg,rgba(88,166,255,.05),var(--card))}
+.tier.pop::before{content:'PALING DIPILIH';position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;background:var(--gold);color:#0a0e14;
+  padding:3px 14px;border-radius:100px;font-weight:700;white-space:nowrap}
+.tier.pop.b::before{background:var(--blu);color:#04101f}
+.tier h4{font-size:15px;font-weight:700;margin-bottom:2px}
+.tier .sub{font-size:11.5px;color:var(--dim);font-family:var(--mono);margin-bottom:14px}
+.tier .amt{font-family:var(--mono);font-size:30px;font-weight:800;color:var(--gold);margin-bottom:2px}
+.tier.pop.b .amt{color:var(--blu)}
+.tier .amt small{font-size:13px;color:var(--dim);font-weight:400}
+.tier .per{font-size:11px;color:var(--dim2);font-family:var(--mono);margin-bottom:18px}
+.tier ul{list-style:none;margin:0 0 22px;flex:1}
+.tier li{font-size:12.5px;color:var(--dim);padding:5px 0;display:flex;gap:8px;align-items:flex-start;line-height:1.55}
+.tier li::before{content:'✓';color:var(--grn);font-weight:700;flex-shrink:0}
+.tier li.no{color:var(--dim2)}
+.tier li.no::before{content:'—';color:var(--dim2)}
+.tier .btn{width:100%;justify-content:center}
+
+/* ---------- COMPARE ---------- */
+.cmp{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:24px}
+.cmp-row{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:0;font-size:13px}
+.cmp-row+.cmp-row{border-top:1px solid var(--line)}
+.cmp-row>div{padding:13px 18px}
+.cmp-row>div+div{border-left:1px solid var(--line)}
+.cmp-row.hd{background:var(--bg2);font-family:var(--mono);font-size:11px;color:var(--dim);
+  text-transform:uppercase;letter-spacing:.8px}
+.cmp-row.hd>div:nth-child(2){color:var(--gold)}
+.cmp-row.hd>div:nth-child(3){color:var(--blu)}
+.cmp-row .f{color:var(--dim)}
+.cmp-row .v{font-weight:600}
+.cmp-row .v.g{color:var(--grn)}
+.cmp-row .v.b{color:var(--blu)}
+.cmp-row:hover:not(.hd){background:var(--card2)}
+
+/* ---------- BUNDLE ---------- */
+.bundle{background:linear-gradient(135deg,rgba(232,179,57,.07),rgba(37,211,102,.05));
+  border:1px solid rgba(232,179,57,.22);border-radius:20px;padding:34px 28px;text-align:center}
+.bundle .tag{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:1.5px;margin-bottom:10px}
+.bundle h3{font-size:clamp(20px,3.2vw,28px);font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.bundle p{color:var(--dim);font-size:14.5px;max-width:520px;margin:0 auto 20px}
+.bundle .amt{font-family:var(--mono);font-size:34px;font-weight:800;color:var(--gold);margin-bottom:4px}
+.bundle .was{font-family:var(--mono);font-size:14px;color:var(--dim2);text-decoration:line-through;margin-bottom:20px}
+.bundle .save{display:inline-block;font-family:var(--mono);font-size:11px;background:rgba(63,185,80,.14);
+  color:var(--grn);padding:4px 14px;border-radius:100px;margin-bottom:22px}
+
+/* ---------- NOTE ---------- */
+.note{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--gold);
+  border-radius:0 12px 12px 0;padding:16px 20px;font-size:13px;color:var(--dim);line-height:1.7;margin-top:24px}
+.note b{color:var(--txt)}
+
+/* ---------- FAQ ---------- */
+.faq-item{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:.2s}
+.faq-item:hover{border-color:var(--line2)}
+.faq-q{width:100%;background:none;border:none;color:var(--txt);font-size:14px;font-weight:600;
+  padding:16px 18px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;gap:12px;font-family:var(--sans)}
+.faq-q .ar{color:var(--gold);font-size:18px;transition:transform .25s;flex-shrink:0}
+.faq-item.open .faq-q .ar{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-a-in{padding:0 18px 16px;font-size:13px;color:var(--dim);line-height:1.7}
+.faq-a-in code{font-family:var(--mono);font-size:11.5px;color:var(--gold2);background:rgba(232,179,57,.08);padding:2px 6px;border-radius:4px}
+
+/* ---------- CTA ---------- */
+.cta{background:linear-gradient(135deg,rgba(232,179,57,.07),rgba(37,211,102,.05));
+  border:1px solid rgba(232,179,57,.2);border-radius:20px;padding:40px 28px;text-align:center;margin:44px 0}
+.cta h2{font-size:clamp(20px,3.4vw,28px);font-weight:800;letter-spacing:-.6px;margin-bottom:10px}
+.cta p{color:var(--dim);font-size:15px;max-width:500px;margin:0 auto 24px}
+
+footer{border-top:1px solid var(--line);padding:26px 0;text-align:center}
+footer .f{font-family:var(--mono);font-size:11px;color:var(--dim2);line-height:2}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--gold)}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important}
+  .rv{opacity:1;transform:none}
+  #stars,#glow{display:none}
+}
+@media print{
+  nav,#prog,#glow,#stars,.seg,.cta{display:none}
+  body{background:#fff;color:#111}
+  .hero h1,.sec-head h2,.tier h4{color:#111}
+  .tier,.cmp,.bundle,.faq-item{break-inside:avoid;border-color:#ccc;background:#fff}
+  .tier li,.cmp-row .f,.note,.faq-a-in{color:#444}
+  .panel{display:block !important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div id="glow"></div>
+<div id="prog"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="/" class="logo">twist<b>.automation</b></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/automation/">Template</a>
+      <a href="/cs/">CS Hybrid</a>
+      <a href="/demo/">Demo Bot</a>
+      <a href="/macro/">Jasa Macro</a>
+      <a href="/harga/" style="color:var(--gold)">Harga</a>
+      <a href="https://wa.me/6285171228302">Chat WA</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-tag">💰 HARGA JELAS — TANPA BIAYA TERSEMBUNYI</div>
+    <h1>Beli <span class="g">Template</span><br>atau Bayar <span class="g">Jasa Setup</span></h1>
+    <p>Dua cara pakai. Pilih yang sesuai situasi lo — mau pasang sendiri, atau mau yang jadi tanpa ribet.</p>
+    <div class="hero-cta">
+      <a href="#pilih" class="btn btn-gold">Lihat Harga</a>
+      <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20tanya-tanya%20soal%20harga" class="btn btn-wa">Tanya Dulu</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEGMENT ============ -->
+<section id="pilih">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// Pilih Jalur</div>
+      <h2>Lo tipe yang mana?</h2>
+      <p>Klik salah satu. Harga dan isi paket bakal nyesuain.</p>
+    </div>
+
+    <div class="seg rv">
+      <div class="seg-card on" id="segTech" onclick="pick('tech')">
+        <span class="pick">DIPILIH</span>
+        <div class="ico">👨‍💻</div>
+        <h3>Technical Buyer</h3>
+        <div class="who">Freelancer · Developer · Agency<br>Yang mau file JSON, pasang sendiri</div>
+        <div class="price">Rp 49rb <small>— Rp 149rb</small></div>
+      </div>
+      <div class="seg-card blue" id="segBiz" onclick="pick('biz')">
+        <span class="pick">PILIH</span>
+        <div class="ico">🏪</div>
+        <h3>Business Owner</h3>
+        <div class="who">UMKM · Pemilik toko online · Jasa<br>Yang mau langsung jadi, tanpa ribet</div>
+        <div class="price">Rp 500rb <small>— Rp 3jt</small></div>
+      </div>
+    </div>
+
+    <!-- ---------- TECH PANEL ---------- -->
+    <div class="panel on" id="panelTech">
+      <div class="tiers">
+        <div class="tier">
+          <h4>Single Template</h4>
+          <div class="sub">1 file JSON, import & pasang</div>
+          <div class="amt">Rp 49rb <small>/ template</small></div>
+          <div class="per">sekali bayar · langsung download</div>
+          <ul>
+            <li>1 template n8n pilihan lo</li>
+            <li>File JSON siap import</li>
+            <li>Panduan ganti placeholder</li>
+            <li>Daftar <code>GANTI_...</code> yang harus diisi</li>
+            <li class="no">Setup jadi</li>
+            <li class="no">Custom prompt / keyword</li>
+          </ul>
+          <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20beli%20Single%20Template%20n8n%20Rp49rb" class="btn btn-ghost">Beli via WA</a>
+        </div>
+
+        <div class="tier pop">
+          <h4>Bundle 10 Template</h4>
+          <div class="sub">10 file JSON, pilih kategori</div>
+          <div class="amt">Rp 149rb <small>/ bundle</small></div>
+          <div class="per">sekali bayar · hemat 70%</div>
+          <ul>
+            <li>10 template n8n pilihan lo</li>
+            <li>Semua file JSON siap import</li>
+            <li>Panduan lengkap tiap template</li>
+            <li>Struktur Google Sheets</li>
+            <li>Update template gratis 6 bulan</li>
+            <li class="no">Setup jadi</li>
+          </ul>
+          <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20Bundle%2010%20Template%20n8n%20Rp149rb" class="btn btn-gold">Beli via WA</a>
+        </div>
+
+        <div class="tier">
+          <h4>All Access</h4>
+          <div class="sub">Semua 41 template, sekali beli</div>
+          <div class="amt">Rp 349rb <small>/ lifetime</small></div>
+          <div class="per">sekali bayar · akses selamanya</div>
+          <ul>
+            <li><b>Semua 41 template</b> (6 kategori)</li>
+            <li>Template baru masuk gratis</li>
+            <li>Panduan lengkap + struktur Sheets</li>
+            <li>Update selamanya</li>
+            <li>Prioritas request template baru</li>
+            <li class="no">Setup jadi</li>
+          </ul>
+          <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20All%20Access%2041%20template%20n8n%20Rp349rb" class="btn btn-ghost">Beli via WA</a>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>Catatan jujur:</b> harga di atas titik awal buat ngukur mana yang laku.
+        Template yang lo beli butuh lo pasang sendiri di n8n — gue sediakan panduan
+        dan daftar placeholder yang harus diganti. Kalau mau yang langsung jalan,
+        lihat paket <b>Business Owner</b>.
+      </div>
+    </div>
+
+    <!-- ---------- BIZ PANEL ---------- -->
+    <div class="panel" id="panelBiz">
+      <div class="tiers">
+        <div class="tier">
+          <h4>Starter</h4>
+          <div class="sub">1 automation, langsung jadi</div>
+          <div class="amt">Rp 500rb <small>/ project</small></div>
+          <div class="per">sekali bayar · 3-5 hari kerja</div>
+          <ul>
+            <li>1 automation dipilih (misal auto-reply WA)</li>
+            <li>Gue setup sampai jalan di n8n lo</li>
+            <li>Gateway WhatsApp dikonfigurasi</li>
+            <li>Google Sheets disiapkan</li>
+            <li>1x revisi</li>
+            <li>Panduan pakai singkat</li>
+          </ul>
+          <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20paket%20Starter%20CS%20Hybrid%20Rp500rb" class="btn btn-ghost">Pilih Paket</a>
+        </div>
+
+        <div class="tier pop b">
+          <h4>Business</h4>
+          <div class="sub">3 automation + CS Hybrid</div>
+          <div class="amt">Rp 1,5jt <small>/ project</small></div>
+          <div class="per">sekali bayar · 5-7 hari kerja</div>
+          <ul>
+            <li>3 automation sesuai kebutuhan bisnis</li>
+            <li><b>CS Hybrid</b> (AI + switch ke manusia)</li>
+            <li>Gateway WA + Sheets dikonfigurasi</li>
+            <li>AI prompt disesuaikan bisnis lo</li>
+            <li>Keyword eskalasi custom</li>
+            <li>3x revisi + support 30 hari</li>
+          </ul>
+          <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20paket%20Business%20CS%20Hybrid%20Rp1%2C5jt" class="btn btn-gold">Pilih Paket</a>
+        </div>
+
+        <div class="tier">
+          <h4>Full System</h4>
+          <div class="sub">Semua jalan, plus rawat</div>
+          <div class="amt">Rp 3jt <small>+ Rp 750rb/bln</small></div>
+          <div class="per">sekali bayar · 7-10 hari kerja</div>
+          <ul>
+            <li>Semua automation yang relevan buat bisnis lo</li>
+            <li>CS Hybrid + watchdog</li>
+            <li>VPS + n8n + gateway disiapkan</li>
+            <li>Training tim lo (1 sesi)</li>
+            <li>Revisi tanpa batas 60 hari</li>
+            <li>Maintenance bulanan (opsional Rp 750rb)</li>
+          </ul>
+          <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20paket%20Full%20System%20Rp3jt" class="btn btn-ghost">Pilih Paket</a>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>Catatan jujur:</b> harga di atas titik awal buat ngukur mana yang laku —
+        bukan jaminan orang langsung beli. Yang lo bayar adalah <b>waktu dan pengerjaan</b>:
+        gue yang setup, konfigurasi, dan pastiin jalan. Lo tinggal pakai.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPARE ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// Perbandingan</div>
+      <h2>Bedanya apa</h2>
+    </div>
+    <div class="cmp rv">
+      <div class="cmp-row hd"><div>Hal</div><div>Template (Technical)</div><div>Jasa Setup (Business)</div></div>
+      <div class="cmp-row"><div class="f">Yang lo dapat</div><div class="v g">File JSON n8n</div><div class="v b">Workflow sudah jalan</div></div>
+      <div class="cmp-row"><div class="f">Siapa yang pasang</div><div class="v g">Lo sendiri</div><div class="v b">Gue</div></div>
+      <div class="cmp-row"><div class="f">Waktu sampai bisa pakai</div><div class="v g">Tergantung lo (30 mnt - 2 jam)</div><div class="v b">3-10 hari, gue yang kerjakan</div></div>
+      <div class="cmp-row"><div class="f">Gateway WhatsApp</div><div class="v g">Lo daftar & konfigurasi</div><div class="v b">Gue konfigurasi</div></div>
+      <div class="cmp-row"><div class="f">Google Sheets</div><div class="v g">Lo bikin sendiri (ada panduan)</div><div class="v b">Gue siapkan</div></div>
+      <div class="cmp-row"><div class="f">AI prompt</div><div class="v g">Default, bisa lo edit</div><div class="v b">Disesuaikan bisnis lo</div></div>
+      <div class="cmp-row"><div class="f">Keyword eskalasi</div><div class="v g">Default list</div><div class="v b">Custom buat bisnis lo</div></div>
+      <div class="cmp-row"><div class="f">Revisi</div><div class="v g">—</div><div class="v b">1x - tanpa batas (tergantung paket)</div></div>
+      <div class="cmp-row"><div class="f">Support</div><div class="v g">Tanya via WA</div><div class="v b">30-60 hari prioritas</div></div>
+      <div class="cmp-row"><div class="f">Harga</div><div class="v g">Rp 49rb - 349rb</div><div class="v b">Rp 500rb - 3jt</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUNDLE ============ -->
+<section>
+  <div class="wrap">
+    <div class="bundle rv">
+      <div class="tag">// PAKET HEMAT</div>
+      <h3>All Access + 1 Setup Gratis</h3>
+      <p>Ambil semua 41 template, plus gue setup 1 automation sampai jadi di n8n lo.</p>
+      <div class="amt">Rp 699rb</div>
+      <div class="was">Rp 849rb</div><br>
+      <span class="save">HEMAT Rp 150rb</span>
+      <div><a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20paket%20All%20Access%20%2B%201%20Setup%20Gratis%20Rp699rb" class="btn btn-gold">Ambil Paket Ini</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// FAQ</div>
+      <h2>Sebelum beli, baca dulu</h2>
+    </div>
+    <div id="faq">
+      <div class="faq-item rv">
+        <button class="faq-q">Bedanya template sama jasa setup apa? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Template = lo beli file JSON, import ke n8n lo sendiri, ganti placeholder, jalan. Jasa setup = gue yang import, konfigurasi gateway, siapkan Sheets, sesuaikan prompt, sampai bener-bener jalan. Lo tinggal pakai.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Gw gak ngerti n8n, aman beli template? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Aman, tapi butuh usaha lo sendiri. Panduan lengkap termasuk daftar <code>GANTI_...</code> yang harus diganti. Kalau merasa berat, ambil paket Business Owner — gue yang kerjakan semuanya.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Bisa bayar setelah jadi? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Bisa. Untuk paket Business ke atas, skema 50% di muka, 50% setelah selesai dan lo tes jalan. Untuk template, pembayaran penuh karena langsung dapat file.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Template bisa direvoke atau di-update? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Bundle 10 dan All Access dapat update gratis. Kalau ada template yang gak cocok, bisa tukar dengan kategori lain dalam 7 hari.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Harga bisa nego? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Untuk template, harga sudah pas. Untuk jasa setup, tergantung scope — kalau butuh lebih dari 3 automation, kita bisa bahas harga paket khusus. Chat WA aja.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Kalau gw udah punya n8n sendiri? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Malah lebih cepat. Gue tinggal import dan konfigurasi di instance lo. Kalau belum punya, gue bisa bantu setup VPS (biaya server terpisah, ± Rp 75rb/bulan).</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section>
+  <div class="wrap">
+    <div class="cta rv">
+      <h2>Masih ragu pilih yang mana?</h2>
+      <p>Chat WA, jelasin situasi lo. Gue kasih rekomendasi jujur — termasuk kalau ternyata lo gak butuh.</p>
+      <div class="hero-cta">
+        <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20tanya%20paket%20yang%20cocok" class="btn btn-wa">💬 Chat WhatsApp</a>
+        <a href="/cs/" class="btn btn-ghost">Coba Demo CS Hybrid</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f">
+      <a href="/">twist.automation</a> · Modul n8n · CS Hybrid · Macro<br>
+      WhatsApp <a href="https://wa.me/6285171228302">0851-7122-8302</a> ·
+      <a href="/automation/">Template</a> ·
+      <a href="/demo/">Demo</a> ·
+      <a href="/harga/">Harga</a><br>
+      © 2026 twist.automation
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* starfield */
+var cv=document.getElementById('stars'),ctx=cv.getContext('2d'),stars=[],W,H;
+function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;stars=[];
+  for(var i=0;i<65;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,s:Math.random()*.13+.03,o:Math.random()*.45+.15});}
+resize();addEventListener('resize',resize);
+function draw(){ctx.clearRect(0,0,W,H);
+  for(var i=0;i<stars.length;i++){var s=stars[i];s.y-=s.s;if(s.y<-2)s.y=H+2;
+    ctx.globalAlpha=s.o;ctx.fillStyle='#e8b339';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.283);ctx.fill();}
+  ctx.globalAlpha=1;requestAnimationFrame(draw);}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw();
+
+/* glow */
+var glow=document.getElementById('glow');
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  addEventListener('mousemove',function(e){glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';});}
+
+/* progress */
+var prog=document.getElementById('prog');
+addEventListener('scroll',function(){
+  var h=document.documentElement;
+  prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+/* reveal */
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.12});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+
+/* faq */
+document.querySelectorAll('.faq-q').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var item=btn.parentElement,a=item.querySelector('.faq-a');
+    var open=item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function(o){
+      o.classList.remove('open');o.querySelector('.faq-a').style.maxHeight=null;});
+    if(!open){item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';}
+  });
+});
+
+/* segment switcher */
+window.pick=function(which){
+  var t=document.getElementById('segTech'),b=document.getElementById('segBiz');
+  var pt=document.getElementById('panelTech'),pb=document.getElementById('panelBiz');
+  if(which==='tech'){
+    t.classList.add('on');b.classList.remove('on');
+    t.querySelector('.pick').textContent='DIPILIH';
+    b.querySelector('.pick').textContent='PILIH';
+    pt.classList.add('on');pb.classList.remove('on');
+  }else{
+    b.classList.add('on');t.classList.remove('on');
+    b.querySelector('.pick').textContent='DIPILIH';
+    t.querySelector('.pick').textContent='PILIH';
+    pb.classList.add('on');pt.classList.remove('on');
+  }
+};
+})();
+</script>
+</body>
+</html>
