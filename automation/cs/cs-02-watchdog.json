@@ -1,0 +1,338 @@
+{
+  "name": "CS HYBRID 02 — Watchdog Eskalasi (Admin Lama Balas)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/5 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "w1",
+      "name": "Cek Tiap 5 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "State",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "w2",
+      "name": "Baca Tab State",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -180,
+        300
+      ],
+      "notes": "Baca tab 'State'."
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $(\"Baca Tab State\").all().map(r => r.json);\nconst now = Date.now();\n\nconst perlu = rows.filter(r => {\n  if ((r.mode || \"ai\") !== \"human\") return false;\n  if (!r.escalated_at) return false;\n  const esc = new Date(r.escalated_at).getTime();\n  if (isNaN(esc)) return false;\n  const menit = (now - esc) / 60000;\n\n  // admin sudah bales? cek last_human_reply lebih baru dari escalated_at\n  const lhr = r.last_human_reply ? new Date(r.last_human_reply).getTime() : 0;\n  const sudahBales = lhr > esc;\n\n  // sudah diingatkan dalam 10 menit terakhir? jangan spam\n  const rem = r.last_reminder ? new Date(r.last_reminder).getTime() : 0;\n  const baruReminder = (now - rem) / 60000 < 10;\n\n  return !sudahBales && menit >= 10 && !baruReminder;\n}).map(r => {\n  const esc = new Date(r.escalated_at).getTime();\n  return {\n    json: {\n      phone: String(r.phone || \"\").replace(/[^0-9]/g, \"\"),\n      menit_tunggu: Math.round((now - esc) / 60000),\n      catatan: r.catatan || \"-\"\n    }\n  };\n});\n\nreturn perlu;\n"
+      },
+      "id": "w3",
+      "name": "Filter Perlu Follow-Up",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        300
+      ],
+      "notes": "Cari sesi human-mode yang admin belum bales >= 10 menit."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.menit_tunggu }}",
+              "rightValue": "10",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "w4",
+      "name": "Ada yang Perlu Diingatkan?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "PENGINGAT — CUSTOMER MENUNGGU\\n=============================\\nDari   : {{$json.phone}}\\nSudah menunggu: {{$json.menit_tunggu}} menit\\nCatatan: {{$json.catatan}}\\n\\nBalas pesan customer tadi, atau ketik 'tutup' kalau sudah selesai."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w5",
+      "name": "Ingatkan Admin Lagi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        220
+      ],
+      "notes": "Gateway WhatsApp (Fonnte). Ganti URL kalau pakai Wablas/MPWA."
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "State",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "phone"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "w6",
+      "name": "Update last_reminder",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        700,
+        220
+      ],
+      "notes": "Update baris di tab 'State', cocokkan kolom 'phone'."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.menit_tunggu }}",
+              "rightValue": "30",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "w7",
+      "name": "Tunggu > 30 Menit?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $('Filter Perlu Follow-Up').first().json.phone }}"
+            },
+            {
+              "name": "message",
+              "value": "Mohon maaf menunggu, tim kami sedang menangani pesan lo. Kami balas secepatnya ya. Terima kasih kesabaran."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w8",
+      "name": "Pesan Customer Masih Menunggu",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        460
+      ],
+      "notes": "Gateway WhatsApp (Fonnte). Ganti URL kalau pakai Wablas/MPWA."
+    },
+    {
+      "parameters": {},
+      "id": "w9",
+      "name": "Selesai",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        700,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 5 Menit": {
+      "main": [
+        [
+          {
+            "node": "Baca Tab State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Tab State": {
+      "main": [
+        [
+          {
+            "node": "Filter Perlu Follow-Up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Perlu Follow-Up": {
+      "main": [
+        [
+          {
+            "node": "Ada yang Perlu Diingatkan?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tunggu > 30 Menit?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ada yang Perlu Diingatkan?": {
+      "main": [
+        [
+          {
+            "node": "Ingatkan Admin Lagi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ingatkan Admin Lagi": {
+      "main": [
+        [
+          {
+            "node": "Update last_reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tunggu > 30 Menit?": {
+      "main": [
+        [
+          {
+            "node": "Pesan Customer Masih Menunggu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pesan Customer Masih Menunggu": {
+      "main": [
+        [
+          {
+            "node": "Selesai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "staticData": null,
+  "pinData": {}
+}
