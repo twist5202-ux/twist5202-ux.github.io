@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo CS Hybrid — AI Jawab, Switch ke Manusia | twist.automation</title>
+<meta name="description" content="Coba sistem customer service hybrid: AI bales otomatis, eskalasi ke manusia, admin balas langsung. Demo interaktif.">
+<style>
+:root{
+  --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --card2:#1a2332;
+  --line:#1f2a38; --line2:#2a3648;
+  --txt:#e6edf3; --dim:#8b98a8; --dim2:#5c6a7d;
+  --gold:#e8b339; --gold2:#f5d076;
+  --wa:#25d366; --wa2:#128c7e;
+  --grn:#3fb950; --red:#f85149; --blu:#58a6ff; --pur:#bc8cff; --org:#f0883e;
+  --mono:'Consolas','SF Mono',ui-monospace,monospace;
+  --sans:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--txt); font-family:var(--sans);
+  line-height:1.6; overflow-x:hidden; min-height:100vh;
+}
+::selection{background:rgba(232,179,57,.3)}
+
+/* ---------- STARFIELD ---------- */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+
+/* ---------- SCROLL PROGRESS ---------- */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--wa));z-index:100;width:0;transition:width .1s}
+
+/* ---------- CURSOR GLOW ---------- */
+#glow{position:fixed;width:340px;height:340px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(232,179,57,.055) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:opacity .3s}
+
+/* ---------- LAYOUT ---------- */
+.wrap{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:0 20px}
+
+/* ---------- NAV ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,14,20,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);padding:14px 0}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:var(--mono);font-size:15px;color:var(--gold);letter-spacing:.5px;text-decoration:none}
+.logo b{color:var(--txt)}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--dim);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:8px;
+  border:1px solid transparent;transition:.2s;white-space:nowrap}
+.nav-links a:hover{color:var(--txt);border-color:var(--line2);background:var(--card)}
+
+/* ---------- HERO ---------- */
+.hero{padding:64px 0 40px;text-align:center;position:relative}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
+  color:var(--gold);border:1px solid rgba(232,179,57,.3);padding:6px 16px;border-radius:100px;
+  margin-bottom:24px;background:rgba(232,179,57,.06)}
+.hero-tag .dot{width:6px;height:6px;border-radius:50%;background:var(--wa);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-size:clamp(30px,5.2vw,52px);font-weight:800;line-height:1.12;letter-spacing:-1.2px;margin-bottom:18px}
+.hero h1 .g{background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--dim);font-size:clamp(15px,2vw,18px);max-width:640px;margin:0 auto 32px}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:12px;
+  font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;border:1px solid transparent;
+  transition:.22s;font-family:var(--sans)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#d4a02e);color:#0a0e14;
+  box-shadow:0 4px 20px rgba(232,179,57,.22)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(232,179,57,.32)}
+.btn-ghost{background:var(--card);color:var(--txt);border-color:var(--line2)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-wa{background:var(--wa);color:#04120a}
+.btn-wa:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.3)}
+
+/* ---------- STATS ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:44px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 16px;text-align:center;
+  transition:.25s}
+.stat:hover{border-color:var(--line2);transform:translateY(-2px)}
+.stat .n{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--gold);display:block}
+.stat .l{font-size:12px;color:var(--dim);margin-top:4px}
+
+/* ---------- SECTION ---------- */
+section{padding:48px 0}
+.sec-head{margin-bottom:28px}
+.sec-head .k{font-family:var(--mono);font-size:12px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase}
+.sec-head h2{font-size:clamp(22px,3.4vw,32px);font-weight:700;letter-spacing:-.6px;margin-top:6px}
+.sec-head p{color:var(--dim);font-size:15px;margin-top:8px;max-width:620px}
+
+/* ---------- DEMO SHELL ---------- */
+.demo-shell{background:var(--bg2);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.demo-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 20px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.demo-bar .dots{display:flex;gap:6px}
+.demo-bar .dots i{width:10px;height:10px;border-radius:50%;background:var(--line2)}
+.demo-bar .dots i:first-child{background:var(--red)}
+.demo-bar .dots i:nth-child(2){background:var(--org)}
+.demo-bar .dots i:last-child{background:var(--grn)}
+.demo-bar .title{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.mode-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
+  padding:5px 14px;border-radius:100px;border:1px solid;transition:.3s}
+.mode-badge.ai{color:var(--grn);border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.08)}
+.mode-badge.human{color:var(--red);border-color:rgba(248,81,73,.4);background:rgba(248,81,73,.08)}
+.mode-badge .led{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.4s infinite}
+
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:900px){.demo-grid{grid-template-columns:1fr}}
+
+/* ---------- PANEL ---------- */
+.panel{padding:20px;min-height:520px;display:flex;flex-direction:column}
+.panel+.panel{border-left:1px solid var(--line)}
+@media(max-width:900px){.panel+.panel{border-left:none;border-top:1px solid var(--line)}}
+.panel-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;
+  border-bottom:1px solid var(--line)}
+.panel-head .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.panel-head .ico.c{background:rgba(37,211,102,.12)}
+.panel-head .ico.a{background:rgba(88,166,255,.12)}
+.panel-head h3{font-size:14px;font-weight:700}
+.panel-head .sub{font-size:11px;color:var(--dim);font-family:var(--mono)}
+
+/* ---------- PHONE ---------- */
+.phone{background:#0d1117;border:1px solid var(--line2);border-radius:22px;overflow:hidden;
+  display:flex;flex-direction:column;flex:1;min-height:440px}
+.phone-hd{background:var(--wa2);padding:10px 14px;display:flex;align-items:center;gap:10px}
+.phone-hd .av{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.16);
+  display:grid;place-items:center;font-size:14px}
+.phone-hd .who{flex:1;min-width:0}
+.phone-hd .who .n{font-size:13px;font-weight:600;color:#fff}
+.phone-hd .who .s{font-size:10px;color:rgba(255,255,255,.72);font-family:var(--mono)}
+.phone-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;
+  scroll-behavior:smooth;max-height:380px}
+.phone-msgs::-webkit-scrollbar{width:4px}
+.phone-msgs::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+.msg{max-width:82%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.5;
+  animation:msgIn .28s cubic-bezier(.2,.9,.3,1.2);word-wrap:break-word;position:relative}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.msg.in{background:var(--card2);color:var(--txt);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.out{background:var(--wa2);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.sys{background:rgba(232,179,57,.09);border:1px dashed rgba(232,179,57,.32);color:var(--gold2);
+  align-self:center;max-width:94%;font-size:11.5px;text-align:center;font-family:var(--mono)}
+.msg.esc{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);color:#ffb3b0;
+  align-self:center;max-width:94%;font-size:11.5px;text-align:center;font-family:var(--mono)}
+.msg .t{display:block;font-size:9px;color:rgba(255,255,255,.45);margin-top:3px;font-family:var(--mono)}
+.msg.in .t{color:var(--dim2)}
+.typing{display:flex;gap:4px;align-items:center;padding:10px 14px;align-self:flex-start}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--dim);animation:tp 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.18s}
+.typing i:nth-child(3){animation-delay:.36s}
+@keyframes tp{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.phone-in{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--card)}
+.phone-in input{flex:1;background:var(--bg);border:1px solid var(--line2);border-radius:10px;
+  padding:10px 14px;color:var(--txt);font-size:13px;font-family:var(--sans);outline:none;transition:.2s}
+.phone-in input:focus{border-color:var(--wa)}
+.phone-in button{background:var(--wa);color:#04120a;border:none;border-radius:10px;padding:0 16px;
+  font-weight:700;cursor:pointer;font-size:15px;transition:.2s}
+.phone-in button:hover{filter:brightness(1.1)}
+.phone-in button:active{transform:scale(.94)}
+
+/* ---------- QUICK SEND ---------- */
+.quick{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px}
+.quick button{background:var(--card2);border:1px solid var(--line2);color:var(--dim);font-size:11px;
+  padding:5px 11px;border-radius:100px;cursor:pointer;transition:.2s;font-family:var(--sans)}
+.quick button:hover{border-color:var(--gold);color:var(--gold)}
+.quick button.hot{border-color:rgba(248,81,73,.4);color:#ff9b98}
+.quick button.hot:hover{background:rgba(248,81,73,.1);border-color:var(--red);color:var(--red)}
+
+/* ---------- ADMIN PANEL ---------- */
+.admin-log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;max-height:380px;
+  padding-right:4px}
+.admin-log::-webkit-scrollbar{width:4px}
+.admin-log::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+.log-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  font-size:12px;animation:msgIn .3s ease}
+.log-item .hd{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.log-item .hd .node{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:5px;
+  background:rgba(88,166,255,.12);color:var(--blu)}
+.log-item .hd .node.esc{background:rgba(248,81,73,.12);color:var(--red)}
+.log-item .hd .node.ok{background:rgba(63,185,80,.12);color:var(--grn)}
+.log-item .hd .node.gold{background:rgba(232,179,57,.12);color:var(--gold)}
+.log-item .hd .tm{font-family:var(--mono);font-size:10px;color:var(--dim2);margin-left:auto}
+.log-item .bd{color:var(--dim);font-size:11.5px;line-height:1.5}
+.log-item.alert{border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.05)}
+.log-item.alert .hd .node{background:rgba(248,81,73,.14);color:var(--red)}
+.log-item.success{border-color:rgba(63,185,80,.3);background:rgba(63,185,80,.04)}
+
+.admin-reply{display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--line);margin-top:auto}
+.admin-reply input{flex:1;background:var(--bg);border:1px solid var(--line2);border-radius:10px;
+  padding:10px 14px;color:var(--txt);font-size:13px;font-family:var(--sans);outline:none;transition:.2s}
+.admin-reply input:focus{border-color:var(--blu)}
+.admin-reply input:disabled{opacity:.4;cursor:not-allowed}
+.admin-reply button{background:var(--blu);color:#04101f;border:none;border-radius:10px;padding:0 16px;
+  font-weight:700;cursor:pointer;font-size:13px;transition:.2s}
+.admin-reply button:hover:not(:disabled){filter:brightness(1.12)}
+.admin-reply button:disabled{opacity:.35;cursor:not-allowed}
+.admin-hint{font-size:11px;color:var(--dim2);font-family:var(--mono);padding:8px 2px 0;text-align:center}
+
+/* ---------- STATE CARD ---------- */
+.state-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;
+  margin-bottom:14px}
+.state-card .row{display:flex;justify-content:space-between;align-items:center;font-size:12px;
+  padding:5px 0}
+.state-card .row+.row{border-top:1px solid var(--line)}
+.state-card .k{color:var(--dim);font-family:var(--mono);font-size:11px}
+.state-card .v{font-family:var(--mono);font-size:11px;font-weight:600}
+.state-card .v.ai{color:var(--grn)}
+.state-card .v.human{color:var(--red)}
+
+/* ---------- FLOW ---------- */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.flow-step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;
+  position:relative;transition:.25s}
+.flow-step:hover{border-color:var(--line2);transform:translateY(-3px)}
+.flow-step .num{font-family:var(--mono);font-size:11px;color:var(--gold);margin-bottom:8px}
+.flow-step h4{font-size:14px;font-weight:700;margin-bottom:6px}
+.flow-step p{font-size:12.5px;color:var(--dim);line-height:1.6}
+.flow-step .ico{font-size:22px;margin-bottom:10px}
+
+/* ---------- TRIGGER TABLE ---------- */
+.trig{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.trig-row{display:grid;grid-template-columns:44px 1fr 1fr;gap:14px;padding:14px 18px;align-items:center;
+  font-size:13px;transition:.2s}
+.trig-row+.trig-row{border-top:1px solid var(--line)}
+.trig-row:hover{background:var(--card2)}
+.trig-row.hd{background:var(--bg2);font-family:var(--mono);font-size:11px;color:var(--dim);
+  text-transform:uppercase;letter-spacing:.8px}
+.trig-row .n{font-family:var(--mono);font-size:16px;color:var(--gold);font-weight:700;text-align:center}
+.trig-row code{font-family:var(--mono);font-size:11.5px;color:var(--gold2);background:rgba(232,179,57,.08);
+  padding:2px 7px;border-radius:5px}
+.trig-row .d{color:var(--dim);font-size:12.5px}
+
+/* ---------- PRICE ---------- */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.price-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 22px;
+  position:relative;transition:.25s;display:flex;flex-direction:column}
+.price-card:hover{border-color:var(--line2);transform:translateY(-3px)}
+.price-card.pop{border-color:rgba(232,179,57,.4);background:linear-gradient(180deg,rgba(232,179,57,.05),var(--card))}
+.price-card.pop::before{content:'PALING LARIS';position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;background:var(--gold);color:#0a0e14;
+  padding:3px 14px;border-radius:100px;font-weight:700}
+.price-card h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.price-card .amt{font-family:var(--mono);font-size:28px;font-weight:800;color:var(--gold);margin:10px 0 4px}
+.price-card .amt small{font-size:13px;color:var(--dim);font-weight:400}
+.price-card ul{list-style:none;margin:16px 0 22px;flex:1}
+.price-card li{font-size:12.5px;color:var(--dim);padding:5px 0;display:flex;gap:8px;align-items:flex-start}
+.price-card li::before{content:'✓';color:var(--grn);font-weight:700;flex-shrink:0}
+.price-card .btn{width:100%;justify-content:center}
+
+/* ---------- FAQ ---------- */
+.faq-item{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;
+  overflow:hidden;transition:.2s}
+.faq-item:hover{border-color:var(--line2)}
+.faq-q{width:100%;background:none;border:none;color:var(--txt);font-size:14px;font-weight:600;
+  padding:16px 18px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;gap:12px;font-family:var(--sans)}
+.faq-q .ar{color:var(--gold);font-size:18px;transition:transform .25s;flex-shrink:0}
+.faq-item.open .faq-q .ar{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-a-in{padding:0 18px 16px;font-size:13px;color:var(--dim);line-height:1.7}
+
+/* ---------- CTA ---------- */
+.cta{background:linear-gradient(135deg,rgba(232,179,57,.07),rgba(37,211,102,.05));
+  border:1px solid rgba(232,179,57,.2);border-radius:20px;padding:44px 32px;text-align:center;margin:48px 0}
+.cta h2{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.6px;margin-bottom:10px}
+.cta p{color:var(--dim);font-size:15px;max-width:520px;margin:0 auto 26px}
+
+/* ---------- FOOTER ---------- */
+footer{border-top:1px solid var(--line);padding:28px 0;text-align:center}
+footer .f{font-family:var(--mono);font-size:11px;color:var(--dim2);line-height:2}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--gold)}
+
+/* ---------- REVEAL ---------- */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+
+/* ---------- REDUCED MOTION ---------- */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important}
+  .rv{opacity:1;transform:none}
+  #stars,#glow{display:none}
+}
+
+/* ---------- PRINT ---------- */
+@media print{
+  nav,#prog,#glow,#stars,.demo-shell,.cta{display:none}
+  body{background:#fff;color:#111}
+  .hero h1,.sec-head h2{color:#111}
+  .flow-step,.price-card,.trig{break-inside:avoid;border-color:#ccc;background:#fff}
+  .flow-step p,.price-card li,.trig-row .d{color:#444}
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div id="glow"></div>
+<div id="prog"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="/" class="logo">twist<b>.automation</b></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/automation/">Template</a>
+      <a href="/demo/">Demo Bot</a>
+      <a href="/cs/">CS Hybrid</a>
+      <a href="/macro/">Jasa Macro</a>
+      <a href="https://wa.me/6285171228302">Chat WA</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-tag"><span class="dot"></span> DEMO INTERAKTIF — BISA DI-COBA</div>
+    <h1>CS <span class="g">Hybrid</span><br>AI Jawab, Switch ke Manusia</h1>
+    <p>Sistem customer service WhatsApp: AI bales otomatis 24 jam,
+       tapi otomatis nyerah ke manusia kalau customer komplain, minta refund,
+       atau minta bicara sama orang. Coba sendiri di bawah.</p>
+    <div class="hero-cta">
+      <a href="#demo" class="btn btn-gold">▶ Coba Demo Sekarang</a>
+      <a href="https://wa.me/6285171228302" class="btn btn-wa">Chat WhatsApp</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat rv"><span class="n" data-count="41">0</span><span class="l">Template n8n</span></div>
+      <div class="stat rv"><span class="n" data-count="3">0</span><span class="l">Pemicu Eskalasi</span></div>
+      <div class="stat rv"><span class="n">24/7</span><span class="l">AI Aktif</span></div>
+      <div class="stat rv"><span class="n">&lt;2s</span><span class="l">Respon AI</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMO ============ -->
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// Demo Live</div>
+      <h2>Coba sendiri — kiri customer, kanan admin</h2>
+      <p>Kirim pesan sebagai customer. AI bales otomatis. Kalau lo ketik
+         "komplain", "refund", atau "minta bicara sama orang" — sistem
+         otomatis switch ke mode manusia dan admin dapat notifikasi.</p>
+    </div>
+
+    <div class="demo-shell rv">
+      <div class="demo-bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="title">cs-hybrid · n8n workflow simulator</div>
+        <div class="mode-badge ai" id="modeBadge">
+          <span class="led"></span><span id="modeText">MODE: AI</span>
+        </div>
+      </div>
+
+      <div class="demo-grid">
+
+        <!-- ---------- CUSTOMER ---------- -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="ico c">📱</div>
+            <div><h3>Customer</h3><div class="sub">628123456789 · Budi</div></div>
+          </div>
+
+          <div class="phone">
+            <div class="phone-hd">
+              <div class="av">🤖</div>
+              <div class="who">
+                <div class="n" id="chatName">CS Bot</div>
+                <div class="s" id="chatStatus">online · AI aktif</div>
+              </div>
+            </div>
+            <div class="phone-msgs" id="msgs"></div>
+            <div class="quick" id="quick"></div>
+            <div class="phone-in">
+              <input id="custIn" type="text" placeholder="Ketik pesan customer..." autocomplete="off">
+              <button id="custBtn" title="Kirim">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- ADMIN ---------- -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="ico a">🖥️</div>
+            <div><h3>Panel Admin</h3><div class="sub">notifikasi + execution log</div></div>
+          </div>
+
+          <div class="state-card">
+            <div class="row"><span class="k">mode</span><span class="v ai" id="stMode">ai</span></div>
+            <div class="row"><span class="k">assigned_agent</span><span class="v" id="stAgent" style="color:var(--dim)">—</span></div>
+            <div class="row"><span class="k">escalated_at</span><span class="v" id="stEsc" style="color:var(--dim)">—</span></div>
+            <div class="row"><span class="k">last_human_reply</span><span class="v" id="stLhr" style="color:var(--dim)">—</span></div>
+          </div>
+
+          <div class="admin-log" id="adminLog"></div>
+
+          <div class="admin-reply">
+            <input id="adminIn" type="text" placeholder="Balas customer (aktif setelah eskalasi)..." autocomplete="off" disabled>
+            <button id="adminBtn" disabled>Kirim</button>
+          </div>
+          <div class="admin-hint" id="adminHint">⏳ menunggu eskalasi — customer kirim "komplain" / "refund" / "orang"</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 TRIGGER ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// Auto Escalation</div>
+      <h2>3 pemicu switch ke manusia</h2>
+      <p>Sistem tahu kapan harus nyerah. Tidak perlu admin pantau chat terus.</p>
+    </div>
+
+    <div class="trig rv">
+      <div class="trig-row hd"><span>#</span><span>Pemicu</span><span>Contoh</span></div>
+      <div class="trig-row">
+        <span class="n">1</span>
+        <span><b>AI sendiri minta</b><br><span class="d">AI nulis <code>[ESCALATE]</code> kalau nggak bisa jawab</span></span>
+        <span class="d">"saya cek dulu ke tim"</span>
+      </div>
+      <div class="trig-row">
+        <span class="n">2</span>
+        <span><b>Keyword customer</b><br><span class="d">Daftar kata bisa diedit di node n8n</span></span>
+        <span class="d"><code>komplain</code> <code>refund</code> <code>manager</code> <code>orang</code> <code>scam</code></span>
+      </div>
+      <div class="trig-row">
+        <span class="n">3</span>
+        <span><b>AI nggak yakin</b><br><span class="d">Jawaban mengandung kata ragu</span></span>
+        <span class="d">"tidak tahu" · "cek dulu" · "di luar"</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLOW ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// Alur Kerja</div>
+      <h2>Dari chat masuk sampai selesai</h2>
+    </div>
+    <div class="flow">
+      <div class="flow-step rv">
+        <div class="num">STEP 01</div>
+        <div class="ico">📨</div>
+        <h4>Pesan Masuk</h4>
+        <p>Gateway WhatsApp teruskan pesan ke webhook n8n. Sistem cek nomor pengirim — customer atau admin.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 02</div>
+        <div class="ico">🔍</div>
+        <h4>Cek Mode</h4>
+        <p>Baca Google Sheets. Kalau mode <b>ai</b> → lanjut ke AI. Kalau <b>human</b> → langsung teruskan ke admin.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 03</div>
+        <div class="ico">🤖</div>
+        <h4>AI Jawab</h4>
+        <p>Prompt dikirim dengan 6 pesan terakhir sebagai konteks. AI balas singkat, maksimal 3 kalimat.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 04</div>
+        <div class="ico">⚡</div>
+        <h4>Deteksi Eskalasi</h4>
+        <p>3 pemicu dicek. Kalau kena → mode jadi <b>human</b>, admin dapat notif lengkap, customer dapat pesan holding.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 05</div>
+        <div class="ico">👤</div>
+        <h4>Admin Balas</h4>
+        <p>Admin tinggal reply notifikasi WA. Pesan otomatis diteruskan ke customer. Ketik "tutup" → balik ke AI.</p>
+      </div>
+      <div class="flow-step rv">
+        <div class="num">STEP 06</div>
+        <div class="ico">⏰</div>
+        <h4>Watchdog</h4>
+        <p>Tiap 5 menit dicek. Admin lupa bales &gt;10 menit → diingatkan. Customer tunggu &gt;30 menit → dapat kabar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HARGA ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// Paket</div>
+      <h2>Pilih paket</h2>
+      <p>Semua termasuk setup, template, dan panduan. Jalan di n8n lo sendiri.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card rv">
+        <h4>Template Only</h4>
+        <div class="amt">Rp 350rb <small>sekali bayar</small></div>
+        <ul>
+          <li>2 template n8n (cs-01 + cs-02)</li>
+          <li>Panduan setup lengkap</li>
+          <li>Struktur Google Sheets</li>
+          <li>Daftar keyword eskalasi</li>
+          <li>Setup sendiri, bisa tanya via WA</li>
+        </ul>
+        <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20paket%20Template%20Only%20CS%20Hybrid" class="btn btn-ghost">Pilih Paket</a>
+      </div>
+      <div class="price-card pop rv">
+        <h4>Setup + Custom</h4>
+        <div class="amt">Rp 1,5jt <small>sekali bayar</small></div>
+        <ul>
+          <li>Semua di paket Template Only</li>
+          <li>Gue setup sampai jalan di n8n lo</li>
+          <li>Gateway WA dikonfigurasi</li>
+          <li>Google Sheets disiapkan</li>
+          <li>AI prompt disesuaikan bisnis lo</li>
+          <li>Keyword eskalasi custom</li>
+          <li>Support 30 hari via WA</li>
+        </ul>
+        <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20paket%20Setup%20%2B%20Custom%20CS%20Hybrid" class="btn btn-gold">Pilih Paket</a>
+      </div>
+      <div class="price-card rv">
+        <h4>Managed</h4>
+        <div class="amt">Rp 750rb <small>/ bulan</small></div>
+        <ul>
+          <li>Semua di paket Setup + Custom</li>
+          <li>Gue jaga workflow tetap jalan</li>
+          <li>Update prompt & keyword</li>
+          <li>Laporan performa CS bulanan</li>
+          <li>Prioritas support</li>
+          <li>Cancel kapan aja</li>
+        </ul>
+        <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20mau%20paket%20Managed%20CS%20Hybrid" class="btn btn-ghost">Pilih Paket</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="k">// FAQ</div>
+      <h2>Pertanyaan yang sering masuk</h2>
+    </div>
+    <div id="faq">
+      <div class="faq-item rv">
+        <button class="faq-q">AI-nya pakai model apa? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Bebas — yang penting OpenAI-compatible. Bisa pakai OpenRouter, DeepSeek, jerouter, atau OpenAI langsung. Template sudah include prompt yang dioptimalkan buat CS Indonesia.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Kalau AI salah jawab gimana? <span class="ar">+</span></button>
+        <div class="faq-a-in">Prompt sudah diatur supaya AI nggak mengarang — kalau nggak tahu, dia bilang "saya cek dulu ke tim" dan itu otomatis memicu eskalasi. Plus keyword seperti "refund" dan "komplain" langsung switch ke manusia.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Bisa multi-admin? <span class="ar">+</span></button>
+        <div class="faq-a-in">Bisa. Kolom <code>assigned_agent</code> di Sheets bisa dipakai buat routing round-robin. Gue bisa tambahin di paket Setup + Custom.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Perlu n8n versi berapa? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">n8n versi 1.0 ke atas. Bisa Cloud atau self-hosted di VPS. Kalau belum punya, gue bisa bantu setup VPS-nya.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Data customer aman? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Semua data ada di Google Sheets lo sendiri dan n8n lo sendiri. Tidak ada data yang dikirim ke pihak ketiga selain API AI yang lo pilih.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">Buat bisnis non-UMKM bisa? <span class="ar">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Bisa. Sistem ini cocok buat toko online, jasa, klinik, kursus, properti, apapun yang butuh CS WhatsApp. Prompt dan keyword tinggal disesuaikan.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section>
+  <div class="wrap">
+    <div class="cta rv">
+      <h2>Siap bikin CS lo jalan 24 jam?</h2>
+      <p>AI bales yang gampang, manusia yang penting. Sistem yang tahu bedanya.</p>
+      <div class="hero-cta">
+        <a href="https://wa.me/6285171228302?text=Twist%2C%20gw%20tertarik%20CS%20Hybrid%20n8n" class="btn btn-wa">💬 Chat WhatsApp Sekarang</a>
+        <a href="/automation/" class="btn btn-ghost">Lihat 41 Template Lain</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f">
+      <a href="/">twist.automation</a> · Modul n8n · CS Hybrid · Macro<br>
+      WhatsApp <a href="https://wa.me/6285171228302">0851-7122-8302</a> ·
+      <a href="/automation/">Template</a> ·
+      <a href="/demo/">Demo</a> ·
+      <a href="/panduan/">Panduan</a><br>
+      © 2026 twist.automation
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ STARFIELD ============ */
+var cv = document.getElementById('stars'), ctx = cv.getContext('2d');
+var stars = [], W, H;
+function resize(){
+  W = cv.width = innerWidth; H = cv.height = innerHeight;
+  stars = [];
+  for(var i=0;i<70;i++){
+    stars.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.3+.3,
+      s:Math.random()*.14+.03, o:Math.random()*.5+.15});
+  }
+}
+resize(); addEventListener('resize', resize);
+function drawStars(){
+  ctx.clearRect(0,0,W,H);
+  for(var i=0;i<stars.length;i++){
+    var s = stars[i];
+    s.y -= s.s; if(s.y < -2) s.y = H+2;
+    ctx.globalAlpha = s.o; ctx.fillStyle = '#e8b339';
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(drawStars);
+}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches) drawStars();
+
+/* ============ CURSOR GLOW ============ */
+var glow = document.getElementById('glow');
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  addEventListener('mousemove', function(e){
+    glow.style.left = e.clientX+'px'; glow.style.top = e.clientY+'px';
+  });
+}
+
+/* ============ SCROLL PROGRESS + REVEAL ============ */
+var prog = document.getElementById('prog');
+addEventListener('scroll', function(){
+  var h = document.documentElement;
+  prog.style.width = (h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+}, {passive:true});
+
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:.12});
+document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+/* ============ COUNT UP ============ */
+var cio = new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(!e.isIntersecting) return;
+    var el = e.target, target = parseInt(el.dataset.count,10);
+    if(isNaN(target)) return;
+    var cur = 0, step = Math.max(1, Math.ceil(target/40));
+    var t = setInterval(function(){
+      cur += step;
+      if(cur >= target){ cur = target; clearInterval(t); }
+      el.textContent = cur;
+    }, 30);
+    cio.unobserve(el);
+  });
+}, {threshold:.5});
+document.querySelectorAll('[data-count]').forEach(function(el){ cio.observe(el); });
+
+/* ============ FAQ ============ */
+document.querySelectorAll('.faq-q').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var item = btn.parentElement, a = item.querySelector('.faq-a');
+    var open = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function(o){
+      o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight = null;
+    });
+    if(!open){ item.classList.add('open'); a.style.maxHeight = a.scrollHeight+'px'; }
+  });
+});
+
+/* ============================================================
+   CS HYBRID SIMULATOR
+   ============================================================ */
+var mode = 'ai';                    // 'ai' | 'human'
+var escalatedAt = null;
+var lastHumanReply = null;
+var msgCount = 0;
+
+var msgsEl     = document.getElementById('msgs');
+var adminLogEl = document.getElementById('adminLog');
+var custIn     = document.getElementById('custIn');
+var custBtn    = document.getElementById('custBtn');
+var adminIn    = document.getElementById('adminIn');
+var adminBtn   = document.getElementById('adminBtn');
+var adminHint  = document.getElementById('adminHint');
+var modeBadge  = document.getElementById('modeBadge');
+var modeText   = document.getElementById('modeText');
+var chatName   = document.getElementById('chatName');
+var chatStatus = document.getElementById('chatStatus');
+
+var stMode = document.getElementById('stMode');
+var stAgent = document.getElementById('stAgent');
+var stEsc  = document.getElementById('stEsc');
+var stLhr  = document.getElementById('stLhr');
+
+/* ---- knowledge base AI ---- */
+var KB = [
+  {k:['harga','berapa','price','biaya'],
+   a:'Kaos hitam Rp 85rb, kaos putih Rp 85rb, hoodie Rp 185rb. Semua bahan cotton combed 30s. Mau order yang mana?'},
+  {k:['ongkir','kirim','ekspedisi','jne','jnt','sicepat'],
+   a:'Gratis ongkir untuk pembelian di atas Rp 300rb. Kalau di bawah, pakai JNE reguler Rp 12-18rb tergantung kota. Estimasi 2-4 hari.'},
+  {k:['stok','ready','ada','tersedia'],
+   a:'Semua ukuran ready — S, M, L, XL, XXL. Stok hoodie tinggal size L dan XL. Mau gw cek size lain?'},
+  {k:['ukuran','size','chart'],
+   a:'Chart size: S (lebar 48cm), M (50cm), L (52cm), XL (54cm), XXL (56cm). Panjang semua 70cm. Kalau ragu, kirim tinggi & berat badan lo, gw bantu pilih.'},
+  {k:['bayar','payment','transfer','qris','cod'],
+   a:'Bisa transfer BCA / Mandiri / QRIS, atau COD untuk area kota. Pembayaran dikonfirmasi setelah lo kirim bukti transfer.'},
+  {k:['jam','buka','open','operasional'],
+   a:'Kami buka Senin-Sabtu, 08.00-20.00 WIB. Minggu tutup. Tapi chat ini dibalas otomatis 24 jam oleh bot.'},
+  {k:['alamat','lokasi','toko','offline'],
+   a:'Toko offline kami di Jl. Merdeka No. 45, Bandung. Buka jam kerja. Kalau mau COD, bisa langsung ke toko.'},
+  {k:['halo','hai','hi','hello','pagi','siang','sore'],
+   a:'Halo! Ada yang bisa gw bantu? Ketik "menu" buat liat pilihan lengkap.'},
+  {k:['menu','bantuan','help','pilihan'],
+   a:'Pilihan yang bisa gw bantu:\n• harga — daftar harga produk\n• ongkir — biaya & estimasi kirim\n• stok — ketersediaan ukuran\n• size — chart ukuran\n• bayar — metode pembayaran\n• alamat — lokasi toko\n• jam — jam operasional'},
+  {k:['makasih','thanks','terima kasih','ok','oke'],
+   a:'Sama-sama! Kalau ada yang mau ditanyain lagi, chat aja kapan aja. Semoga harinya menyenangkan!'},
+  {k:['apa itu n8n','n8n','automation','otomatis'],
+   a:'n8n itu tools automation — bisa bikin bot WhatsApp, laporan otomatis, dan ratusan tugas repetitif lainnya tanpa coding. Kalau penasaran, ada demo di twist5202-ux.github.io/demo/'}
+];
+
+/* ---- escalation keywords (mirror node n8n) ---- */
+var ESC_KEYWORDS = [
+  'manusia','orang','admin asli','bicara sama orang','cs asli',
+  'komplain','keluhan','marah','kesal','tidak puas','kecewa',
+  'refund','pengembalian','uang kembali','ganti barang','rusak',
+  'lapor','report','pengaduan','penipuan','scam',
+  'manager','atasan','pemilik','bos'
+];
+var RAGU = ['tidak tahu','cek dulu','di luar','tidak bisa'];
+
+function now(){
+  var d = new Date();
+  return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+}
+
+function addMsg(side, text, cls){
+  msgCount++;
+  var el = document.createElement('div');
+  el.className = 'msg ' + (cls || side);
+  var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  safe = safe.replace(/\n/g,'<br>');
+  el.innerHTML = safe + '<span class="t">' + now() + '</span>';
+  msgsEl.appendChild(el);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+function addLog(node, body, cls){
+  var el = document.createElement('div');
+  el.className = 'log-item' + (cls ? ' '+cls : '');
+  el.innerHTML = '<div class="hd"><span class="node '+(cls||'')+'">'+node+'</span>'+
+                 '<span class="tm">'+now()+'</span></div>'+
+                 '<div class="bd">'+body+'</div>';
+  adminLogEl.appendChild(el);
+  adminLogEl.scrollTop = adminLogEl.scrollHeight;
+}
+
+function showTyping(){
+  var el = document.createElement('div');
+  el.className = 'typing'; el.id = 'typingInd';
+  el.innerHTML = '<i></i><i></i><i></i>';
+  msgsEl.appendChild(el);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+function hideTyping(){
+  var t = document.getElementById('typingInd');
+  if(t) t.remove();
+}
+
+function setMode(m){
+  mode = m;
+  if(m === 'human'){
+    modeBadge.className = 'mode-badge human';
+    modeText.textContent = 'MODE: HUMAN';
+    chatName.textContent = 'CS Manusia';
+    chatStatus.textContent = 'online · admin mengambil alih';
+    stMode.textContent = 'human'; stMode.className = 'v human';
+    stAgent.textContent = 'Admin'; stAgent.style.color = 'var(--blu)';
+    escalatedAt = new Date().toLocaleString('id-ID');
+    stEsc.textContent = escalatedAt; stEsc.style.color = 'var(--org)';
+    adminIn.disabled = false; adminBtn.disabled = false;
+    adminIn.placeholder = 'Balas customer, atau ketik "tutup"...';
+    adminHint.textContent = '✅ mode manusia aktif — balas pesan customer di atas';
+    adminHint.style.color = 'var(--grn)';
+  } else {
+    modeBadge.className = 'mode-badge ai';
+    modeText.textContent = 'MODE: AI';
+    chatName.textContent = 'CS Bot';
+    chatStatus.textContent = 'online · AI aktif';
+    stMode.textContent = 'ai'; stMode.className = 'v ai';
+    stAgent.textContent = '—'; stAgent.style.color = 'var(--dim)';
+    stEsc.textContent = '—'; stEsc.style.color = 'var(--dim)';
+    adminIn.disabled = true; adminBtn.disabled = true;
+    adminIn.placeholder = 'Balas customer (aktif setelah eskalasi)...';
+    adminHint.textContent = '⏳ menunggu eskalasi — customer kirim "komplain" / "refund" / "orang"';
+    adminHint.style.color = 'var(--dim2)';
+  }
+}
+
+function findKB(text){
+  var t = text.toLowerCase();
+  var best = null, bestLen = 0;
+  for(var i=0;i<KB.length;i++){
+    for(var j=0;j<KB[i].k.length;j++){
+      if(t.indexOf(KB[i].k[j]) !== -1 && KB[i].k[j].length > bestLen){
+        best = KB[i]; bestLen = KB[i].k[j].length;
+      }
+    }
+  }
+  return best;
+}
+
+function detectEscalation(text, aiReply){
+  var t = text.toLowerCase();
+  var hit = [];
+  for(var i=0;i<ESC_KEYWORDS.length;i++){
+    if(t.indexOf(ESC_KEYWORDS[i]) !== -1) hit.push(ESC_KEYWORDS[i]);
+  }
+  if(hit.length) return {esc:true, alasan:'keyword: '+hit.join(', ')};
+
+  var ragu = false;
+  for(var k=0;k<RAGU.length;k++){
+    if(aiReply && aiReply.toLowerCase().indexOf(RAGU[k]) !== -1) ragu = true;
+  }
+  if(ragu) return {esc:true, alasan:'AI tidak yakin'};
+
+  return {esc:false, alasan:''};
+}
+
+function fallbackReply(text){
+  return 'Maaf, untuk pertanyaan itu saya cek dulu ke tim. Bisa dijelaskan lebih detail? ' +
+         'Atau kalau urgent, ketik "admin" buat bicara sama orang langsung.';
+}
+
+/* ---- customer sends ---- */
+function customerSend(){
+  var text = custIn.value.trim();
+  if(!text) return;
+  custIn.value = '';
+  addMsg('in', text);
+  addLog('Webhook', 'Pesan masuk dari <b>628123456789</b><br>"'+text.replace(/</g,'&lt;')+'"');
+
+  // node: normalize
+  addLog('Normalize', 'sender=628123456789 · from_admin=false');
+
+  // node: cek mode
+  addLog('Cek Mode', 'mode = <b style="color:'+(mode==='human'?'var(--red)':'var(--grn)')+'">'+mode+'</b>');
+
+  if(mode === 'human'){
+    addLog('IF', 'mode human → teruskan ke admin', 'esc');
+    addMsg('sys', '👤 Pesan diteruskan ke admin');
+    return;
+  }
+
+  // AI flow
+  addLog('Susun Prompt', 'riwayat 6 pesan + aturan eskalasi dimuat');
+  showTyping();
+
+  var delay = 700 + Math.random()*600;
+  setTimeout(function(){
+    hideTyping();
+    var kb = findKB(text);
+    var reply = kb ? kb.a : fallbackReply(text);
+    var det = detectEscalation(text, reply);
+
+    addLog('Panggil AI', 'balasan diterima · '+reply.length+' karakter');
+
+    if(det.esc){
+      addLog('Parse & Deteksi', '⚠️ ESCALATE — '+det.alasan, 'esc');
+      addMsg('esc', '⚡ ESKALASI: '+det.alasan);
+      setMode('human');
+      addLog('Set Mode Human', 'Sheets diupdate → mode = human', 'esc');
+      addMsg('sys', 'Pesan diteruskan ke admin. Mohon tunggu sebentar.');
+      addLog('Notif Admin', 'Notifikasi eskalasi dikirim ke WA admin', 'esc');
+      addMsg('out', 'Baik, saya hubungkan ke tim kami ya. Ada yang akan bales langsung. Terima kasih.');
+    } else {
+      addLog('Parse & Deteksi', 'aman → kirim balasan', 'ok');
+      addMsg('out', reply);
+      addLog('Kirim ke Customer', 'balasan terkirim', 'ok');
+    }
+  }, delay);
+}
+
+/* ---- admin sends ---- */
+function adminSend(){
+  var text = adminIn.value.trim();
+  if(!text) return;
+  adminIn.value = '';
+
+  if(/^(tutup|selesai|close|done|sudah)/i.test(text)){
+    addLog('Parse Perintah', 'admin ketik "'+text+'" → tutup sesi');
+    setMode('ai');
+    addLog('Set Mode AI', 'Sheets diupdate → mode = ai', 'ok');
+    addMsg('sys', 'Sesi ditutup admin — AI aktif kembali');
+    addMsg('out', 'Terima kasih sudah hubungi kami. Kalau butuh bantuan lain, chat lagi kapan aja.');
+    return;
+  }
+
+  addMsg('out', text);
+  lastHumanReply = new Date().toLocaleString('id-ID');
+  stLhr.textContent = lastHumanReply; stLhr.style.color = 'var(--grn)';
+  addLog('Teruskan ke Customer', 'pesan admin diteruskan', 'ok');
+  addLog('Update Sheets', 'last_human_reply diperbarui');
+}
+
+custBtn.addEventListener('click', customerSend);
+custIn.addEventListener('keydown', function(e){ if(e.key==='Enter') customerSend(); });
+adminBtn.addEventListener('click', adminSend);
+adminIn.addEventListener('keydown', function(e){ if(e.key==='Enter') adminSend(); });
+
+/* ---- quick send buttons ---- */
+var QUICK = [
+  {t:'harga', hot:false},
+  {t:'ongkir', hot:false},
+  {t:'stok', hot:false},
+  {t:'size', hot:false},
+  {t:'bayar', hot:false},
+  {t:'menu', hot:false},
+  {t:'komplain barang rusak', hot:true},
+  {t:'minta refund', hot:true},
+  {t:'gw mau bicara sama orang', hot:true}
+];
+var quickEl = document.getElementById('quick');
+QUICK.forEach(function(q){
+  var b = document.createElement('button');
+  b.textContent = q.t;
+  if(q.hot) b.className = 'hot';
+  b.addEventListener('click', function(){
+    custIn.value = q.t;
+    customerSend();
+  });
+  quickEl.appendChild(b);
+});
+
+/* ---- init ---- */
+addLog('Workflow', 'cs-01 siap · menunggu pesan masuk');
+addMsg('sys', '🤖 CS Bot aktif — kirim pesan atau klik tombol cepat di bawah');
+setMode('ai');
+
+})();
+</script>
+</body>
+</html>
