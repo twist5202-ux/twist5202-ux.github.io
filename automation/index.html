@@ -415,6 +415,27 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
 @media(max-width:600px){.hero{padding:118px 0 62px}.hero h1{font-size:clamp(38px,10vw,54px)}.hero .sub{font-size:15px}.twist-feature{transform:none;animation:none;min-height:0;padding:19px;margin-top:35px;border-radius:22px}.tw-f-heading{font-size:21px}.tw-flow-step{padding:11px 13px}.hero-stats{padding:20px;display:grid;grid-template-columns:1fr 1fr;text-align:center;border-radius:18px}.hs b{font-size:23px}section{padding:65px 0}.nav-in{min-height:68px}.logo{font-size:18px}.nav-links{gap:0}.nav-links a{color:#3b4665}}
 @media(prefers-reduced-motion:reduce){.twist-feature{animation:none!important;transform:none!important}}
 
+
+/* AI handoff demo redesign */
+.demo-grid{grid-template-columns:minmax(0,1.35fr) minmax(270px,.75fr);gap:26px}
+.phone{border-radius:24px!important;overflow:hidden;box-shadow:0 20px 65px #343a8a19!important}
+.phone-bar{padding:17px 20px;background:linear-gradient(100deg,#554ad1,#8070e9)!important}
+.phone-bar .av{width:43px;height:43px;background:#ffffff2d}.phone-bar .who b{font-size:15px}.phone-bar .who span{font-size:11px;color:#c5ffed}
+.phone-bar .acts{display:none}
+.demo-mode-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 18px;background:#f5f4ff;color:#6459b3;font-size:10px;letter-spacing:.5px;font-weight:800}
+.demo-mode-line button{font-size:11px;color:#5745d7;text-decoration:underline;font-weight:800}
+.handoff-timer{padding:10px 18px;background:#fff1e8;color:#a15a24;font-size:12px;font-weight:700;text-align:center}
+.chat{height:420px!important;background:#f5f7fc!important;background-image:radial-gradient(#dfe5f0 1px,transparent 1px)!important;background-size:19px 19px!important;padding:23px!important;gap:13px}
+.msg{max-width:82%;padding:12px 15px;border-radius:16px;font-size:13px;box-shadow:0 4px 15px #2836600b}
+.msg.out{background:#6556e7!important;color:white!important}.msg.in{background:white!important;color:#273653!important}
+.demo-note{align-self:center;max-width:94%;text-align:center;background:#e9e7fb;border:1px solid #dcd7fa;border-radius:11px;padding:7px 12px;color:#6558a4;font-size:11px;line-height:1.5}
+.quick{padding:13px 17px!important;gap:8px}.quick button{border-radius:10px!important;padding:8px 11px!important}
+.input-row{padding:15px 17px!important}.input-row input{background:#f5f7fc!important;color:#26314b!important;border-radius:12px!important}.send{background:#6657e9!important;border-radius:12px!important}
+.admin-tools{background:#f7f5ff;border-top:1px solid #e2dcfb;padding:15px 18px}.admin-tools label{display:block;font-size:12px;font-weight:800;color:#5342b9;margin-bottom:9px}.admin-compose{display:flex;gap:8px}.admin-compose input{flex:1;min-width:0;background:white;border:1px solid #d6cff6;border-radius:9px;padding:11px;font:inherit;font-size:13px;color:#25344c}.admin-compose button{background:#6557e9;color:white;font-weight:700;padding:10px 12px;border-radius:9px;font-size:12px;white-space:nowrap}.admin-tools small{display:block;margin-top:8px;color:#7c7793;font-size:11px}
+[hidden]{display:none!important}
+@media(max-width:900px){.demo-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.chat{height:375px!important;padding:15px!important}.admin-compose{flex-direction:column}.admin-compose button{width:100%}.msg{max-width:90%}.demo-mode-line{font-size:9px}}
+
 </style>
 </head>
 <body>
@@ -477,8 +498,8 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">COBA GRATIS · TANPA DAFTAR</div>
-      <h2 class="rv rv-d1">Ketik kayak customer beneran.</h2>
-      <p class="rv rv-d2">Ini demo bot auto-reply WhatsApp. Ketik "harga", "order", atau "menu" — bot bales otomatis.</p>
+      <h2 class="rv rv-d1">Satu chat. Dua mode pelayanan.</h2>
+      <p class="rv rv-d2">Coba simulasi balasan AI, pindahkan percakapan ke admin manusia, lalu lihat pengembalian otomatis ke AI setelah 15 menit tanpa balasan admin.</p>
     </div>
 
     <div class="demo-grid">
@@ -487,11 +508,11 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
           <div class="av">🏪</div>
           <div class="who">
             <b>Toko Online Lo</b>
-            <span>online · bot aktif</span>
+            <span id="demoMode" aria-live="polite">● AI Bot aktif</span>
           </div>
           <div class="acts"><span>📞</span><span>🎥</span><span>⋯</span></div>
         </div>
-        <div class="chat" id="chat">
+        <div class="demo-mode-line"><span>DEMO INTERAKTIF · BUKAN CHAT WHATSAPP LIVE</span><button id="backToAI" hidden type="button">↩ Kembali ke AI</button></div><div id="handoffTimer" class="handoff-timer" hidden aria-live="off"></div><div class="chat" id="chat" role="log" aria-live="polite">
           <div class="msg in">Halo! Selamat datang di Toko Online Lo 👋<br>Saya bot otomatis. Ketik <b>menu</b> buat liat pilihan.<span class="t">09:00</span></div>
         </div>
         <div class="quick" id="quick">
@@ -508,6 +529,7 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
             <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
           </button>
         </div>
+        <div class="admin-tools" id="adminTools" hidden><label for="adminInput">Simulasi balasan admin manusia</label><div class="admin-compose"><input id="adminInput" type="text" placeholder="Ketik balasan sebagai admin..."><button id="adminSend" type="button">Balas sebagai admin</button></div><small>Panel ini hanya untuk demonstrasi. Tidak terhubung ke staf atau WhatsApp asli.</small></div>
       </div>
 
       <div class="demo-side rv rv-d1">
@@ -525,14 +547,8 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
           </div>
         </div>
         <div class="dbox">
-          <h3>⚡ Yang terjadi di belakang layar</h3>
-          <ul>
-            <li><span class="n">1.</span> Terima pesan WhatsApp masuk</li>
-            <li><span class="n">2.</span> Baca isi pesan</li>
-            <li><span class="n">3.</span> Cocokin dengan keyword</li>
-            <li><span class="n">4.</span> Ambil jawaban yang pas</li>
-            <li><span class="n">5.</span> Kirim balasan otomatis</li>
-          </ul>
+          <h3>⚡ Alur AI → Admin → AI</h3>
+          <ul><li><span class="n">1.</span> AI menanggapi pertanyaan otomatis</li><li><span class="n">2.</span> Customer minta berbicara dengan admin</li><li><span class="n">3.</span> Bot berhenti dan chat masuk mode manusia</li><li><span class="n">4.</span> Timer 15 menit menunggu balasan admin</li><li><span class="n">5.</span> Tanpa balasan, AI kembali aktif otomatis</li></ul>
           <p style="margin-top:9px">Semua dalam <b style="color:var(--wa)">kurang dari 2 detik</b>, 24 jam.</p>
         </div>
         <div class="dbox">
@@ -1127,131 +1143,36 @@ document.querySelectorAll('.faq-q').forEach(function(q){
   });
 });
 
-/* ============ DEMO BOT ============ */
+/* ============ AI / HUMAN HANDOFF INTERACTIVE DEMO ============ */
 (function(){
-  var chat = document.getElementById('chat');
-  var input = document.getElementById('msgInput');
-
-  var KB = [
-    { k:['menu','pilihan','bantuan','help'], r:
-      '📋 *MENU UTAMA*\n\n' +
-      '1️⃣ Harga produk → ketik *harga*\n' +
-      '2️⃣ Jam buka → ketik *jam buka*\n' +
-      '3️⃣ Alamat toko → ketik *alamat*\n' +
-      '4️⃣ Cara order → ketik *order*\n' +
-      '5️⃣ Hubungi admin → ketik *admin*\n\n' +
-      'Ada yang bisa saya bantu? 😊' },
-    { k:['harga','price','price list','daftar harga','berapa'], r:
-      '💰 *DAFTAR HARGA*\n\n' +
-      '• Kaos Polos Hitam — Rp 75.000\n' +
-      '• Kaos Polos Putih — Rp 75.000\n' +
-      '• Hoodie Polos — Rp 150.000\n' +
-      '• Totebag Kanvas — Rp 45.000\n' +
-      '• Topi Snapback — Rp 60.000\n\n' +
-      '📦 Gratis ongkir min. Rp 200.000\n\n' +
-      'Mau order? Ketik *order* ya.' },
-    { k:['jam buka','buka jam','jam operasional','open'], r:
-      '🕐 *JAM OPERASIONAL*\n\n' +
-      'Senin – Jumat : 08.00 – 20.00\n' +
-      'Sabtu         : 09.00 – 18.00\n' +
-      'Minggu        : 10.00 – 16.00\n\n' +
-      'Di luar jam itu, pesan tetap masuk — dibales pas buka.' },
-    { k:['alamat','lokasi','dimana','maps'], r:
-      '📍 *ALAMAT TOKO*\n\n' +
-      'Jl. Contoh Raya No. 123\n' +
-      'Kelurahan Sukamaju, Kecamatan Cimahi\n' +
-      'Kota Bandung, Jawa Barat 40123\n\n' +
-      '🗺️ Google Maps: ketik "Toko Online Lo" di Maps\n\n' +
-      'Bisa COD atau ambil langsung.' },
-    { k:['order','beli','pesan','checkout','cara order'], r:
-      '🛒 *CARA ORDER*\n\n' +
-      '1. Ketik nama produk + ukuran + jumlah\n' +
-      '2. Kirim ke nomor ini\n' +
-      '3. Admin konfirmasi total + ongkir\n' +
-      '4. Transfer / COD\n' +
-      '5. Barang dikirim ✅\n\n' +
-      'Contoh: "Kaos Hitam L 2 pcs"\n\n' +
-      'Atau isi form order: bit.ly/form-order-lo' },
-    { k:['admin','cs','customer service','manusia','operator'], r:
-      '👤 *HUBUNGI ADMIN*\n\n' +
-      'Admin online: 08.00 – 20.00 WIB\n\n' +
-      '📞 WhatsApp: 08xx-xxxx-xxxx\n' +
-      '📧 Email: admin@tokoonlinelo.com\n\n' +
-      'Di luar jam itu, tinggal tinggal pesan — dibales pas admin online.' },
-    { k:['makasih','terima kasih','thanks','thank you'], r:
-      'Sama-sama! 🙏\nSenang bisa bantu.\n\nKalau ada yang mau ditanya lagi, ketik aja. Saya online 24 jam.' },
-    { k:['apa itu n8n','n8n','automation','otomatis'], r:
-      '⚙️ *APA ITU n8n?*\n\n' +
-      'n8n itu aplikasi automation. Bisa bikin bot kayak saya — bales chat, kirim invoice, bikin laporan — semuanya otomatis.\n\n' +
-      'Yang lo liat sekarang adalah *demo bot* yang jalan pakai n8n.\n\n' +
-      'Mau tau template lain? Ketik *menu*.' },
-    { k:['halo','hai','hi','hello','assalamualaikum','pagi','siang','sore','malam'], r:
-      'Halo! 👋 Selamat datang di Toko Online Lo.\n\nSaya bot otomatis yang siap bantu 24 jam.\n\nKetik *menu* buat liat pilihan, atau langsung tanya aja.' }
-  ];
-
-  var FALLBACK =
-    'Maaf, saya belum paham pertanyaan itu 😅\n\n' +
-    'Coba ketik *menu* buat liat pilihan, atau *admin* kalau mau bicara sama manusia.';
-
-  function now(){
-    var d = new Date();
-    return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
-  }
-
-  function addMsg(text, dir){
-    var m = document.createElement('div');
-    m.className = 'msg ' + dir;
-    m.innerHTML = text.replace(/\*(.+?)\*/g, '<b>$1</b>').replace(/\n/g, '<br>') +
-                  '<span class="t">' + now() + '</span>';
-    chat.appendChild(m);
-    chat.scrollTop = chat.scrollHeight;
-  }
-
-  function addTyping(){
-    var m = document.createElement('div');
-    m.className = 'msg in typing';
-    m.id = 'typing';
-    m.innerHTML = '<i></i><i></i><i></i>';
-    chat.appendChild(m);
-    chat.scrollTop = chat.scrollHeight;
-  }
-
-  function removeTyping(){
-    var t = document.getElementById('typing');
-    if (t) t.remove();
-  }
-
-  function botReply(userText){
-    var t = userText.toLowerCase().trim();
-    var best = null, bestScore = 0;
-    for (var i = 0; i < KB.length; i++){
-      var score = 0;
-      for (var j = 0; j < KB[i].k.length; j++){
-        if (t.indexOf(KB[i].k[j]) !== -1) score += KB[i].k[j].length;
-      }
-      if (score > bestScore){ bestScore = score; best = KB[i]; }
-    }
-    return best ? best.r : FALLBACK;
-  }
-
-  function send(text){
-    if (!text.trim()) return;
-    addMsg(text, 'out');
-    input.value = '';
-    addTyping();
-    var reply = botReply(text);
-    var delay = Math.min(1400, 450 + reply.length * 1.6);
-    setTimeout(function(){
-      removeTyping();
-      addMsg(reply, 'in');
-    }, delay);
-  }
-
-  document.getElementById('sendBtn').addEventListener('click', function(){ send(input.value); });
-  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') send(input.value); });
-  document.querySelectorAll('[data-q]').forEach(function(b){
-    b.addEventListener('click', function(){ send(b.dataset.q); });
-  });
+ const chat=document.getElementById('chat'), input=document.getElementById('msgInput'), sendBtn=document.getElementById('sendBtn');
+ const badge=document.getElementById('demoMode'),timer=document.getElementById('handoffTimer'),adminTools=document.getElementById('adminTools'),adminInput=document.getElementById('adminInput');
+ const back=document.getElementById('backToAI'),adminSend=document.getElementById('adminSend');
+ if(!chat||!input||!badge)return;
+ const LIMIT=15*60*1000;let mode='ai',handoffAt=0,timeout=null,replyTimeout=null;
+ const kb=[
+  {keys:['harga','price','berapa','biaya'],text:'Harga satuan template mulai Rp 99rb. Ada juga Bundle 10 Rp 299rb dan All Access Rp 799rb. Mau lihat paket yang cocok?'},
+  {keys:['order','beli','pesan','checkout'],text:'Untuk pemesanan, pilih paket di bagian Harga. Setelah itu klik tombol WhatsApp untuk terhubung dengan penjual.'},
+  {keys:['jam buka','operasional'],text:'Ini demo otomatisasi. Bot bisa merespons pertanyaan kapan pun; jam operasional bisnis aslinya dapat disesuaikan.'},
+  {keys:['alamat','lokasi'],text:'Toko pada percakapan ini hanya contoh simulasi. Kamu bisa mengatur alamat dan kontak bisnis sendiri di workflow n8n.'},
+  {keys:['n8n','automation','otomatis'],text:'n8n adalah platform untuk menghubungkan aplikasi dan mengotomatisasi pekerjaan seperti balas chat, mencatat order, dan membuat laporan.'},
+  {keys:['menu','help','bantuan'],text:'Silakan coba: harga, order, jam buka, alamat, atau n8n. Ketik “admin” jika ingin mencoba pengalihan ke manusia.'},
+  {keys:['halo','hai','hello','pagi'],text:'Halo! 👋 Selamat datang di simulasi Twist Automation. Mau tanya soal harga, order, atau coba bicara dengan admin?'},
+  {keys:['terima kasih','makasih'],text:'Sama-sama! Senang bisa membantu 🙌'}
+ ];
+ function clock(){return new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}
+ function msg(text,kind='in'){const el=document.createElement('div');el.className='msg '+kind;el.textContent=text;const t=document.createElement('span');t.className='t';t.textContent=clock();el.append(t);chat.append(el);chat.scrollTop=chat.scrollHeight}
+ function note(text){const el=document.createElement('div');el.className='demo-note';el.textContent=text;chat.append(el);chat.scrollTop=chat.scrollHeight}
+ function refresh(){let human=mode==='human';badge.textContent=human?'● Menunggu admin manusia':'● AI Bot aktif';badge.classList.toggle('human',human);timer.hidden=!human;adminTools.hidden=!human;back.hidden=!human;input.placeholder=human?'Kirim pesan untuk admin...':'Tanya sesuatu ke AI demo...';if(human){let remaining=Math.max(0,Math.ceil((handoffAt+LIMIT-Date.now())/1000));let m=String(Math.floor(remaining/60)).padStart(2,'0'),sec=String(remaining%60).padStart(2,'0');timer.textContent='Kembali ke AI dalam '+m+':'+sec+' jika admin belum membalas'} }
+ function resume(expired){if(mode!=='human')return;mode='ai';clearTimeout(timeout);clearTimeout(replyTimeout);refresh();note(expired?'15 menit tanpa balasan admin — sistem otomatis mengembalikan chat ke AI.':'Mode AI diaktifkan kembali.');if(expired)msg('Maaf admin belum merespons. Saya AI bot yang kembali membantu. Ada yang ingin ditanyakan?')}
+ function handoff(){if(mode==='human')return;mode='human';handoffAt=Date.now();clearTimeout(replyTimeout);clearTimeout(timeout);timeout=setTimeout(()=>resume(true),LIMIT);refresh();note('Percakapan dialihkan ke admin manusia. Balasan AI dihentikan sementara.');msg('Permintaan terhubung ke admin diterima. Pada demo ini, gunakan panel “Simulasi balasan admin” untuk mencoba respons manusia.')}
+ function answer(text){const q=text.toLocaleLowerCase('id-ID');if(/\b(admin|manusia|human|operator|customer service|cs)\b/i.test(q)){handoff();return}const hit=kb.find(item=>item.keys.some(k=>q.includes(k)));msg(hit?hit.text:'Saya bisa bantu menjelaskan harga, cara order, dan template n8n. Kamu juga bisa ketik “admin” untuk simulasi handoff.')}
+ function send(text){text=String(text||'').trim();if(!text)return;msg(text,'out');input.value='';if(mode==='human'){note('Pesan masuk ke antrean admin; AI tidak membalas selama mode manusia.');return}replyTimeout=setTimeout(()=>{if(mode==='ai')answer(text)},480)}
+ sendBtn.addEventListener('click',()=>send(input.value));input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send(input.value)}});document.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.q)));
+ back.addEventListener('click',()=>resume(false));adminSend.addEventListener('click',()=>{const value=adminInput.value.trim();if(!value||mode!=='human')return;clearTimeout(timeout);clearTimeout(replyTimeout);msg('Admin: '+value);adminInput.value='';mode='ai';refresh();note('Admin sudah membalas. Mode AI otomatis aktif kembali untuk pesan berikutnya.')});
+ adminInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adminSend.click()}});
+ setInterval(()=>{if(mode==='human'){if(Date.now()>=handoffAt+LIMIT)resume(true);else refresh()}},1000);
+ refresh();
 })();
 
 /* ============ SMOOTH SCROLL ============ */
