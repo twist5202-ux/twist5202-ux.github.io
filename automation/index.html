@@ -448,6 +448,77 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
 .cs-actions{display:flex;flex-wrap:wrap;gap:8px;padding:10px 18px;border-top:1px solid #edf0f7}.cs-actions button,.cs-compose button{background:#6657e9;color:white;border-radius:9px;padding:9px 13px;font-weight:700;font-size:11px}.cs-actions .cs-secondary{background:#eae7fb;color:#6558c3}.cs-actions button:disabled,.cs-compose button:disabled{opacity:.4;cursor:not-allowed}.cs-compose{display:flex;gap:8px;padding:0 18px 8px}.cs-compose input{flex:1;min-width:0;border:1px solid #dee3f0;padding:12px 13px;border-radius:10px;background:#f9faff;font:inherit;font-size:12px;color:#2e3854}.cs-compose input:disabled{opacity:.55}.cs-hint{padding:0 18px 14px;color:#8994aa;font-size:10px}
 @media(max-width:690px){.cs-head{padding:19px}.cs-head h3{font-size:19px}.cs-metrics>div{padding:13px 10px;display:block;text-align:center}.cs-metrics strong{display:block}.cs-workspace{grid-template-columns:1fr}.cs-inbox{border-right:0;border-bottom:1px solid #e8ebf3;padding:12px}.cs-inbox p{display:none}.cs-log{height:220px}.cs-head .cs-avatar{display:none}}
 
+
+/* FIXED CATALOG STRUCTURE & RESPONSIVE LAYOUT */
+:root{--bg:#f7f9ff;--bg2:#eef2fb;--card:#fff;--line:#dce3f1;--txt:#17213a;--dim:#66748c;--acc:#6257e9;--acc2:#8e78ff}
+body{background:#f7f9ff;color:#17213a;line-height:1.55}
+.wrap{max-width:1180px}
+#stars,#glow{display:none!important}
+.hero{padding-top:140px;padding-bottom:65px}
+.hero .wrap{min-width:0}
+.hero h1{font-size:clamp(39px,5.8vw,72px);line-height:1.07}
+.hero .sub{font-size:16px;max-width:520px}
+.hero-stats{display:none!important}
+.twist-feature{transform:none!important;animation:none!important;min-width:0;max-width:100%}
+.sec-head{margin-bottom:29px}
+.sec-head h2{font-size:clamp(30px,4.4vw,46px)}
+#template .filters{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:5px 0 14px;max-width:100%;justify-content:flex-start;scrollbar-width:thin}
+#template .filters .chip{flex:0 0 auto;white-space:nowrap;font-size:12px;padding:10px 15px}
+#template .tpl-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:17px!important;width:100%;align-items:stretch}
+#template .tpl{min-width:0!important;width:auto!important;max-width:none!important;padding:22px!important;display:flex;flex-direction:column;border-radius:16px!important;transform:none;overflow:hidden}
+#template .tpl.hide,#template .tpl[hidden]{display:none!important}
+#template .tpl h3{font-size:17px;line-height:1.35;overflow-wrap:normal;word-break:normal}
+#template .tpl p{font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#template .tpl-tags{min-height:25px}
+#template .tpl-meta{margin-top:auto}
+#template .tpl:hover{transform:translateY(-3px)!important}
+.catalog-more{display:block;margin:27px auto 0;padding:12px 22px;border-radius:12px;background:#6657e9;color:#fff;font-weight:700;font-size:14px;box-shadow:0 8px 20px #6657e926}
+.catalog-more[hidden]{display:none!important}
+.demo-grid{gap:24px}
+@media(max-width:950px){.hero .wrap{grid-template-columns:1fr}.hero{text-align:center}.twist-feature{width:100%;max-width:620px;margin:32px auto 0}.hero .cta-row{justify-content:center}#template .tpl-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:580px){.hero{padding:110px 0 48px}.hero h1{font-size:clamp(36px,10vw,53px)}.hero .sub{font-size:14px}.twist-feature{padding:18px;min-height:0}#template .tpl-grid{grid-template-columns:1fr!important}#template .tpl{padding:20px!important}section{padding:58px 0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Contact section — focused, responsive, no duplicate contact details */
+.contact-section{padding:64px 0 86px!important;background:#eef2fb!important}
+.contact-panel{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.85fr);align-items:center;gap:clamp(24px,5vw,68px);padding:clamp(28px,5vw,62px);background:#fff;border:1px solid #dfe5f1;border-radius:28px;box-shadow:0 24px 70px rgba(29,44,90,.07)}
+.contact-eyebrow{display:inline-block;color:#6859d9;font-size:11px;font-weight:800;letter-spacing:1.3px;margin-bottom:17px}
+.contact-copy h2{font-size:clamp(28px,3.7vw,43px);font-weight:800;line-height:1.15;letter-spacing:-1.5px;color:#1b2741;max-width:570px;margin:0 0 16px}
+.contact-copy p{max-width:470px;font-size:15px;line-height:1.7;color:#65728a;margin:0}
+.contact-trust{display:flex;gap:9px 18px;flex-wrap:wrap;margin-top:22px;color:#64718c;font-size:12px;font-weight:600}
+.contact-action{background:#f7f8fe;border:1px solid #e5e9f4;border-radius:20px;padding:24px;min-width:0}
+.contact-channel{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.contact-channel-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#e8e4ff;color:#6657e9;font-size:25px;flex-shrink:0}
+.contact-channel small{display:block;color:#77849c;font-size:11px;margin-bottom:4px}
+.contact-channel strong{display:block;font-size:clamp(15px,1.8vw,19px);color:#24314d;white-space:nowrap}
+.contact-wa{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#6657e9;color:#fff!important;border-radius:12px;padding:15px 18px;font-weight:750;font-size:14px;transition:background .2s,transform .2s;text-decoration:none}
+.contact-wa:hover{background:#5142d0;transform:translateY(-2px)}
+.contact-footnote{display:block;color:#8a95a9;font-size:11px;text-align:center;margin-top:12px}
+.site-footer{padding:25px 0!important;background:#19213c!important;color:#c0cbdf!important;text-align:left!important}
+.footer-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px}
+.footer-brand{font-size:17px;font-weight:850;letter-spacing:-.5px;color:#fff}.footer-brand span{color:#9b8efb}
+.site-footer a{color:#d6d0ff!important;text-decoration:none;font-weight:700}
+@media(max-width:740px){.contact-section{padding:45px 0 60px!important}.contact-panel{grid-template-columns:minmax(0,1fr);gap:25px;border-radius:20px;padding:27px 22px}.contact-copy h2{letter-spacing:-1px}.contact-action{padding:18px}.footer-row{justify-content:center;text-align:center}.footer-row>span:nth-child(2){width:100%;order:3}}
+
+
+/* Bundle 10 visibility and layout fix — accessible light-theme pricing */
+#harga .pgrid {grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch;padding-top:20px}
+#harga .pk {min-width:0;overflow:visible!important;padding:30px 24px 24px;background:#fff!important;color:#19243b!important;isolation:isolate}
+#harga .pk-best {background:#f8f6ff!important;border:2px solid #7968ed!important;box-shadow:0 16px 42px rgba(99,83,206,.14)!important}
+#harga .pk-best .pk-badge {top:-15px;z-index:3;background:#6c58de!important;color:#fff!important;font-size:11px;padding:6px 15px}
+#harga .pk h3 {font-size:18px;color:#26324b!important;font-weight:750}
+#harga .pk .pk-amt {color:#5541d2!important;font-size:clamp(27px,3vw,36px);font-weight:850;line-height:1.3;overflow-wrap:normal;white-space:nowrap}
+#harga .pk-note {color:#52627d!important;font-size:13px;font-weight:550;line-height:1.5}
+#harga .pk ul {min-width:0}
+#harga .pk li {color:#33435d!important;font-size:13px;line-height:1.5;overflow-wrap:break-word;border-bottom-color:#e6e9f1}
+#harga .pk li.no {color:#68758b!important}
+#harga .pk li.no::before {color:#68758b!important}
+#harga .pk .btn {margin-top:auto;position:relative;z-index:2;min-height:48px}
+#harga .pk-best .btn-p {background:#6354dd!important;color:#fff!important}
+@media(max-width:850px){#harga .pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){#harga .pgrid{grid-template-columns:minmax(0,1fr);gap:26px}#harga .pk{padding:27px 20px 22px}#harga .pk .pk-amt{font-size:32px}}
+
 </style>
 </head>
 <body>
@@ -474,15 +545,15 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
 <!-- ============ HERO ============ -->
 <header class="hero">
   <div class="wrap">
-    <div class="badge"><span class="dot"></span> 59 TEMPLATE · COBA GRATIS DI HALAMAN INI</div>
+    <div class="badge"><span class="dot"></span> TEMPLATE N8N SIAP PAKAI</div>
     <h1>
       <span class="ln"><i>Automasi cerdas.</i></span>
       <span class="ln"><i><em>Bisnis makin cepat.</em></i></span>
     </h1>
-    <p class="sub">Bangun sistem kerja yang lebih efisien dengan template n8n siap pakai. Mulai dari layanan pelanggan, order otomatis, sampai monitoring crypto. Jelajahi katalog dan coba demo interaktifnya.</p>
+    <p class="sub">Otomatiskan pekerjaan berulang. Pilih template, coba demonya, dan mulai lebih cepat.</p>
     <div class="cta-row">
-      <a href="#demo" class="btn btn-wa">Coba Bot Sekarang <span class="arw">↓</span></a>
-      <a href="#harga" class="btn btn-p">Lihat Harga</a>
+      <a href="#demo" class="btn btn-wa">Coba Demo <span class="arw">↓</span></a>
+      <a href="#harga" class="btn btn-p">Lihat Paket</a>
     </div>
     <div class="twist-feature" aria-label="Visual alur automasi bisnis">
  <div class="tw-f-top"><span>TWIST / AUTOMATION STUDIO</span><span class="tw-f-pill">● Workflow active</span></div>
@@ -510,8 +581,8 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">COBA GRATIS · TANPA DAFTAR</div>
-      <h2 class="rv rv-d1">Satu chat. Dua mode pelayanan.</h2>
-      <p class="rv rv-d2">Coba simulasi balasan AI, pindahkan percakapan ke admin manusia, lalu lihat pengembalian otomatis ke AI setelah 15 menit tanpa balasan admin.</p>
+      <h2 class="rv rv-d1">Coba chatbot langsung.</h2>
+      <p class="rv rv-d2">Simulasikan chat AI dan layanan admin manusia.</p>
     </div>
 
     <div class="demo-grid">
@@ -592,9 +663,9 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
 <section id="template" class="sec-in">
   <div class="wrap">
     <div class="sec-head">
-      <div class="eyebrow rv">59 TEMPLATE · 13 KATEGORI</div>
-      <h2 class="rv rv-d1">Semua yang lo butuh,<br>udah jadi.</h2>
-      <p class="rv rv-d2">Semua pakai node bawaan n8n dan API publik gratis. Tinggal import, isi kredensial, aktifkan.</p>
+      <div class="eyebrow rv">KATALOG AUTOMASI</div>
+      <h2 class="rv rv-d1">Temukan automasi<br>yang cocok.</h2>
+      <p class="rv rv-d2">Cari workflow yang sesuai kebutuhan bisnis lo.</p>
     </div>
 
     <div class="filters rv" id="filters">
@@ -612,6 +683,9 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
       <button class="chip" data-c="freelancer">Freelancer (3)</button>
       <button class="chip" data-c="produktivitas">Produktivitas (3)</button>
       <button class="chip" data-c="devops">DevOps (3)</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--dim);margin-bottom:14px;font-family:var(--mono)">Harga di bawah = harga <b style="color:var(--txt)">satu template</b> kalau beli satuan (Rp 99rb – 139rb, tergantung kompleksitas). Ambil <b style="color:var(--txt)">Bundle 10 (Rp 299rb)</b> atau <b style="color:var(--txt)">All Access (Rp 799rb)</b> — jauh lebih murah.</p>
+    <div class="tpl-grid" id="tplGrid">
     <div class="tpl rv" data-cat="aicontent">
           <div class="tpl-num">AI CONTENT · 01</div>
           <h3>Deskripsi Produk Otomatis (Marketplace Ready)</h3>
@@ -1013,10 +1087,6 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
           <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
-      </div>
-
-    <p style="font-size:12.5px;color:var(--dim);margin-bottom:14px;font-family:var(--mono)">Harga di bawah = harga <b style="color:var(--txt)">satu template</b> kalau beli satuan (Rp 99rb – 139rb, tergantung kompleksitas). Ambil <b style="color:var(--txt)">Bundle 10 (Rp 299rb)</b> atau <b style="color:var(--txt)">All Access (Rp 799rb)</b> — jauh lebih murah.</p>
-    <div class="tpl-grid" id="tplGrid">
 
       <div class="tpl rv" data-cat="umkm">
         <div class="hot">PALING LAKU</div>
@@ -1047,7 +1117,7 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">HARGA</div>
-      <h2 class="rv rv-d1">Beli Template.<br>Pasang Sendiri.</h2>
+      <h2 class="rv rv-d1">Harga simpel.<br>Sekali bayar.</h2>
       <p class="rv rv-d2">File JSON siap import ke n8n lo. Bukan langganan. Mau yang langsung jadi? <a href="/harga/" style="color:var(--acc)">Lihat paket jasa setup →</a></p>
     </div>
     <div class="pgrid">
@@ -1110,7 +1180,7 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">PANDUAN SETUP</div>
-      <h2 class="rv rv-d1">Cara pasang, dari nol.</h2>
+      <h2 class="rv rv-d1">Mulai dalam beberapa langkah.</h2>
       <p class="rv rv-d2">Klik tiap langkah buat liat detailnya. Semua ada gambar penjelas.</p>
     </div>
 
@@ -1263,7 +1333,7 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">FAQ</div>
-      <h2 class="rv rv-d1">Pertanyaan yang sering masuk.</h2>
+      <h2 class="rv rv-d1">Masih ada pertanyaan?</h2>
     </div>
 
     <div class="faq-item rv">
@@ -1299,28 +1369,26 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
   </div>
 </section>
 
-<!-- ============ CTA ============ -->
-<section class="cta sec-in">
+<!-- ============ KONTAK ============ -->
+<section id="kontak" class="contact-section sec-in">
   <div class="wrap">
-    <div class="cta-box rv">
-      <h2>Siap berhenti kerja manual?</h2>
-      <p>Chat aja, gue bantu pilih template yang paling cocok buat bisnis lo. Konsultasi gratis.</p>
-      <div class="cta-row">
-        <a href="https://wa.me/6285171228302" class="btn btn-wa">Chat WhatsApp <span class="arw">→</span></a>
-        <a href="#demo" class="btn btn-s">Coba Bot Lagi</a>
+    <div class="contact-panel rv">
+      <div class="contact-copy">
+        <span class="contact-eyebrow">KONTAK &amp; KONSULTASI</span>
+        <h2>Butuh automation untuk bisnis lo?</h2>
+        <p>Ceritain kebutuhan lo. Kita pilih template atau workflow custom yang paling pas.</p>
+        <div class="contact-trust"><span>✓ Konsultasi gratis</span><span>✓ Template n8n siap pakai</span></div>
       </div>
-      <div class="cta-num">atau langsung WA: <b>0851-7122-8302</b></div>
-      <div class="cta-note">Bisa <b>custom workflow</b> sesuai kebutuhan bisnis lo.</div>
+      <div class="contact-action">
+        <div class="contact-channel"><span class="contact-channel-icon" aria-hidden="true">✆</span><div><small>Hubungi lewat WhatsApp</small><strong>0851-7122-8302</strong></div></div>
+        <a class="contact-wa" href="https://wa.me/6285171228302?text=Halo%2C%20saya%20mau%20konsultasi%20tentang%20automation%20n8n" target="_blank" rel="noopener noreferrer">Mulai Konsultasi <span aria-hidden="true">↗</span></a>
+        <span class="contact-footnote">Langsung terhubung ke WhatsApp</span>
+      </div>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="wrap">
-    <p>twist.automation — template n8n untuk UMKM &amp; crypto. Dibuat di Indonesia.</p>
-    <p style="margin-top:6px">WhatsApp <a href="https://wa.me/6285171228302">0851-7122-8302</a> · Email <a href="mailto:twist5202@gmail.com">twist5202@gmail.com</a></p>
-  </div>
-</footer>
+<footer class="site-footer"><div class="wrap footer-row"><span class="footer-brand">twist<span>.automation</span></span><span>Template n8n &amp; automation bisnis</span><a href="https://wa.me/6285171228302" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></footer>
 
 <script>
 /* ============ CURTAIN ============ */
@@ -1529,8 +1597,10 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
   const count=document.createElement('span');count.className='twist-count';count.setAttribute('aria-live','polite');
   tools.append(search,count);filters.after(tools);
   const empty=document.createElement('p');empty.className='twist-empty';empty.textContent='Belum ada template yang cocok. Coba kata kunci lain.';grid.after(empty);
-  let active='all';
-  function render(){let shown=0;let q=search.value.trim().toLocaleLowerCase('id-ID');cards.forEach(card=>{let ok=(active==='all'||card.dataset.cat===active)&&card.textContent.toLocaleLowerCase('id-ID').includes(q);card.classList.toggle('hide',!ok);card.hidden=!ok;if(ok){shown++;card.classList.add('in');}});count.textContent=shown+' template ditemukan';empty.classList.toggle('show',shown===0)}
+  let active='all', expanded=false;
+  const more=document.createElement('button');more.type='button';more.className='catalog-more';more.textContent='Lihat semua template';grid.after(more);
+  more.addEventListener('click',()=>{expanded=!expanded;render();if(!expanded)document.getElementById('template').scrollIntoView({behavior:'smooth'});});
+  function render(){let shown=0,matched=0;let q=search.value.trim().toLocaleLowerCase('id-ID');cards.forEach(card=>{let ok=(active==='all'||card.dataset.cat===active)&&card.textContent.toLocaleLowerCase('id-ID').includes(q);if(ok)matched++;let visible=ok&&(expanded||active!=='all'||q||shown<6);card.classList.toggle('hide',!visible);card.hidden=!visible;if(visible){shown++;card.classList.add('in');}});count.textContent=matched+' template tersedia';empty.classList.toggle('show',matched===0);more.hidden=!!q||active!=='all'||matched<=6;more.textContent=expanded?'Tampilkan lebih sedikit':'Lihat semua '+matched+' template';} 
   filters.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{active=chip.dataset.c;requestAnimationFrame(render)}));
   search.addEventListener('input',render);render();
  }
