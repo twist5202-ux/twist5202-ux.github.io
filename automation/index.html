@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>twist.automation — Template n8n Siap Pakai untuk UMKM &amp; Crypto</title>
+<title>Twist Automation Studio — Template n8n untuk Bisnis Modern</title>
 <meta name="description" content="15 template automation n8n siap pakai. Coba bot WhatsApp-nya langsung di halaman ini. Sekali bayar, pakai selamanya.">
 <style>
   :root{
@@ -353,6 +353,68 @@ section{position:relative}.sec-head{margin-bottom:44px}.sec-head h2{letter-spaci
 @media(max-width:560px){.hero h1{letter-spacing:-.045em}.hero-stats{gap:22px}.twist-tools{flex-direction:column;gap:7px}.twist-count{align-self:flex-end}.tpl-grid{gap:15px}.twist-top{right:13px;bottom:14px}.nav-in{gap:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.rv,.sec-in,.hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .hero-stats{opacity:1!important;transform:none!important}.hero h1 .ln i{transform:none!important}#curtain{display:none}}
 
+
+/* ===== TWIST STUDIO / COMPLETE VISUAL REBRAND ===== */
+:root{--bg:#f7f9ff;--bg2:#edf2fc;--card:#ffffff;--line:#dce3f1;--txt:#17213a;--dim:#66748c;--acc:#6257e9;--acc2:#8e78ff;--grn:#0f9c88;--blue:#4d67e9;--red:#f25a72;--pur:#8061e9;--cyn:#0a9dac;--wa:#16a58e;--wa2:#087c75;--sans:Inter,"Segoe UI",Arial,sans-serif}
+body{background:#f7f9ff!important;color:#17213a!important}
+#stars,#glow{display:none!important}#curtain{background:#f7f9ff}#curtain .cw{color:#6358dd}
+#prog{height:4px;background:linear-gradient(90deg,#7866fa,#fd879d,#ffb761)}
+a{color:#6556e7}a:hover{color:#4334b9}
+.wrap{max-width:1200px}
+nav{background:rgba(255,255,255,.91)!important;border-bottom:1px solid #e4e7f4!important;box-shadow:0 6px 35px rgba(41,50,96,.045)}
+.nav-in{max-width:1200px;min-height:78px}.logo{font-size:21px;font-weight:850;color:#1b2143!important;letter-spacing:-1.1px}.logo span{color:#6e59eb}.nav-links{gap:25px}.nav-links a{color:#57647e}.nav-links a:hover{color:#6556e7}.nav-links a::after{background:#7561ef}
+.nav-cta{background:#6557e9!important;color:white!important;box-shadow:0 8px 19px #6557e928;border-radius:12px;padding:11px 17px}
+.hero{padding:155px 0 108px;text-align:left;background:radial-gradient(ellipse 45% 65% at 90% 40%,rgba(189,168,255,.30),transparent 78%),radial-gradient(ellipse 38% 60% at -10% 65%,rgba(129,206,255,.20),transparent 76%),#f7f9ff;overflow:hidden}
+.hero::before{content:"";left:auto;right:-210px;top:35px;width:760px;height:760px;background:radial-gradient(circle,rgba(116,93,243,.10),transparent 65%);animation:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);column-gap:48px;align-items:center}
+.hero .badge,.hero h1,.hero .sub,.hero .cta-row{grid-column:1}
+.hero .badge{width:max-content;background:#ece8ff!important;border:1px solid #d9d0ff;color:#5e4de0;letter-spacing:.6px;font-size:11px;font-weight:800;padding:9px 15px;margin-bottom:25px}
+.badge .dot{background:#7966f7}
+.hero h1{font-size:clamp(43px,5.4vw,76px);line-height:1.045;letter-spacing:-.073em;color:#17213a;margin-bottom:23px}
+.hero h1 em{background:linear-gradient(105deg,#6355e9 0%,#8e67ed 48%,#f17691 100%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{margin:0 0 30px;max-width:570px;color:#6a728a;font-size:17px;line-height:1.75}
+.cta-row{justify-content:flex-start}.btn{border-radius:14px;padding:14px 23px;min-height:51px;font-size:14px}
+.btn-wa{background:#6657e9!important;color:white!important;box-shadow:0 12px 26px #6959ea38!important}
+.btn-wa:hover{background:#5041d0!important}
+.btn-p{background:#17213a!important;color:#fff!important;box-shadow:0 12px 26px #17213a1f!important}
+.btn-p:hover{background:#303d5b!important}
+.btn-s{background:white!important;color:#273350!important;border:1px solid #d8ddec!important}
+.hero-stats{grid-column:1 / -1;justify-content:space-between;gap:22px;margin-top:83px;padding:30px 38px;background:white;border:1px solid #e9e9f2;border-radius:22px;box-shadow:0 20px 65px #2b317512}
+.hs b{color:#6657e9;font-family:var(--sans);font-size:29px;letter-spacing:-1px}.hs span{color:#68758d}
+.twist-feature{grid-column:2;grid-row:1 / 5;align-self:center;position:relative;min-height:430px;background:linear-gradient(145deg,#242a56,#3e368b);border-radius:28px;padding:26px;box-shadow:0 32px 75px #5041c03b;overflow:hidden;transform:rotate(2deg);animation:tw-float 6s ease-in-out infinite}
+.twist-feature::before{content:"";position:absolute;width:280px;height:280px;right:-80px;top:-95px;background:radial-gradient(circle,#a288ff7f,transparent 68%)}.twist-feature::after{content:"";position:absolute;width:210px;height:210px;bottom:-90px;left:-90px;background:radial-gradient(circle,#66d7fc50,transparent 70%)}
+.tw-f-top{position:relative;z-index:1;color:#e4e1ff;font-size:12px;letter-spacing:1px;display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid #ffffff22}.tw-f-pill{border:1px solid #ffffff42;border-radius:30px;padding:6px 12px;color:#9ff0d7;background:#29bda71c}
+.tw-f-heading{position:relative;color:white;font-size:24px;font-weight:800;letter-spacing:-1px;margin:24px 0 20px}
+.tw-flow{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:13px}
+.tw-flow-step{display:flex;align-items:center;gap:13px;padding:16px 18px;border:1px solid #ffffff29;background:#ffffff16;backdrop-filter:blur(10px);border-radius:15px;color:white;font-size:14px;font-weight:700}
+.tw-flow-icon{display:grid;place-items:center;width:38px;height:38px;background:#ffffff25;border-radius:11px;font-size:20px}
+.tw-flow-arrow{text-align:center;color:#bcb0ff;font-size:16px;height:9px;line-height:9px}
+.tw-f-bottom{position:relative;z-index:1;color:#d6d4f5;font-size:12px;margin-top:21px}.tw-f-bottom b{color:#aaf3de}
+@keyframes tw-float{0%,100%{transform:rotate(2deg) translateY(0)}50%{transform:rotate(1deg) translateY(-12px)}}
+section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
+.sec-head h2{color:#19223f;font-size:clamp(30px,4vw,48px);letter-spacing:-.055em}.sec-head p{color:#6a7790}
+.eyebrow{color:#6657e9;font-weight:800;letter-spacing:1.4px}.eyebrow::before,.eyebrow::after{background:#8472f8}
+.tpl,.pk,.phone,.dbox,.acc,.faq-item{background:#fff!important;color:#19243b!important;border:1px solid #dde3f0!important;box-shadow:0 14px 45px #26346d0b!important}
+.tpl,.pk{border-radius:22px!important;overflow:hidden}
+.tpl:not(.hide):hover,.pk:hover{border-color:#a79bf8!important;box-shadow:0 25px 55px #6260ca20!important;transform:translateY(-9px)}
+.tpl::after,.pk::after{background:radial-gradient(450px circle at var(--mx,50%) var(--my,0%),#8d80fa16,transparent 65%)}
+.tpl h3,.pk h3,.dbox h3{color:#19243b}.tpl p,.pk-note,.tpl-nodes{color:#69758b!important}.tpl-num{color:#7561eb!important}
+.tpl-price,.pk-amt{color:#6254dc!important}.tag{background:#f0edff!important;color:#6554ce!important;border-color:#e2dcff!important}
+.hot,.pk-badge{background:#ffedf1!important;color:#d54366!important}
+.filters{gap:10px;margin-bottom:21px}.chip{border-color:#dbe1f0!important;background:white!important;color:#52627c!important;padding:11px 19px}.chip.on,.chip:hover{background:#6657e9!important;color:#fff!important;border-color:#6657e9!important}
+.twist-search{background:white!important;color:#1d2642!important;border-color:#d9e0ed!important;box-shadow:0 6px 22px #2436740a}.twist-search::placeholder{color:#8190a7}.twist-count{color:#657089}.twist-empty{background:white;color:#657089}
+.pk-best{border:2px solid #7b68f0!important;box-shadow:0 22px 58px #7866ef20!important}
+.phone-bar{background:#6154d5!important}.chat{background:#f0f4fb!important}.msg.in{background:#ffffff!important;color:#25344c!important}.msg.out{background:#dedafa!important;color:#25254c!important}.quick button{background:#fff!important;color:#6657e9!important;border-color:#dbd5fa!important}
+.input-row{background:white!important}.input-row input{color:#25344c!important}.send{background:#6657e9!important}
+.dbox li,.dbox p,.acc-b,.faq-a{color:#637189!important}.d-stat b{color:#6352df!important}
+.acc-h,.faq-q{color:#1d2943!important}.acc-b-in{color:#56647a}.acc table{background:white;color:#23314b}.acc th{background:#edf0fa;color:#26324c}
+#harga .pk li{color:#536279}footer{background:#19213c!important;color:#c0cbdf!important}
+.twist-menu{background:#f2f0ff!important;color:#6656e6!important;border-color:#ded8ff!important}.nav-links.twist-open{background:white;border-radius:16px;padding:14px;box-shadow:0 20px 45px #37416d1c}
+.twist-top{background:#6958e9!important;color:white!important}
+@media(max-width:950px){.hero .wrap{grid-template-columns:1fr}.hero .badge,.hero h1,.hero .sub,.hero .cta-row{grid-column:1}.twist-feature{grid-column:1;grid-row:auto;max-width:640px;width:100%;margin:55px auto 0;min-height:390px}.hero-stats{grid-column:1;margin-top:45px}.hero{text-align:center}.hero .badge{margin-left:auto;margin-right:auto}.hero .sub{margin-left:auto;margin-right:auto}.hero .cta-row{justify-content:center}}
+@media(max-width:600px){.hero{padding:118px 0 62px}.hero h1{font-size:clamp(38px,10vw,54px)}.hero .sub{font-size:15px}.twist-feature{transform:none;animation:none;min-height:0;padding:19px;margin-top:35px;border-radius:22px}.tw-f-heading{font-size:21px}.tw-flow-step{padding:11px 13px}.hero-stats{padding:20px;display:grid;grid-template-columns:1fr 1fr;text-align:center;border-radius:18px}.hs b{font-size:23px}section{padding:65px 0}.nav-in{min-height:68px}.logo{font-size:18px}.nav-links{gap:0}.nav-links a{color:#3b4665}}
+@media(prefers-reduced-motion:reduce){.twist-feature{animation:none!important;transform:none!important}}
+
 </style>
 </head>
 <body>
@@ -381,15 +443,27 @@ section{position:relative}.sec-head{margin-bottom:44px}.sec-head h2{letter-spaci
   <div class="wrap">
     <div class="badge"><span class="dot"></span> 15 TEMPLATE · COBA GRATIS DI HALAMAN INI</div>
     <h1>
-      <span class="ln"><i>Stop kerja manual.</i></span>
-      <span class="ln"><i><em>Biarkan robot</em> yang bantu.</i></span>
+      <span class="ln"><i>Automasi cerdas.</i></span>
+      <span class="ln"><i><em>Bisnis makin cepat.</em></i></span>
     </h1>
-    <p class="sub">Lima belas template automation n8n siap pakai: sembilan untuk UMKM, enam untuk crypto. Coba bot WhatsApp-nya langsung di bawah — tanpa daftar, tanpa install.</p>
+    <p class="sub">Bangun sistem kerja yang lebih efisien dengan template n8n siap pakai. Mulai dari layanan pelanggan, order otomatis, sampai monitoring crypto. Jelajahi katalog dan coba demo interaktifnya.</p>
     <div class="cta-row">
       <a href="#demo" class="btn btn-wa">Coba Bot Sekarang <span class="arw">↓</span></a>
       <a href="#harga" class="btn btn-p">Lihat Harga</a>
     </div>
-    <div class="hero-stats">
+    <div class="twist-feature" aria-label="Visual alur automasi bisnis">
+ <div class="tw-f-top"><span>TWIST / AUTOMATION STUDIO</span><span class="tw-f-pill">● Workflow active</span></div>
+ <div class="tw-f-heading">Bisnis berjalan.<br>Otomatis.</div>
+ <div class="tw-flow">
+  <div class="tw-flow-step"><span class="tw-flow-icon">💬</span><span>Customer mengirim pesan</span></div>
+  <div class="tw-flow-arrow">↓</div>
+  <div class="tw-flow-step"><span class="tw-flow-icon">⚡</span><span>n8n memproses workflow</span></div>
+  <div class="tw-flow-arrow">↓</div>
+  <div class="tw-flow-step"><span class="tw-flow-icon">✅</span><span>Balasan & data terkirim</span></div>
+ </div>
+ <div class="tw-f-bottom"><b>● Connected</b> &nbsp; • &nbsp; Workflow siap diintegrasikan</div>
+</div>
+<div class="hero-stats">
       <div class="hs"><b>15</b><span>template siap pakai</span></div>
       <div class="hs"><b>109</b><span>node terpasang</span></div>
       <div class="hs"><b>24/7</b><span>jalan nonstop</span></div>
