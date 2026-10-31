@@ -1,0 +1,130 @@
+{
+  "name": "CRYPTO 10 — Whale Alert (Transfer Besar di BSC)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/15 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap 15 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.bscscan.com/api?module=account&action=txlist&address=GANTI_ALAMAT_WALLET&sort=desc&apikey=GANTI_API_KEY_BSCSCAN",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Ambil Transaksi Terbaru",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst d = $input.first().json;\nconst txs = d.result || [];\nconst besar = txs.filter(t => {\n  const nilai = Number(t.value) / 1e18;   // BNB\n  return nilai >= 10;                      // >= 10 BNB\n});\nreturn besar.map(t => ({\n  json: {\n    hash: t.hash,\n    dari: t.from,\n    ke: t.to,\n    nilai: (Number(t.value) / 1e18).toFixed(4),\n    waktu: new Date(t.timeStamp * 1000).toLocaleString('id')\n  }\n}));\n"
+      },
+      "id": "n3",
+      "name": "Filter Transfer Besar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "🐋 WHALE ALERT\\n\\nNilai  : {{$json.nilai}} BNB\\nDari   : {{$json.dari}}\\nKe     : {{$json.ke}}\\nWaktu  : {{$json.waktu}}\\nTx     : bscscan.com/tx/{{$json.hash}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Alert Whale",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 15 Menit": {
+      "main": [
+        [
+          {
+            "node": "Ambil Transaksi Terbaru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Transaksi Terbaru": {
+      "main": [
+        [
+          {
+            "node": "Filter Transfer Besar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Transfer Besar": {
+      "main": [
+        [
+          {
+            "node": "Alert Whale",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

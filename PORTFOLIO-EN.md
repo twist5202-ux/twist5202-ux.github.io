@@ -289,10 +289,10 @@ validation, allowing an approved relayer to commit an attacker-controlled
 
 | Contract | Address |
 |---|---|
-| VectorX proxy | `0x02993cdc11213985b9b13224f3af289f03bf298d` |
-| VectorX implementation (`SP1Vector` v2.0.0) | `0xc6217f1549Cab6f22ac4AC56d42e6C248731a33D` |
-| Bridge proxy | `0x054fd961708D8E2B9c10a63F6157c74458889F0a` |
-| Bridge implementation (`AvailBridgeV1`) | `0x737539737b44493F65c17eAfE165197b6410d254` |
+| VectorX proxy | `GANTI_WALLET_1` |
+| VectorX implementation (`SP1Vector` v2.0.0) | `GANTI_WALLET_4` |
+| Bridge proxy | `GANTI_WALLET_2` |
+| Bridge implementation (`AvailBridgeV1`) | `GANTI_WALLET_3` |
 
 Deployed state at time of report: `latestBlock = 3616640`,
 `latestAuthoritySetId = 914`, `headerRangeCommitmentTreeSize = 2048`,

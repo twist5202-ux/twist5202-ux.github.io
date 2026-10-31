@@ -1,0 +1,211 @@
+{
+  "name": "AICONTENT 03 — Copy Iklan Multi-Variasi (A/B Test Ready)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "ai-ads",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Request Copy Iklan",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "ai-ads"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  produk: b.produk || 'Produk',\n  manfaat: b.manfaat || '-',\n  target: b.target || 'UMKM Indonesia',\n  harga: b.harga || '-',\n  platform: b.platform || 'Meta Ads'\n}}];\n"
+      },
+      "id": "n2",
+      "name": "Normalize Brief",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Samakan brief iklan."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "GANTI_BASE_URL_AI/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer GANTI_API_KEY_AI"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'GANTI_MODEL_AI', messages: [{ role: 'system', content: Kamu direct-response copywriter. Buat 3 variasi copy iklan yang beda angle: (A) masalah-solusi, (B) social proof, (C) urgency/penawaran. Tiap variasi: headline maksimal 8 kata, body 2-3 kalimat, CTA jelas. Bahasa Indonesia. Maksimal 80 kata per variasi. }], temperature: 0.7, max_tokens: 500 }) }}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "n3",
+      "name": "Generate 3 Variasi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst r = $input.first().json;\nconst teks = r.choices?.[0]?.message?.content || r.message?.content || '';\nreturn [{ json: { copy_iklan: teks.trim() } }];\n"
+      },
+      "id": "n4",
+      "name": "Ambil 3 Variasi",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ],
+      "notes": "Ekstrak variasi copy dari respons AI."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "CopyIklan",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Simpan Copy",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "COPY IKLAN — 3 VARIASI 🎯\\n======================\\n\\n{{$('Ambil 3 Variasi').first().json.copy_iklan}}\\n\\nTes ketiganya, yang menang naikkan budget."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Kirim ke Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Request Copy Iklan": {
+      "main": [
+        [
+          {
+            "node": "Normalize Brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Brief": {
+      "main": [
+        [
+          {
+            "node": "Generate 3 Variasi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate 3 Variasi": {
+      "main": [
+        [
+          {
+            "node": "Ambil 3 Variasi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil 3 Variasi": {
+      "main": [
+        [
+          {
+            "node": "Simpan Copy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simpan Copy": {
+      "main": [
+        [
+          {
+            "node": "Kirim ke Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

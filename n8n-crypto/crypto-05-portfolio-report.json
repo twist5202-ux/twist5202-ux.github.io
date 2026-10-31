@@ -15,7 +15,7 @@
       "parameters": {
         "assignments": {
           "assignments": [
-            { "id": "p1", "name": "portfolio", "value": "=[\n  { \"simbol\": \"KINS\", \"chain\": \"solana\", \"pair\": \"F42tZnKPavq1VUcrL6ymhc6YqVpt84fWwgzbNTv2wb3W\", \"jumlah\": 1000000 },\n  { \"simbol\": \"WBNB\", \"chain\": \"bsc\", \"pair\": \"0x16b9a82891338f9b7e5a3dae4b0e33c16f9a1ab2\", \"jumlah\": 0.003 }\n]", "type": "array" }
+            { "id": "p1", "name": "portfolio", "value": "=[\n  { \"simbol\": \"KINS\", \"chain\": \"solana\", \"pair\": \"F42tZnKPavq1VUcrL6ymhc6YqVpt84fWwgzbNTv2wb3W\", \"jumlah\": 1000000 },\n  { \"simbol\": \"WBNB\", \"chain\": \"bsc\", \"pair\": \"GANTI_WALLET_CONTOH\", \"jumlah\": 0.003 }\n]", "type": "array" }
           ]
         },
         "options": {}

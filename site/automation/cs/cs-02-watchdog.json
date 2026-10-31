@@ -1,0 +1,574 @@
+{
+  "name": "CS HYBRID 02 — Watchdog + Auto-Tutup (Customer Diam → Balik ke AI)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/2 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "w1",
+      "name": "Cek Tiap 2 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "State",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "w2",
+      "name": "Baca Tab State",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -180,
+        300
+      ],
+      "notes": "Baca tab 'State'."
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "History",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "w3",
+      "name": "Baca Tab History",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -180,
+        460
+      ],
+      "notes": "Baca tab 'History'."
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $(\"Baca Tab State\").all().map(r => r.json);\nconst hist = $(\"Baca Tab History\").all().map(r => r.json);\nconst now = Date.now();\nconst MENIT = GANTI_MENIT_AUTO_TUTUP;   // ganti angka, default 15\n\n// cari pesan customer terakhir per nomor\nconst lastCust = {};\nfor (const h of hist) {\n  if ((h.dari || \"\") !== \"customer\") continue;\n  const p = String(h.phone || \"\").replace(/[^0-9]/g, \"\");\n  const t = new Date(h.waktu).getTime();\n  if (isNaN(t)) continue;\n  if (!lastCust[p] || t > lastCust[p]) lastCust[p] = t;\n}\n\nconst autoTutup = rows.filter(r => {\n  if ((r.mode || \"ai\") !== \"human\") return false;\n  const p = String(r.phone || \"\").replace(/[^0-9]/g, \"\");\n  const last = lastCust[p];\n  if (!last) return false;                       // gak ada data -> skip\n  const diam = (now - last) / 60000;\n  return diam >= MENIT;\n}).map(r => {\n  const p = String(r.phone || \"\").replace(/[^0-9]/g, \"\");\n  const diam = Math.round((now - lastCust[p]) / 60000);\n  return { json: { phone: p, menit_diam: diam, auto_tutup: true } };\n});\n\nreturn autoTutup;\n"
+      },
+      "id": "w4",
+      "name": "Cek Auto-Tutup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        300
+      ],
+      "notes": "Human-mode session yang customer-nya diam >= threshold -> tutup."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.menit_diam }}",
+              "rightValue": "GANTI_MENIT_AUTO_TUTUP",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "w5",
+      "name": "Ada yang Perlu Auto-Tutup?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "State",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "phone"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "w6",
+      "name": "Auto-Tutup: Set Mode AI",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        480,
+        220
+      ],
+      "notes": "Customer diam -> sesi ditutup otomatis, AI aktif lagi."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "SESI OTOMATIS DITUTUP\\n=====================\\nDari        : {{$json.phone}}\\nDiam        : {{$json.menit_diam}} menit\\nStatus      : mode kembali ke AI\\n\\nCustomer gak bales dalam GANTI_MENIT_AUTO_TUTUP menit, jadi sesi ditutup otomatis. Kalau customer chat lagi, AI yang jawab."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w7",
+      "name": "Notif Admin Auto-Tutup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        220
+      ],
+      "notes": "Gateway WhatsApp (Fonnte). Ganti URL kalau pakai Wablas/MPWA."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "History",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "w8",
+      "name": "Catat History (Auto-Tutup)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        920,
+        220
+      ],
+      "notes": "Tambah baris ke tab 'History'."
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $(\"Baca Tab State\").all().map(r => r.json);\nconst now = Date.now();\n\nconst perlu = rows.filter(r => {\n  if ((r.mode || \"ai\") !== \"human\") return false;\n  if (!r.escalated_at) return false;\n  const esc = new Date(r.escalated_at).getTime();\n  if (isNaN(esc)) return false;\n  const menit = (now - esc) / 60000;\n\n  const lhr = r.last_human_reply ? new Date(r.last_human_reply).getTime() : 0;\n  const sudahBales = lhr > esc;\n\n  const rem = r.last_reminder ? new Date(r.last_reminder).getTime() : 0;\n  const baruReminder = (now - rem) / 60000 < 10;\n\n  return !sudahBales && menit >= 10 && !baruReminder;\n}).map(r => {\n  const esc = new Date(r.escalated_at).getTime();\n  return {\n    json: {\n      phone: String(r.phone || \"\").replace(/[^0-9]/g, \"\"),\n      menit_tunggu: Math.round((now - esc) / 60000),\n      catatan: r.catatan || \"-\"\n    }\n  };\n});\n\nreturn perlu;\n"
+      },
+      "id": "w9",
+      "name": "Cek Admin Lupa Bales",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        620
+      ],
+      "notes": "Cari sesi human-mode yang admin belum bales >= 10 menit."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.menit_tunggu }}",
+              "rightValue": "10",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "w10",
+      "name": "Ada yang Perlu Diingatkan?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "PENGINGAT — CUSTOMER MENUNGGU\\n=============================\\nDari   : {{$json.phone}}\\nSudah menunggu: {{$json.menit_tunggu}} menit\\nCatatan: {{$json.catatan}}\\n\\nBalas pesan customer tadi, atau ketik 'tutup' kalau sudah selesai."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w11",
+      "name": "Ingatkan Admin Lagi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        540
+      ],
+      "notes": "Gateway WhatsApp (Fonnte). Ganti URL kalau pakai Wablas/MPWA."
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "State",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "phone"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "w12",
+      "name": "Update last_reminder",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        700,
+        540
+      ],
+      "notes": "Update baris di tab 'State', cocokkan kolom 'phone'."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c3",
+              "leftValue": "={{ $json.menit_tunggu }}",
+              "rightValue": "30",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "w13",
+      "name": "Tunggu > 30 Menit?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $('Cek Admin Lupa Bales').first().json.phone }}"
+            },
+            {
+              "name": "message",
+              "value": "Mohon maaf menunggu, tim kami sedang menangani pesan lo. Kami balas secepatnya ya. Terima kasih kesabaran."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w14",
+      "name": "Pesan Customer Masih Menunggu",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        780
+      ],
+      "notes": "Gateway WhatsApp (Fonnte). Ganti URL kalau pakai Wablas/MPWA."
+    },
+    {
+      "parameters": {},
+      "id": "w15",
+      "name": "Selesai",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        700,
+        700
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 2 Menit": {
+      "main": [
+        [
+          {
+            "node": "Baca Tab State",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Baca Tab History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Tab State": {
+      "main": [
+        [
+          {
+            "node": "Cek Auto-Tutup",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cek Admin Lupa Bales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Tab History": {
+      "main": [
+        [
+          {
+            "node": "Cek Auto-Tutup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Auto-Tutup": {
+      "main": [
+        [
+          {
+            "node": "Ada yang Perlu Auto-Tutup?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ada yang Perlu Auto-Tutup?": {
+      "main": [
+        [
+          {
+            "node": "Auto-Tutup: Set Mode AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-Tutup: Set Mode AI": {
+      "main": [
+        [
+          {
+            "node": "Notif Admin Auto-Tutup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notif Admin Auto-Tutup": {
+      "main": [
+        [
+          {
+            "node": "Catat History (Auto-Tutup)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Admin Lupa Bales": {
+      "main": [
+        [
+          {
+            "node": "Ada yang Perlu Diingatkan?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tunggu > 30 Menit?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ada yang Perlu Diingatkan?": {
+      "main": [
+        [
+          {
+            "node": "Ingatkan Admin Lagi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ingatkan Admin Lagi": {
+      "main": [
+        [
+          {
+            "node": "Update last_reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tunggu > 30 Menit?": {
+      "main": [
+        [
+          {
+            "node": "Pesan Customer Masih Menunggu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pesan Customer Masih Menunggu": {
+      "main": [
+        [
+          {
+            "node": "Selesai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "staticData": null,
+  "pinData": {}
+}

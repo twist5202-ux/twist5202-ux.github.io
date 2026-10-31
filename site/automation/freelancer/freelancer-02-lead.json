@@ -1,0 +1,179 @@
+{
+  "name": "FREELANCER 02 — Lead Follow-Up (Calon Klien Diam → Dikejar)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 10:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Daftar Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = Date.now();\nreturn rows.filter(r => {\n  if (r.status !== 'baru') return false;\n  const t = new Date(r.waktu_chat).getTime();\n  return (now - t) / 86400000 >= 3;\n}).map(r => ({ json: r }));\n"
+      },
+      "id": "n3",
+      "name": "Filter Diam > 3 Hari",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "Halo {{$json.nama}} 👋\\n\\nBeberapa hari lalu lo nanya soal *{{$json.layanan}}*.\\n\\nMasih tertarik? Kalau ada kendala (harga, waktu, scope), bilang aja — kita bisa cari jalan.\\n\\nGue siap bantu kapan aja."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Follow-Up Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Update Status Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 10:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Daftar Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Daftar Lead": {
+      "main": [
+        [
+          {
+            "node": "Filter Diam > 3 Hari",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Diam > 3 Hari": {
+      "main": [
+        [
+          {
+            "node": "Follow-Up Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow-Up Lead": {
+      "main": [
+        [
+          {
+            "node": "Update Status Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

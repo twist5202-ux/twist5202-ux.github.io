@@ -1,0 +1,139 @@
+{
+  "name": "CRYPTO 12 — Bridge / Tx Status Monitor (Pantau Sampai Selesai)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "tx-monitor",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Tx Hash Masuk",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        300
+      ],
+      "webhookId": "tx-monitor"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst d = $input.first().json;\nreturn [{ json: {\n  hash: d.hash || d.tx,\n  chain: d.chain || 'bsc',\n  jumlah: d.jumlah || '?',\n  status: 'pending',\n  waktu: new Date().toISOString()\n} }];\n"
+      },
+      "id": "n2",
+      "name": "Simpan Tx",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Catat Tx",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "✅ Tx dicatat, dipantau.\\n\\nHash : {{$json.hash}}\\nChain: {{$json.chain}}\\n\\nGue kabarin kalau statusnya berubah."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Konfirmasi Dicatat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Tx Hash Masuk": {
+      "main": [
+        [
+          {
+            "node": "Simpan Tx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simpan Tx": {
+      "main": [
+        [
+          {
+            "node": "Catat Tx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat Tx": {
+      "main": [
+        [
+          {
+            "node": "Konfirmasi Dicatat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

@@ -1,0 +1,274 @@
+{
+  "name": "UMKM 08 - Order Status Tracker (Cek Pesanan)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cek-order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Customer Tanya Order",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        320
+      ],
+      "webhookId": "cek-order-umkm"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1",
+              "name": "nomor_order",
+              "type": "string",
+              "value": "={{ $json.body.nomor_order || $json.query.nomor_order }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set1",
+      "name": "Ambil Nomor Order",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "nomor_order",
+              "lookupValue": "={{ $json.nomor_order }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sheets",
+      "name": "Cari Order di Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        680,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond1",
+              "leftValue": "={{ $json.nomor_order }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if",
+      "name": "Order Ketemu?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c1",
+              "name": "jawaban",
+              "type": "string",
+              "value": "=Status Pesanan #{{ $json.nomor_order }}\\n\\nProduk: {{ $json.produk }}\\nStatus: {{ $json.status }}\\nKurir: {{ $json.kurir }}\\nNo. Resi: {{ $json.resi }}\\n\\nTerima kasih sudah order!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set2",
+      "name": "Bikin Jawaban Ketemu",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1",
+              "name": "jawaban",
+              "type": "string",
+              "value": "=Nomor order {{ $json.nomor_order }} gak ketemu.\\n\\nCoba cek lagi nomor order lo, atau chat admin ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set3",
+      "name": "Bikin Jawaban Gak Ketemu",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "options": {}
+      },
+      "id": "merge",
+      "name": "Gabung Jawaban",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1340,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.jawaban }}",
+        "options": {}
+      },
+      "id": "resp",
+      "name": "Balas Customer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1560,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Customer Tanya Order": {
+      "main": [
+        [
+          {
+            "node": "Ambil Nomor Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Nomor Order": {
+      "main": [
+        [
+          {
+            "node": "Cari Order di Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cari Order di Sheets": {
+      "main": [
+        [
+          {
+            "node": "Order Ketemu?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order Ketemu?": {
+      "main": [
+        [
+          {
+            "node": "Bikin Jawaban Ketemu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bikin Jawaban Gak Ketemu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bikin Jawaban Ketemu": {
+      "main": [
+        [
+          {
+            "node": "Gabung Jawaban",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bikin Jawaban Gak Ketemu": {
+      "main": [
+        [
+          {
+            "node": "Gabung Jawaban",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gabung Jawaban": {
+      "main": [
+        [
+          {
+            "node": "Balas Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

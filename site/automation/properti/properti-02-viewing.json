@@ -1,0 +1,319 @@
+{
+  "name": "PROPERTI 02 — Jadwal Viewing + Reminder Otomatis",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "prop-viewing",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Request Viewing",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "prop-viewing"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  nama: b.nama || 'Calon pembeli',\n  wa: String(b.wa || b.phone || '').replace(/[^0-9]/g, ''),\n  properti: b.properti || b.listing || '-',\n  tanggal: b.tanggal || '-',\n  jam: b.jam || '-',\n  agent: b.agent || '-',\n  status: 'terjadwal'\n}}];\n"
+      },
+      "id": "n2",
+      "name": "Normalize Jadwal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Samakan format jadwal viewing."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Viewing",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Catat Jadwal",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "JADWAL VIEWING TERKONFIRMASI ✅\\n============================\\nProperti: {{$json.properti}}\\nTanggal : {{$json.tanggal}}\\nJam     : {{$json.jam}}\\nAgent   : {{$json.agent}}\\n\\nAgent akan menghubungi lo sebelum berangkat. Kalau ada perubahan, kabari ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Konfirmasi Jadwal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "VIEWING TERJADWAL\\n================\\nProperti: {{$('Normalize Jadwal').first().json.properti}}\\nCalon   : {{$('Normalize Jadwal').first().json.nama}}\\nTanggal : {{$('Normalize Jadwal').first().json.tanggal}}\\nJam     : {{$('Normalize Jadwal').first().json.jam}}\\nWA      : {{$('Normalize Jadwal').first().json.wa}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Notif Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 16 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n6",
+      "name": "Reminder H-1 Jam 16:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Viewing",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Baca Jadwal Besok",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        420,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst besok = new Date(Date.now() + 86400000).toISOString().slice(0, 10);\nreturn rows.filter(r => String(r.tanggal || '').slice(0, 10) === besok\n  && (r.status || '') !== 'selesai').map(r => ({ json: r }));\n"
+      },
+      "id": "n8",
+      "name": "Filter Viewing Besok",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        520
+      ],
+      "notes": "Ambil viewing yang besok."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "PENGINGAT VIEWING BESOK ⏰\\n========================\\nProperti: {{$json.properti}}\\nJam     : {{$json.jam}}\\nAgent   : {{$json.agent}}\\n\\nSampai jumpa besok. Bawa KTP ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n9",
+      "name": "Reminder ke Calon Pembeli",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "Request Viewing": {
+      "main": [
+        [
+          {
+            "node": "Normalize Jadwal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Jadwal": {
+      "main": [
+        [
+          {
+            "node": "Catat Jadwal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat Jadwal": {
+      "main": [
+        [
+          {
+            "node": "Konfirmasi Jadwal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Konfirmasi Jadwal": {
+      "main": [
+        [
+          {
+            "node": "Notif Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reminder H-1 Jam 16:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Jadwal Besok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Jadwal Besok": {
+      "main": [
+        [
+          {
+            "node": "Filter Viewing Besok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Viewing Besok": {
+      "main": [
+        [
+          {
+            "node": "Reminder ke Calon Pembeli",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

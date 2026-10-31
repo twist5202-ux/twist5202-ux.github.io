@@ -18,7 +18,7 @@
             {
               "id": "w1",
               "name": "watchlist",
-              "value": "=[\n  { \"nama\": \"KINS/SOL\", \"chain\": \"solana\", \"pair\": \"F42tZnKPavq1VUcrL6ymhc6YqVpt84fWwgzbNTv2wb3W\" },\n  { \"nama\": \"WBNB/USDT\", \"chain\": \"bsc\", \"pair\": \"0x16b9a82891338f9b7e5a3dae4b0e33c16f9a1ab2\" },\n  { \"nama\": \"CAKE/WBNB\", \"chain\": \"bsc\", \"pair\": \"0x0e7c17b0d0eaa9c0f5c5c5c5c5c5c5c5c5c5c5c5\" }\n]",
+              "value": "=[\n  { \"nama\": \"KINS/SOL\", \"chain\": \"solana\", \"pair\": \"F42tZnKPavq1VUcrL6ymhc6YqVpt84fWwgzbNTv2wb3W\" },\n  { \"nama\": \"WBNB/USDT\", \"chain\": \"bsc\", \"pair\": \"GANTI_WALLET_CONTOH\" },\n  { \"nama\": \"CAKE/WBNB\", \"chain\": \"bsc\", \"pair\": \"GANTI_WALLET_CONTOH\" }\n]",
               "type": "array"
             },
             {

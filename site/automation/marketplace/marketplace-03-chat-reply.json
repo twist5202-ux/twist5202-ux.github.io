@@ -1,0 +1,166 @@
+{
+  "name": "MARKETPLACE 03 — Chat Marketplace Auto-Reply (Shopee/Tokopedia)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "mp-chat",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Chat Masuk",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "mp-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  platform: b.platform || 'shopee',\n  buyer: b.buyer_name || b.sender || 'Pembeli',\n  pesan: b.message || b.text || '',\n  order_id: b.order_id || '-'\n}}];\n"
+      },
+      "id": "n2",
+      "name": "Normalize Chat",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Samakan payload dari berbagai platform."
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst { pesan } = $input.first().json;\nconst t = pesan.toLowerCase();\n\nconst KB = [\n  {k:['ready','stok','ada','tersedia'], a:'Ready kak, silakan langsung order ya. Stok terbatas.'},\n  {k:['kirim','ekspedisi','berapa hari','sampai'], a:'Dikirim hari yang sama kalau order sebelum jam 3 sore. Estimasi 2-5 hari tergantung kota.'},\n  {k:['warna','ukuran','size','varian'], a:'Semua varian ready kak. Bisa pilih langsung di halaman produk ya.'},\n  {k:['nego','diskon','murah','boleh kurang'], a:'Harga sudah paling murah kak, margin kami tipis. Tapi ada gratis ongkir untuk min. Rp 100rb.'},\n  {k:['ori','asli','fake','kw','bpom'], a:'100% original kak, garansi 7 hari. Bisa cek cod kalau tersedia di kota kak.'},\n  {k:['cod','bayar di tempat'], a:'COD tersedia kak, tergantung kurir dan lokasi. Bisa dicek saat checkout.'},\n  {k:['reseller','dropsi','grosir'], a:'Ada program reseller kak, bisa chat admin untuk harga khusus.'},\n  {k:['halo','hai','hi','assalamualaikum'], a:'Halo kak! Ada yang bisa kami bantu? Silakan tanya seputar produk, stok, atau pengiriman.'}\n];\n\nlet best = null, bestLen = 0;\nfor (const e of KB) {\n  for (const k of e.k) {\n    if (t.includes(k) && k.length > bestLen) { best = e; bestLen = k.length; }\n  }\n}\n\nconst jawab = best ? best.a :\n  'Terima kasih sudah chat kak. Untuk pertanyaan ini, admin kami akan bales segera ya.';\n\nreturn [{ json: { jawab, matched: !!best } }];\n"
+      },
+      "id": "n3",
+      "name": "Cari Jawaban",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Knowledge base 8 topik dengan longest-match scoring."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $('Cari Jawaban').first().json.jawab }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Balas Chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "ChatLog",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Log Chat",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        660,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Chat Masuk": {
+      "main": [
+        [
+          {
+            "node": "Normalize Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Chat": {
+      "main": [
+        [
+          {
+            "node": "Cari Jawaban",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cari Jawaban": {
+      "main": [
+        [
+          {
+            "node": "Balas Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Balas Chat": {
+      "main": [
+        [
+          {
+            "node": "Log Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

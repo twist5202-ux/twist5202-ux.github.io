@@ -1,0 +1,108 @@
+{
+  "name": "UMKM 10 — Cek Ongkir Otomatis (Customer Chat → Tarif)",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.rajaongkir.com/starter/cost?origin=GANTI_KOTA_ASAL&destination={{$json.kota}}&weight={{$json.berat}}&courier=jne",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "GANTI_API_KEY_RAJAONGKIR"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Customer Minta Ongkir",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst r = $input.first().json.rajaongkir.results[0].costs;\nlet out = 'CEK ONGKIR\\n\\n';\nfor (const c of r) {\n  out += c.service + ' — Rp ' + c.cost[0].value.toLocaleString('id') + '\\n';\n  out += '  estimasi ' + c.cost[0].etd + ' hari\\n';\n}\nreturn [{ json: { pesan: out } }];\n"
+      },
+      "id": "n2",
+      "name": "Format Tarif",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.pesan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Kirim Tarif ke Customer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Customer Minta Ongkir": {
+      "main": [
+        [
+          {
+            "node": "Format Tarif",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Tarif": {
+      "main": [
+        [
+          {
+            "node": "Kirim Tarif ke Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

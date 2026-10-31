@@ -15,8 +15,8 @@
       "parameters": {
         "assignments": {
           "assignments": [
-            { "id": "n1", "name": "kontrak", "value": "0xD87ADb2E47979d6cb323896B1A9320E0dd132213", "type": "string" },
-            { "id": "n2", "name": "wallet", "value": "0xb5424C7Fe94A63929922Fa64876C2Ef42DA1a102", "type": "string" },
+            { "id": "n1", "name": "kontrak", "value": "GANTI_WALLET_TWIST", "type": "string" },
+            { "id": "n2", "name": "wallet", "value": "GANTI_WALLET_BURNER", "type": "string" },
             { "id": "n3", "name": "rpc", "value": "https://bsc.publicnode.com/", "type": "string" },
             { "id": "n4", "name": "nama_koleksi", "value": "Proof of Agent (Ptah)", "type": "string" }
           ]
@@ -35,7 +35,7 @@
         "url": "={{ $json.rpc }}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"eth_call\",\n  \"params\": [\n    { \"to\": \"{{ $json.kontrak }}\", \"data\": \"0x6352211e0000000000000000000000000000000000000000000000000000000000000000\" },\n    \"latest\"\n  ]\n}",
+        "jsonBody": "={\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"eth_call\",\n  \"params\": [\n    { \"to\": \"{{ $json.kontrak }}\", \"data\": \"GANTI_KONTRAK_NFT00000000000000000000000000000000\" },\n    \"latest\"\n  ]\n}",
         "options": { "timeout": 15000 }
       },
       "id": "rpc",

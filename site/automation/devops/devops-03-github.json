@@ -1,0 +1,130 @@
+{
+  "name": "DEVOPS 03 — GitHub Release Notifier (Rilis Baru → Notif)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 */6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap 6 Jam",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/GANTI_OWNER/GANTI_REPO/releases?per_page=3",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Ambil Release Terbaru",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rel = $input.first().json;\nconst now = Date.now();\nreturn rel.filter(r => {\n  const t = new Date(r.published_at).getTime();\n  return (now - t) / 3600000 <= 6;\n}).map(r => ({\n  json: {\n    name: r.name || r.tag_name,\n    tag: r.tag_name,\n    author: r.author?.login || '?',\n    url: r.html_url,\n    notes: (r.body || '').slice(0, 200)\n  }\n}));\n"
+      },
+      "id": "n3",
+      "name": "Filter Rilis 6 Jam Terakhir",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "🚀 RILIS BARU\\n\\nRepo   : GANTI_OWNER/GANTI_REPO\\nVersi  : {{$json.tag}}\\nNama   : {{$json.name}}\\nAuthor : {{$json.author}}\\n\\n{{$json.notes}}\\n\\n{{$json.url}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Notif Rilis Baru",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 6 Jam": {
+      "main": [
+        [
+          {
+            "node": "Ambil Release Terbaru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Release Terbaru": {
+      "main": [
+        [
+          {
+            "node": "Filter Rilis 6 Jam Terakhir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Rilis 6 Jam Terakhir": {
+      "main": [
+        [
+          {
+            "node": "Notif Rilis Baru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

@@ -15,7 +15,7 @@
       "parameters": {
         "assignments": {
           "assignments": [
-            { "id": "a1", "name": "wallets", "value": "=[\n  { \"nama\": \"Farm 01\", \"alamat\": \"0x6D5F3d85Fd59db52D1b2dea529F4D0Da1239911f\" },\n  { \"nama\": \"Burner TermiX\", \"alamat\": \"0xb5424C7Fe94A63929922Fa64876C2Ef42DA1a102\" }\n]", "type": "array" },
+            { "id": "a1", "name": "wallets", "value": "=[\n  { \"nama\": \"Farm 01\", \"alamat\": \"GANTI_WALLET_FARM\" },\n  { \"nama\": \"Burner TermiX\", \"alamat\": \"GANTI_WALLET_BURNER\" }\n]", "type": "array" },
             { "id": "a2", "name": "rpc", "value": "https://bsc.publicnode.com/", "type": "string" }
           ]
         },
