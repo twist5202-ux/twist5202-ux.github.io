@@ -1,0 +1,190 @@
+{
+  "name": "EDUCATION 01 — Pendaftaran Siswa Baru (Auto Konfirmasi)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "edu-daftar",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Form Pendaftaran",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "edu-daftar"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  nama: b.nama || 'Calon siswa',\n  orang_tua: b.orang_tua || b.parent || '-',\n  wa: String(b.wa || b.phone || '').replace(/[^0-9]/g, ''),\n  program: b.program || 'Reguler',\n  jenjang: b.jenjang || 'SD',\n  asal_sekolah: b.asal_sekolah || '-',\n  waktu: new Date().toLocaleString('id-ID')\n}}];\n"
+      },
+      "id": "n2",
+      "name": "Normalize Pendaftar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Samakan format form pendaftaran."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Pendaftar",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Catat Pendaftar",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "Terima kasih sudah mendaftarkan {{$json.nama}} 🙏\\n\\nPendaftaran kami terima:\\nProgram : {{$json.program}}\\nJenjang : {{$json.jenjang}}\\nWaktu   : {{$json.waktu}}\\n\\nTim kami akan hubungi lo dalam 1x24 jam untuk jadwal tes masuk dan wawancara. Kalau ada pertanyaan, balas chat ini ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Konfirmasi ke Orang Tua",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "PENDAFTARAN BARU\\n================\\nNama    : {{$('Normalize Pendaftar').first().json.nama}}\\nProgram : {{$('Normalize Pendaftar').first().json.program}}\\nJenjang : {{$('Normalize Pendaftar').first().json.jenjang}}\\nWA      : {{$('Normalize Pendaftar').first().json.wa}}\\n\\nHubungi dalam 1x24 jam."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Notif Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Form Pendaftaran": {
+      "main": [
+        [
+          {
+            "node": "Normalize Pendaftar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Pendaftar": {
+      "main": [
+        [
+          {
+            "node": "Catat Pendaftar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat Pendaftar": {
+      "main": [
+        [
+          {
+            "node": "Konfirmasi ke Orang Tua",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Konfirmasi ke Orang Tua": {
+      "main": [
+        [
+          {
+            "node": "Notif Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

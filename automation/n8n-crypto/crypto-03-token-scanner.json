@@ -1,0 +1,112 @@
+{
+  "name": "CRYPTO 03 — New Token Scanner (DexScreener)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 30 }] }
+      },
+      "id": "sched",
+      "name": "Scan Tiap 30 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.dexscreener.com/latest/dex/search?q=solana",
+        "options": { "timeout": 20000 }
+      },
+      "id": "fetch",
+      "name": "Ambil Pair Terbaru",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter token baru yang lolos kriteria\nconst pairs = $json.pairs || [];\nconst now = Date.now();\n\nconst hasil = [];\nfor (const p of pairs) {\n  if (p.chainId !== 'solana') continue;\n\n  const liq = parseFloat(p.liquidity?.usd || 0);\n  const vol = parseFloat(p.volume?.h24 || 0);\n  const mcap = parseFloat(p.marketCap || p.fdv || 0);\n  const created = p.pairCreatedAt || 0;\n  const umurJam = created ? (now - created) / 3600000 : 9999;\n\n  // KRITERIA — edit sesuai selera\n  const lolos =\n    liq >= 20000 &&          // likuiditas min $20k\n    vol >= 10000 &&          // volume 24j min $10k\n    mcap > 0 && mcap < 2000000 &&  // mcap di bawah $2jt\n    umurJam >= 24 &&         // umur min 24 jam (bukan fresh launch)\n    umurJam <= 720;          // umur max 30 hari\n\n  if (lolos) {\n    hasil.push({\n      json: {\n        simbol: p.baseToken?.symbol || '?',\n        nama: p.baseToken?.name || '?',\n        mint: p.baseToken?.mint || '',\n        dex: p.dexId,\n        harga: p.priceUsd,\n        liq, vol, mcap,\n        umur_jam: Math.round(umurJam),\n        chg_24h: p.priceChange?.h24,\n        url: p.url\n      }\n    });\n  }\n}\n\nreturn hasil;"
+      },
+      "id": "filter",
+      "name": "Filter Kandidat",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "looseTypeValidation": true },
+          "conditions": [
+            { "id": "c1", "leftValue": "={{ $json.simbol }}", "rightValue": "", "operator": { "type": "string", "operation": "exists", "singleValue": true } }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-ada",
+      "name": "Ada Kandidat?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m1",
+              "name": "pesan",
+              "value": "=🔎 *TOKEN SCANNER — KANDIDAT BARU*\n\n*{{ $json.simbol }}* ({{ $json.nama }})\nDEX: {{ $json.dex }}\nUmur: {{ $json.umur_jam }} jam\n\nHarga: ${{ $json.harga }}\nLikuiditas: ${{ Number($json.liq).toLocaleString('en-US') }}\nVolume 24j: ${{ Number($json.vol).toLocaleString('en-US') }}\nMarket Cap: ${{ Number($json.mcap).toLocaleString('en-US') }}\nPerubahan 24j: {{ $json.chg_24h }}%\n\nMint: `{{ $json.mint }}`\nDexScreener: {{ $json.url }}\n\n_Bukan rekomendasi beli. Riset sendiri._",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fmt",
+      "name": "Format Kandidat",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1120, 220]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID",
+        "text": "={{ $json.pesan }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Kirim Kandidat",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 220],
+      "credentials": {
+        "telegramApi": { "id": "GANTI_CREDENTIAL_ID", "name": "Telegram Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## CRYPTO 03 — New Token Scanner\n\n**Alur:**\nTiap 30 menit → scan pair Solana baru → filter sesuai kriteria → kirim kandidat ke Telegram\n\n**Kriteria default (edit di node *Filter Kandidat*):**\n- Likuiditas min $20.000\n- Volume 24j min $10.000\n- Market cap di bawah $2.000.000\n- Umur 24 jam - 30 hari\n\n**Cocok buat:**\n- Trader yang cari token early\n- Riset pasar\n- Pantau peluang sebelum viral\n\n**Peringatan:**\nIni alat riset, BUKAN sinyal beli. Selalu cek rugcheck + kontrak sebelum masuk.\n\n**Upgrade:**\nTambah node HTTP ke rugcheck.xyz API untuk cek keamanan token otomatis.",
+        "height": 400,
+        "width": 620,
+        "color": 5
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Scan Tiap 30 Menit": { "main": [[{ "node": "Ambil Pair Terbaru", "type": "main", "index": 0 }]] },
+    "Ambil Pair Terbaru": { "main": [[{ "node": "Filter Kandidat", "type": "main", "index": 0 }]] },
+    "Filter Kandidat": { "main": [[{ "node": "Ada Kandidat?", "type": "main", "index": 0 }]] },
+    "Ada Kandidat?": { "main": [[{ "node": "Format Kandidat", "type": "main", "index": 0 }], []] },
+    "Format Kandidat": { "main": [[{ "node": "Kirim Kandidat", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

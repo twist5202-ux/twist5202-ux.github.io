@@ -1,0 +1,122 @@
+{
+  "name": "CRYPTO 04 — Gas Price Monitor + Alert Murah",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 5 }] }
+      },
+      "id": "sched",
+      "name": "Cek Tiap 5 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "g1", "name": "chains", "value": "=[\n  { \"nama\": \"BNB Chain\", \"rpc\": \"https://bsc.publicnode.com/\", \"target_gwei\": 1 },\n  { \"nama\": \"Ethereum\", \"rpc\": \"https://eth.llamarpc.com\", \"target_gwei\": 10 },\n  { \"nama\": \"Base\", \"rpc\": \"https://mainnet.base.org\", \"target_gwei\": 0.1 }\n]", "type": "array" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cfg",
+      "name": "Daftar Chain",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = [];\nfor (const c of $json.chains) {\n  out.push({ json: { nama: c.nama, rpc: c.rpc, target: c.target_gwei } });\n}\nreturn out;"
+      },
+      "id": "split",
+      "name": "Pecah Per Chain",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.rpc }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"jsonrpc\": \"2.0\", \"id\": 1, \"method\": \"eth_gasPrice\", \"params\": [] }",
+        "options": { "timeout": 15000 }
+      },
+      "id": "rpc",
+      "name": "Ambil Gas Price",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const hex = $json.result || '0x0';\nconst wei = BigInt(hex);\nconst gwei = Number(wei) / 1e9;\n\nconst nama = $('Pecah Per Chain').item.json.nama;\nconst target = $('Pecah Per Chain').item.json.target;\n\nconst murah = gwei <= target;\n\nlet pesan = '';\nif (murah) {\n  pesan = '⛽ *GAS MURAH — ' + nama + '*\\n\\n';\n  pesan += 'Gas price: *' + gwei.toFixed(3) + ' gwei*\\n';\n  pesan += 'Target: ' + target + ' gwei\\n\\n';\n  pesan += 'Estimasi biaya swap (150k gas): ' + (150000 * gwei / 1e9).toFixed(8) + ' native\\n\\n';\n  pesan += 'Waktu: ' + new Date().toISOString();\n}\n\nreturn [{ json: { nama, gwei, target, murah, pesan } }];"
+      },
+      "id": "fmt",
+      "name": "Cek Gas Murah",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            { "id": "c1", "leftValue": "={{ $json.murah }}", "rightValue": "true", "operator": { "type": "boolean", "operation": "true" } }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if",
+      "name": "Gas Murah?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID",
+        "text": "={{ $json.pesan }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Kirim Alert Gas",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1560, 220],
+      "credentials": {
+        "telegramApi": { "id": "GANTI_CREDENTIAL_ID", "name": "Telegram Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## CRYPTO 04 — Gas Price Alert\n\n**Alur:**\nTiap 5 menit → cek gas price 3 chain → kalau di bawah target → alert\n\n**Yang diedit:**\n- `chains` di node *Daftar Chain* — tambah chain + target gwei\n\n**Target default:**\n- BNB Chain: 1 gwei\n- Ethereum: 10 gwei\n- Base: 0.1 gwei\n\n**Cocok buat:**\n- Airdrop farmer (mint saat gas murah)\n- Trader (swap saat gas rendah)\n- Siapa pun yang hemat biaya transaksi\n\n**Tidak butuh API key** — pakai RPC publik gratis.",
+        "height": 380,
+        "width": 620,
+        "color": 3
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 5 Menit": { "main": [[{ "node": "Daftar Chain", "type": "main", "index": 0 }]] },
+    "Daftar Chain": { "main": [[{ "node": "Pecah Per Chain", "type": "main", "index": 0 }]] },
+    "Pecah Per Chain": { "main": [[{ "node": "Ambil Gas Price", "type": "main", "index": 0 }]] },
+    "Ambil Gas Price": { "main": [[{ "node": "Cek Gas Murah", "type": "main", "index": 0 }]] },
+    "Cek Gas Murah": { "main": [[{ "node": "Gas Murah?", "type": "main", "index": 0 }]] },
+    "Gas Murah?": { "main": [[{ "node": "Kirim Alert Gas", "type": "main", "index": 0 }], []] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

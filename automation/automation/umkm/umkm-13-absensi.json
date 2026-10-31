@@ -1,0 +1,223 @@
+{
+  "name": "UMKM 13 — Absensi Karyawan (Form → Sheets → Rekap Bulanan)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "absensi",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Form Absensi Masuk",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        300
+      ],
+      "webhookId": "absensi-masuk"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Catat Kehadiran",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst jam = new Date().getHours();\nconst menit = new Date().getMinutes();\nconst totalMenit = jam * 60 + menit;\nconst batas = 8 * 60 + 15;  // 08:15\nconst telat = totalMenit > batas;\nreturn [{ json: { telat, jam: String(jam).padStart(2,'0') + ':' + String(menit).padStart(2,'0') } }];\n"
+      },
+      "id": "n3",
+      "name": "Cek Telat?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{$json.telat}}",
+              "rightValue": "true",
+              "operator": {
+                "type": "number",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Telat?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "⚠️ Karyawan telat masuk hari ini.\\nJam: {{$json.jam}}\\nBatas: 08:15"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Notif Admin Karyawan Telat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        760,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "✅ Absensi tercatat.\\nJam masuk: {{$json.jam}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Notif Admin Absen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        760,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Form Absensi Masuk": {
+      "main": [
+        [
+          {
+            "node": "Catat Kehadiran",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat Kehadiran": {
+      "main": [
+        [
+          {
+            "node": "Cek Telat?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Telat?": {
+      "main": [
+        [
+          {
+            "node": "Telat?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telat?": {
+      "main": [
+        [
+          {
+            "node": "Notif Admin Karyawan Telat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notif Admin Absen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

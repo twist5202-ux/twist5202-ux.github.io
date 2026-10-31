@@ -1,0 +1,129 @@
+{
+  "name": "CRYPTO 01 — Price Alert Multi-Token (Telegram)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 10 }] }
+      },
+      "id": "sched",
+      "name": "Cek Tiap 10 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "w1",
+              "name": "watchlist",
+              "value": "=[\n  { \"nama\": \"KINS/SOL\", \"chain\": \"solana\", \"pair\": \"F42tZnKPavq1VUcrL6ymhc6YqVpt84fWwgzbNTv2wb3W\" },\n  { \"nama\": \"WBNB/USDT\", \"chain\": \"bsc\", \"pair\": \"GANTI_WALLET_CONTOH\" },\n  { \"nama\": \"CAKE/WBNB\", \"chain\": \"bsc\", \"pair\": \"GANTI_WALLET_CONTOH\" }\n]",
+              "type": "array"
+            },
+            {
+              "id": "w2",
+              "name": "threshold_persen",
+              "value": "5",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "watchlist",
+      "name": "Watchlist Token",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Expand watchlist jadi satu item per token\nconst wl = $json.watchlist;\nconst out = [];\nfor (const t of wl) {\n  out.push({ json: { nama: t.nama, chain: t.chain, pair: t.pair, threshold: $json.threshold_persen } });\n}\nreturn out;"
+      },
+      "id": "split",
+      "name": "Pecah Per Token",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.dexscreener.com/latest/dex/pairs/{{ $json.chain }}/{{ $json.pair }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "fetch",
+      "name": "Ambil Harga (DexScreener)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse harga + cek threshold\nconst pair = $json.pair || $json.pairs?.[0];\nif (!pair) return [{ json: { error: 'pair tidak ditemukan' } }];\n\nconst nama = $('Pecah Per Token').item.json.nama;\nconst threshold = $('Pecah Per Token').item.json.threshold;\n\nconst price = parseFloat(pair.priceUsd || 0);\nconst chg = parseFloat(pair.priceChange?.h24 || 0);\nconst liq = parseFloat(pair.liquidity?.usd || 0);\nconst vol = parseFloat(pair.volume?.h24 || 0);\nconst mcap = parseFloat(pair.marketCap || pair.fdv || 0);\n\nconst rp = n => '$' + Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 });\nconst pecah = Math.abs(chg) >= threshold;\n\nlet pesan = '';\nif (pecah) {\n  const arah = chg > 0 ? '🚀 NAIK' : '🔻 TURUN';\n  pesan = arah + ' *' + nama + '*\\n\\n';\n  pesan += 'Harga: ' + rp(price) + '\\n';\n  pesan += 'Perubahan 24j: *' + chg.toFixed(2) + '%*\\n';\n  pesan += 'Volume 24j: ' + rp(vol) + '\\n';\n  pesan += 'Likuiditas: ' + rp(liq) + '\\n';\n  if (mcap > 0) pesan += 'Market Cap: ' + rp(mcap) + '\\n';\n  pesan += '\\nWaktu: ' + new Date().toISOString();\n}\n\nreturn [{\n  json: {\n    nama, price, change_24h: chg, liquidity: liq, volume_24h: vol,\n    market_cap: mcap, pecah, pesan\n  }\n}];"
+      },
+      "id": "parse",
+      "name": "Cek Threshold",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            { "id": "c1", "leftValue": "={{ $json.pecah }}", "rightValue": "true", "operator": { "type": "boolean", "operation": "true" } }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-alert",
+      "name": "Gerak > Threshold?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID",
+        "text": "={{ $json.pesan }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Kirim Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1560, 220],
+      "credentials": {
+        "telegramApi": { "id": "GANTI_CREDENTIAL_ID", "name": "Telegram Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## CRYPTO 01 — Price Alert Multi-Token\n\n**Alur:**\nTiap 10 menit → cek harga semua token di watchlist → kalau gerak > threshold → alert Telegram\n\n**Yang diedit:**\n- `watchlist` di node *Watchlist Token* — tambah/ganti token\n- `threshold_persen` — default 5%\n- `GANTI_CHAT_ID` — chat ID Telegram\n\n**Cara dapat pair address:**\n1. Buka dexscreener.com\n2. Cari token lo\n3. Copy pair address dari URL\n\n**Tidak butuh API key** — DexScreener gratis.\n\n**Contoh isi watchlist:**\n{ \"nama\": \"KINS/SOL\", \"chain\": \"solana\", \"pair\": \"F42tZn...wb3W\" }",
+        "height": 400,
+        "width": 620,
+        "color": 6
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 10 Menit": { "main": [[{ "node": "Watchlist Token", "type": "main", "index": 0 }]] },
+    "Watchlist Token": { "main": [[{ "node": "Pecah Per Token", "type": "main", "index": 0 }]] },
+    "Pecah Per Token": { "main": [[{ "node": "Ambil Harga (DexScreener)", "type": "main", "index": 0 }]] },
+    "Ambil Harga (DexScreener)": { "main": [[{ "node": "Cek Threshold", "type": "main", "index": 0 }]] },
+    "Cek Threshold": { "main": [[{ "node": "Gerak > Threshold?", "type": "main", "index": 0 }]] },
+    "Gerak > Threshold?": { "main": [[{ "node": "Kirim Alert", "type": "main", "index": 0 }], []] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

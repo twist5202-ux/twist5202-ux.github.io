@@ -1,0 +1,179 @@
+{
+  "name": "FREELANCER 01 — Invoice Reminder (Klien Telat Bayar)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Invoice",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Invoice Belum Lunas",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = new Date();\nconst telat = rows.filter(r => {\n  if (r.status === 'lunas') return false;\n  const tempo = new Date(r.jatuh_tempo);\n  return tempo <= now;\n});\nreturn telat.map(r => {\n  const hari = Math.floor((now - new Date(r.jatuh_tempo)) / 86400000);\n  return { json: { ...r, hari_telat: hari } };\n});\n"
+      },
+      "id": "n3",
+      "name": "Filter Jatuh Tempo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "Halo {{$json.nama_klien}} 👋\\n\\nMengingatkan invoice *{{$json.no_invoice}}*:\\n\\nProject  : {{$json.project}}\\nNilai    : Rp {{$json.nilai}}\\nJatuh tempo: {{$json.jatuh_tempo}}\\nTelat    : {{$json.hari_telat}} hari\\n\\nMohon segera diproses. Kalau sudah transfer, kirim buktinya ya. Terima kasih 🙏"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Ingatkan Klien",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Log",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Catat Reminder Terkirim",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 09:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Invoice Belum Lunas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Invoice Belum Lunas": {
+      "main": [
+        [
+          {
+            "node": "Filter Jatuh Tempo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Jatuh Tempo": {
+      "main": [
+        [
+          {
+            "node": "Ingatkan Klien",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ingatkan Klien": {
+      "main": [
+        [
+          {
+            "node": "Catat Reminder Terkirim",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

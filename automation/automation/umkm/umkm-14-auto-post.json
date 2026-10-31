@@ -1,0 +1,179 @@
+{
+  "name": "UMKM 14 — Auto Post Marketplace (Sheets → Format Iklan)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Produk Baru Tiap Pagi",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Produk Baru",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nreturn rows.filter(r => r.posted !== 'ya').map(r => {\n  const iklan =\n    '🔥 ' + r.nama + ' 🔥\\n\\n' +\n    '💰 Harga: Rp ' + Number(r.harga).toLocaleString('id') + '\\n' +\n    '📦 Stok: ' + r.stok + ' pcs\\n' +\n    '📏 Ukuran: ' + (r.ukuran || 'all size') + '\\n\\n' +\n    '✅ Kualitas terjamin\\n' +\n    '✅ Bisa COD / kirim\\n' +\n    '✅ Garansi tukar\\n\\n' +\n    '📲 Order: wa.me/' + r.admin_wa + '\\n' +\n    '📍 ' + (r.kota || 'Indonesia') + '\\n\\n' +\n    '#jualan #online #murah #kualitas';\n  return { json: { ...r, iklan } };\n});\n"
+      },
+      "id": "n3",
+      "name": "Buat Teks Iklan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.iklan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Kirim Draft ke Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Tandai Sudah Dibuat",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Produk Baru Tiap Pagi": {
+      "main": [
+        [
+          {
+            "node": "Baca Produk Baru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Produk Baru": {
+      "main": [
+        [
+          {
+            "node": "Buat Teks Iklan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buat Teks Iklan": {
+      "main": [
+        [
+          {
+            "node": "Kirim Draft ke Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim Draft ke Admin": {
+      "main": [
+        [
+          {
+            "node": "Tandai Sudah Dibuat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

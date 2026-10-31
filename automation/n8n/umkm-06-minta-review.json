@@ -1,0 +1,121 @@
+{
+  "name": "UMKM 06 — Minta Review Google (Setelah Order Selesai)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "mode": "everyMinute"
+        },
+        "documentId": { "__rl": true, "value": "GANTI_SPREADSHEET_ID", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Orders", "mode": "name" },
+        "event": "rowUpdated",
+        "options": {}
+      },
+      "id": "trigger",
+      "name": "Status Order Berubah",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [240, 320],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GANTI_CREDENTIAL_ID",
+          "name": "Google Sheets UMKM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json['Status'] || $json['status'] }}",
+              "rightValue": "SELESAI",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-selesai",
+      "name": "Status = SELESAI?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 320]
+    },
+    {
+      "parameters": {
+        "amount": 24,
+        "unit": "hours"
+      },
+      "id": "wait",
+      "name": "Tunggu 24 Jam",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [680, 220]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "v1", "name": "pesan", "value": "=Halo {{ $json['Nama'] || $json['nama'] || 'Kak' }}! 👋\n\nTerima kasih sudah order di *[NAMA TOKO ANDA]* 🙏\n\nSemoga produknya puya ya!\n\nKalau ada waktu 1 menit, bantu kami kasih review di Google:\n👉 https://g.page/r/GANTI_PLACE_ID/review\n\nReview lo sangat membantu toko kecil seperti kami berkembang. Terima kasih banyak! ⭐", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format",
+      "name": "Siapkan Pesan Review",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [900, 220]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $json['Chat ID'] || $json['chat_id'] || 'GANTI_CHAT_ID' }}",
+        "text": "={{ $json.pesan }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Kirim Minta Review",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1120, 220],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_CREDENTIAL_ID",
+          "name": "Telegram Bot UMKM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## UMKM 06 — Minta Review Otomatis\n\n**Kenapa ini paling worth buat client:**\nIni automation dengan ROI paling jelas. Review Google = pelanggan baru percaya = penjualan naik.\n\n**Alur:**\n1. Status order di Sheets diubah jadi *SELESAI*\n2. Tunggu 24 jam (biar customer sempat pakai produk)\n3. Kirim pesan minta review + link Google\n\n**Yang diedit:**\n- `[NAMA TOKO ANDA]`\n- `GANTI_PLACE_ID` → link review Google Business lo\n- `GANTI_SPREADSHEET_ID`\n\n**Cara dapat link review:**\n1. Google Business Profile → Minta review\n2. Copy link yang muncul\n\n**Catatan:**\nKalau customer belum ada di Telegram, ganti node kirim ke WhatsApp/Email.",
+        "height": 400,
+        "width": 620,
+        "color": 5
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Status Order Berubah": { "main": [[{ "node": "Status = SELESAI?", "type": "main", "index": 0 }]] },
+    "Status = SELESAI?": {
+      "main": [
+        [{ "node": "Tunggu 24 Jam", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Tunggu 24 Jam": { "main": [[{ "node": "Siapkan Pesan Review", "type": "main", "index": 0 }]] },
+    "Siapkan Pesan Review": { "main": [[{ "node": "Kirim Minta Review", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

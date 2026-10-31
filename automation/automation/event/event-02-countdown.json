@@ -1,0 +1,226 @@
+{
+  "name": "EVENT 02 — Countdown Reminder (H-3 & H-1 ke Tamu)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "RSVP",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Daftar Tamu",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = new Date();\nnow.setHours(0, 0, 0, 0);\n\nreturn rows.filter(r => {\n  if ((r.konfirmasi || '') !== 'hadir') return false;\n  if (!r.tanggal) return false;\n  const tgl = new Date(r.tanggal);\n  tgl.setHours(0, 0, 0, 0);\n  const sisa = Math.round((tgl - now) / 86400000);\n  return sisa === 3 || sisa === 1;\n}).map(r => {\n  const tgl = new Date(r.tanggal);\n  tgl.setHours(0, 0, 0, 0);\n  const sisa = Math.round((tgl - now) / 86400000);\n  return { json: { ...r, sisa_hari: sisa } };\n});\n"
+      },
+      "id": "n3",
+      "name": "Hitung Mundur & Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Ambil tamu hadir yang event-nya H-3 atau H-1."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{ $json.sisa_hari }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "number",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "H-1?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "BESOK HARI BESARNYA! 🎉\\n======================\\n{{$json.event}}\\n📅 {{$json.tanggal}} · {{$json.jam}}\\n📍 {{$json.lokasi}}\\n\\nKami tunggu kedatangan lo, {{$json.nama}}. Jangan lupa bawa undangan digital ini ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Reminder H-1 (Besok)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "HITUNG MUNDUR — 3 HARI LAGI ⏳\\n============================\\n{{$json.event}}\\n📅 {{$json.tanggal}} · {{$json.jam}}\\n📍 {{$json.lokasi}}\\n\\nSiapin outfit & jadwal lo, {{$json.nama}}. Kami tunggu!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Reminder H-3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 09:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Daftar Tamu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Daftar Tamu": {
+      "main": [
+        [
+          {
+            "node": "Hitung Mundur & Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hitung Mundur & Filter": {
+      "main": [
+        [
+          {
+            "node": "H-1?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "H-1?": {
+      "main": [
+        [
+          {
+            "node": "Reminder H-1 (Besok)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Reminder H-3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

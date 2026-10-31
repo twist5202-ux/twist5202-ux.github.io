@@ -1,0 +1,130 @@
+{
+  "name": "CREATOR 01 — YouTube Comment Monitor (Komentar Baru → Notif)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/30 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap 30 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=GANTI_VIDEO_ID&maxResults=10&order=time&key=GANTI_API_KEY_YOUTUBE",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Ambil Komentar Terbaru",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.first().json.items || [];\nconst baru = [];\nfor (const it of items) {\n  const c = it.snippet.topLevelComment.snippet;\n  const umur = (Date.now() - new Date(c.publishedAt).getTime()) / 60000;\n  if (umur <= 35) {\n    baru.push({\n      json: {\n        author: c.authorDisplayName,\n        text: c.textDisplay.slice(0, 150),\n        like: c.likeCount,\n        video: it.snippet.videoId\n      }\n    });\n  }\n}\nreturn baru;\n"
+      },
+      "id": "n3",
+      "name": "Filter Komentar Baru",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "💬 KOMENTAR BARU DI YOUTUBE\\n\\nDari : {{$json.author}}\\nLike : {{$json.like}}\\n\\n{{$json.text}}\\n\\nyoutube.com/watch?v={{$json.video}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Notif Komentar Baru",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 30 Menit": {
+      "main": [
+        [
+          {
+            "node": "Ambil Komentar Terbaru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Komentar Terbaru": {
+      "main": [
+        [
+          {
+            "node": "Filter Komentar Baru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Komentar Baru": {
+      "main": [
+        [
+          {
+            "node": "Notif Komentar Baru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

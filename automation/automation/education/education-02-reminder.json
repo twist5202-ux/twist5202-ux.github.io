@@ -1,0 +1,244 @@
+{
+  "name": "EDUCATION 02 — Reminder Kelas + Tagihan Siswa",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jadwal",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Jadwal Kelas",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][new Date().getDay()];\nreturn rows.filter(r => (r.hari || '') === hari)\n  .map(r => ({ json: { ...r, hari } }));\n"
+      },
+      "id": "n3",
+      "name": "Filter Kelas Hari Ini",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Ambil kelas yang jadwalnya hari ini."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "PENGINGAT KELAS HARI INI 📚\\n==========================\\nKelas   : {{$json.nama_kelas}}\\nJam     : {{$json.jam}}\\nPengajar: {{$json.pengajar}}\\nTempat  : {{$json.tempat}}\\n\\nJangan lupa bawa buku & alat tulis ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Reminder Kelas ke Siswa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Tagihan",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Baca Tagihan",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = new Date();\nreturn rows.filter(r => {\n  if (r.status === 'lunas') return false;\n  const tempo = new Date(r.jatuh_tempo);\n  const sisa = Math.ceil((tempo - now) / 86400000);\n  return sisa <= 3;\n}).map(r => {\n  const sisa = Math.ceil((new Date(r.jatuh_tempo) - now) / 86400000);\n  return { json: { ...r, sisa_hari: sisa } };\n});\n"
+      },
+      "id": "n6",
+      "name": "Filter Tagihan Jatuh Tempo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        500
+      ],
+      "notes": "Tagihan yang jatuh tempo <= 3 hari."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "PENGINGAT PEMBAYARAN\\n===================\\nSiswa      : {{$json.nama_siswa}}\\nBulan      : {{$json.bulan}}\\nJumlah     : Rp {{$json.jumlah}}\\nJatuh tempo: {{$json.jatuh_tempo}}\\nSisa       : {{$json.sisa_hari}} hari\\n\\nMohon segera diproses. Kalau sudah bayar, kirim bukti transfer ya. Terima kasih 🙏"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Reminder Tagihan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 07:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Jadwal Kelas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Baca Tagihan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Jadwal Kelas": {
+      "main": [
+        [
+          {
+            "node": "Filter Kelas Hari Ini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Kelas Hari Ini": {
+      "main": [
+        [
+          {
+            "node": "Reminder Kelas ke Siswa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Tagihan": {
+      "main": [
+        [
+          {
+            "node": "Filter Tagihan Jatuh Tempo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Tagihan Jatuh Tempo": {
+      "main": [
+        [
+          {
+            "node": "Reminder Tagihan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

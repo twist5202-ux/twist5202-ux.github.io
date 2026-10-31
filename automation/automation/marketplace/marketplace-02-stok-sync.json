@@ -1,0 +1,280 @@
+{
+  "name": "MARKETPLACE 02 — Stok Multi-Platform Sync (Habis → Alert)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Jam",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Stok",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Stok Lokal",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nreturn rows.filter(r => Number(r.stok) <= Number(r.min_stok || 5))\n  .map(r => {\n    const sisa = Number(r.stok);\n    const min = Number(r.min_stok || 5);\n    let level = 'KUNING';\n    if (sisa === 0) level = 'MERAH — HABIS';\n    else if (sisa <= min / 2) level = 'ORANYE';\n    return { json: {\n      sku: r.sku, produk: r.produk, stok: sisa, min_stok: min, level\n    }};\n  });\n"
+      },
+      "id": "n3",
+      "name": "Cek Stok Menipis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Bandingkan stok aktual vs minimum."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "n4-c",
+              "leftValue": "={{ $json.stok }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4",
+      "name": "Stok Kritis?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "STOK HABIS\\n==========\\nSKU    : {{$json.sku}}\\nProduk : {{$json.produk}}\\nStok   : {{$json.stok}}\\nMinimum: {{$json.min_stok}}\\n\\nListing perlu di-nonaktifkan atau restock segera."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Alert Stok Habis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "STOK MENIPIS\\n===========\\nSKU    : {{$json.sku}}\\nProduk : {{$json.produk}}\\nSisa   : {{$json.stok}} (min {{$json.min_stok}})\\n\\nPertimbangkan restock."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Alert Stok Menipis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Stok",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "sku"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Update Status Stok",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Jam": {
+      "main": [
+        [
+          {
+            "node": "Baca Stok Lokal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Stok Lokal": {
+      "main": [
+        [
+          {
+            "node": "Cek Stok Menipis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Stok Menipis": {
+      "main": [
+        [
+          {
+            "node": "Stok Kritis?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stok Kritis?": {
+      "main": [
+        [
+          {
+            "node": "Alert Stok Habis",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert Stok Menipis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Stok Habis": {
+      "main": [
+        [
+          {
+            "node": "Update Status Stok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Stok Menipis": {
+      "main": [
+        [
+          {
+            "node": "Update Status Stok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

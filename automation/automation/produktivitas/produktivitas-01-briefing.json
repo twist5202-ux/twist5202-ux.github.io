@@ -1,0 +1,149 @@
+{
+  "name": "PRODUKTIVITAS 01 — Morning Briefing (Cuaca + Crypto + Berita)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap Pagi 06:30",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=GANTI_LATITUDE&longitude=GANTI_LONGITUDE&daily=temperature_2m_max,precipitation_probability_max&timezone=Asia/Jakarta&forecast_days=1",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Cuaca Hari Ini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true",
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Harga Crypto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst cuaca = $('Cuaca Hari Ini').first().json.daily;\nconst crypto = $input.first().json;\n\nlet out = 'SELAMAT PAGI ☀️\\n================\\n\\n';\nout += 'CUACA\\n';\nout += '  Maks   : ' + cuaca.temperature_2m_max[0] + '°C\\n';\nout += '  Hujan  : ' + cuaca.precipitation_probability_max[0] + '%\\n\\n';\nout += 'CRYPTO\\n';\nout += '  BTC : $' + crypto.bitcoin.usd.toLocaleString('id') +\n       ' (' + crypto.bitcoin.usd_24h_change.toFixed(2) + '%)\\n';\nout += '  ETH : $' + crypto.ethereum.usd.toLocaleString('id') +\n       ' (' + crypto.ethereum.usd_24h_change.toFixed(2) + '%)\\n\\n';\nout += 'Semangat kerja hari ini! 💪';\nreturn [{ json: { pesan: out } }];\n"
+      },
+      "id": "n4",
+      "name": "Susun Briefing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.pesan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Kirim Briefing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap Pagi 06:30": {
+      "main": [
+        [
+          {
+            "node": "Cuaca Hari Ini",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Harga Crypto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Harga Crypto": {
+      "main": [
+        [
+          {
+            "node": "Susun Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Susun Briefing": {
+      "main": [
+        [
+          {
+            "node": "Kirim Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

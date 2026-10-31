@@ -1,0 +1,266 @@
+{
+  "name": "UMKM 09 - Birthday Wish (Ucapan + Diskon Otomatis)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "sched",
+      "name": "Cek Ulang Tahun Tiap Pagi",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "sheets",
+      "name": "Ambil Data Customer",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        460,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "nama",
+        "options": {}
+      },
+      "id": "split",
+      "name": "Cek Per Customer",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        680,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond1",
+              "leftValue": "={{ $json.tanggal_lahir }}",
+              "rightValue": "={{ $now.format('dd-MM') }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if",
+      "name": "Ultah Hari Ini?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "pesan",
+              "type": "string",
+              "value": "=Selamat ulang tahun, {{ $json.nama }}!\\n\\nSebagai hadiah, kasih kode diskon:\\nULANGTAHUN10\\n\\nBerlaku 7 hari untuk semua produk.\\n\\nSalam,\\n[Nama Toko]"
+            },
+            {
+              "id": "e2",
+              "name": "nomor_wa",
+              "type": "string",
+              "value": "={{ $json.nomor_wa }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set",
+      "name": "Bikin Pesan Ultah",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.nomor_wa }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.pesan }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http",
+      "name": "Kirim via Gateway WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nama": "={{ $json.nama }}",
+            "tanggal_kirim": "={{ $now.format('yyyy-MM-dd') }}",
+            "pesan": "={{ $json.pesan }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "log",
+      "name": "Catat di Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        1560,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Ulang Tahun Tiap Pagi": {
+      "main": [
+        [
+          {
+            "node": "Ambil Data Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Data Customer": {
+      "main": [
+        [
+          {
+            "node": "Cek Per Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Per Customer": {
+      "main": [
+        [
+          {
+            "node": "Ultah Hari Ini?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ultah Hari Ini?": {
+      "main": [
+        [
+          {
+            "node": "Bikin Pesan Ultah",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bikin Pesan Ultah": {
+      "main": [
+        [
+          {
+            "node": "Kirim via Gateway WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim via Gateway WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Catat di Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}
