@@ -449,75 +449,60 @@ section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
 @media(max-width:690px){.cs-head{padding:19px}.cs-head h3{font-size:19px}.cs-metrics>div{padding:13px 10px;display:block;text-align:center}.cs-metrics strong{display:block}.cs-workspace{grid-template-columns:1fr}.cs-inbox{border-right:0;border-bottom:1px solid #e8ebf3;padding:12px}.cs-inbox p{display:none}.cs-log{height:220px}.cs-head .cs-avatar{display:none}}
 
 
-/* FIXED CATALOG STRUCTURE & RESPONSIVE LAYOUT */
-:root{--bg:#f7f9ff;--bg2:#eef2fb;--card:#fff;--line:#dce3f1;--txt:#17213a;--dim:#66748c;--acc:#6257e9;--acc2:#8e78ff}
-body{background:#f7f9ff;color:#17213a;line-height:1.55}
-.wrap{max-width:1180px}
+/* TWIST 2.0 — focused editorial storefront */
+:root{--bg:#0b1220;--bg2:#101a2a;--card:#152136;--line:#27364a;--txt:#f2f6fc;--dim:#a9b7ca;--acc:#76a9ff;--acc2:#aacaff}
+body{line-height:1.55} .wrap{max-width:1120px}nav{background:rgba(11,18,32,.94)}
 #stars,#glow{display:none!important}
-.hero{padding-top:140px;padding-bottom:65px}
-.hero .wrap{min-width:0}
-.hero h1{font-size:clamp(39px,5.8vw,72px);line-height:1.07}
-.hero .sub{font-size:16px;max-width:520px}
+.hero::before{animation:none;background:radial-gradient(circle,rgba(76,126,222,.085),transparent 65%)}
+.hero{padding-top:clamp(112px,13vw,156px);padding-bottom:56px}
+.hero h1{font-size:clamp(38px,6vw,72px);line-height:1.06;letter-spacing:-.05em;max-width:900px;margin:0 auto 22px}
+.hero .sub{max-width:490px;font-size:16px;line-height:1.7;margin-bottom:26px}
+.hero .badge{background:rgba(118,169,255,.08);border-color:rgba(118,169,255,.25);color:var(--acc);font-size:10px;letter-spacing:.12em}
+.hero .badge .dot{background:var(--acc)}
 .hero-stats{display:none!important}
-.twist-feature{transform:none!important;animation:none!important;min-width:0;max-width:100%}
-.sec-head{margin-bottom:29px}
-.sec-head h2{font-size:clamp(30px,4.4vw,46px)}
-#template .filters{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:5px 0 14px;max-width:100%;justify-content:flex-start;scrollbar-width:thin}
-#template .filters .chip{flex:0 0 auto;white-space:nowrap;font-size:12px;padding:10px 15px}
-#template .tpl-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:17px!important;width:100%;align-items:stretch}
-#template .tpl{min-width:0!important;width:auto!important;max-width:none!important;padding:22px!important;display:flex;flex-direction:column;border-radius:16px!important;transform:none;overflow:hidden}
-#template .tpl.hide,#template .tpl[hidden]{display:none!important}
-#template .tpl h3{font-size:17px;line-height:1.35;overflow-wrap:normal;word-break:normal}
-#template .tpl p{font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-#template .tpl-tags{min-height:25px}
-#template .tpl-meta{margin-top:auto}
-#template .tpl:hover{transform:translateY(-3px)!important}
-.catalog-more{display:block;margin:27px auto 0;padding:12px 22px;border-radius:12px;background:#6657e9;color:#fff;font-weight:700;font-size:14px;box-shadow:0 8px 20px #6657e926}
-.catalog-more[hidden]{display:none!important}
-.demo-grid{gap:24px}
-@media(max-width:950px){.hero .wrap{grid-template-columns:1fr}.hero{text-align:center}.twist-feature{width:100%;max-width:620px;margin:32px auto 0}.hero .cta-row{justify-content:center}#template .tpl-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-@media(max-width:580px){.hero{padding:110px 0 48px}.hero h1{font-size:clamp(36px,10vw,53px)}.hero .sub{font-size:14px}.twist-feature{padding:18px;min-height:0}#template .tpl-grid{grid-template-columns:1fr!important}#template .tpl{padding:20px!important}section{padding:58px 0}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.twist-feature{max-width:660px!important;margin:46px auto 0!important;transform:none!important}
+.sec-head{max-width:680px;margin-bottom:30px!important}
+.sec-head h2{font-size:clamp(29px,4.4vw,46px)!important;letter-spacing:-.035em;line-height:1.15}
+.sec-head p{max-width:520px;color:var(--dim);font-size:15px;line-height:1.7}
+section.sec-in{padding-top:75px;padding-bottom:75px}
+#template .filters{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding:3px 0 14px;margin-bottom:8px;scrollbar-width:thin}
+#template .filters .chip{flex:none;white-space:nowrap}
+.tpl-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.tpl{min-width:0;border-radius:16px!important;padding:23px!important;box-shadow:none!important;transform:none!important}
+.tpl:hover{transform:translateY(-3px)!important}
+.tpl h3{font-size:17px!important;line-height:1.35!important;margin-bottom:10px}
+.tpl p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:1.55}
+.tpl .tpl-num{font-size:10px;letter-spacing:.07em}
+.catalog-more{display:block;margin:28px auto 0;padding:13px 23px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:700;font-size:14px;transition:background .2s,transform .2s}
+.catalog-more:hover{background:#213553;transform:translateY(-2px)}.catalog-more[hidden]{display:none}
+.pk{border-radius:18px!important}.pk ul li{font-size:13px;line-height:1.55}
+.demo-grid{gap:24px}.phone{border-radius:18px!important}.sec-in .eyebrow{letter-spacing:.12em}
+.faq-item,.acc{border-radius:12px;overflow:hidden}.cta-box{border-radius:20px}
+.btn{transition:transform .2s,background .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px)}
+@media(max-width:760px){.hero{padding-top:112px}.hero h1{font-size:clamp(38px,11vw,54px)}.hero .sub{font-size:14px}.twist-feature{margin-top:30px!important}.tpl-grid{grid-template-columns:repeat(2,minmax(0,1fr))}section.sec-in{padding-top:55px;padding-bottom:55px}}
+@media(max-width:520px){.tpl-grid{grid-template-columns:1fr}.tpl{padding:20px!important}.sec-head{margin-bottom:22px!important}.cta-row .btn{padding:12px 19px}.hero{padding-bottom:35px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 
-/* Contact section — focused, responsive, no duplicate contact details */
-.contact-section{padding:64px 0 86px!important;background:#eef2fb!important}
-.contact-panel{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.85fr);align-items:center;gap:clamp(24px,5vw,68px);padding:clamp(28px,5vw,62px);background:#fff;border:1px solid #dfe5f1;border-radius:28px;box-shadow:0 24px 70px rgba(29,44,90,.07)}
-.contact-eyebrow{display:inline-block;color:#6859d9;font-size:11px;font-weight:800;letter-spacing:1.3px;margin-bottom:17px}
-.contact-copy h2{font-size:clamp(28px,3.7vw,43px);font-weight:800;line-height:1.15;letter-spacing:-1.5px;color:#1b2741;max-width:570px;margin:0 0 16px}
-.contact-copy p{max-width:470px;font-size:15px;line-height:1.7;color:#65728a;margin:0}
-.contact-trust{display:flex;gap:9px 18px;flex-wrap:wrap;margin-top:22px;color:#64718c;font-size:12px;font-weight:600}
-.contact-action{background:#f7f8fe;border:1px solid #e5e9f4;border-radius:20px;padding:24px;min-width:0}
-.contact-channel{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.contact-channel-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#e8e4ff;color:#6657e9;font-size:25px;flex-shrink:0}
-.contact-channel small{display:block;color:#77849c;font-size:11px;margin-bottom:4px}
-.contact-channel strong{display:block;font-size:clamp(15px,1.8vw,19px);color:#24314d;white-space:nowrap}
-.contact-wa{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#6657e9;color:#fff!important;border-radius:12px;padding:15px 18px;font-weight:750;font-size:14px;transition:background .2s,transform .2s;text-decoration:none}
-.contact-wa:hover{background:#5142d0;transform:translateY(-2px)}
-.contact-footnote{display:block;color:#8a95a9;font-size:11px;text-align:center;margin-top:12px}
-.site-footer{padding:25px 0!important;background:#19213c!important;color:#c0cbdf!important;text-align:left!important}
-.footer-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px}
-.footer-brand{font-size:17px;font-weight:850;letter-spacing:-.5px;color:#fff}.footer-brand span{color:#9b8efb}
-.site-footer a{color:#d6d0ff!important;text-decoration:none;font-weight:700}
-@media(max-width:740px){.contact-section{padding:45px 0 60px!important}.contact-panel{grid-template-columns:minmax(0,1fr);gap:25px;border-radius:20px;padding:27px 22px}.contact-copy h2{letter-spacing:-1px}.contact-action{padding:18px}.footer-row{justify-content:center;text-align:center}.footer-row>span:nth-child(2){width:100%;order:3}}
-
-
-/* Bundle 10 visibility and layout fix — accessible light-theme pricing */
-#harga .pgrid {grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch;padding-top:20px}
-#harga .pk {min-width:0;overflow:visible!important;padding:30px 24px 24px;background:#fff!important;color:#19243b!important;isolation:isolate}
-#harga .pk-best {background:#f8f6ff!important;border:2px solid #7968ed!important;box-shadow:0 16px 42px rgba(99,83,206,.14)!important}
-#harga .pk-best .pk-badge {top:-15px;z-index:3;background:#6c58de!important;color:#fff!important;font-size:11px;padding:6px 15px}
-#harga .pk h3 {font-size:18px;color:#26324b!important;font-weight:750}
-#harga .pk .pk-amt {color:#5541d2!important;font-size:clamp(27px,3vw,36px);font-weight:850;line-height:1.3;overflow-wrap:normal;white-space:nowrap}
-#harga .pk-note {color:#52627d!important;font-size:13px;font-weight:550;line-height:1.5}
-#harga .pk ul {min-width:0}
-#harga .pk li {color:#33435d!important;font-size:13px;line-height:1.5;overflow-wrap:break-word;border-bottom-color:#e6e9f1}
-#harga .pk li.no {color:#68758b!important}
-#harga .pk li.no::before {color:#68758b!important}
-#harga .pk .btn {margin-top:auto;position:relative;z-index:2;min-height:48px}
-#harga .pk-best .btn-p {background:#6354dd!important;color:#fff!important}
-@media(max-width:850px){#harga .pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:580px){#harga .pgrid{grid-template-columns:minmax(0,1fr);gap:26px}#harga .pk{padding:27px 20px 22px}#harga .pk .pk-amt{font-size:32px}}
+  /* showcase slider */
+  .showcase{padding:20px 0 8px}
+  .showcase-shell{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:28px;padding:18px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.22)}
+  .showcase-top{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px}
+  .showcase-copy h2{font-size:clamp(24px,3.5vw,40px);line-height:1.04;margin-bottom:8px}
+  .showcase-copy p{max-width:650px;color:var(--dim)}
+  .showcase-nav{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .showcase-btn{width:46px;height:46px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--txt);display:grid;place-items:center;font-size:22px;cursor:pointer;transition:transform .24s var(--ease),border-color .24s,background .24s}
+  .showcase-btn:hover{transform:translateY(-2px);border-color:rgba(242,188,89,.42);background:rgba(255,255,255,.1)}
+  .showcase-window{position:relative;border-radius:22px;overflow:hidden;background:#0f141d}
+  .showcase-track{display:flex;transition:transform .55s cubic-bezier(.22,.61,.36,1)}
+  .show-slide{min-width:100%;aspect-ratio:16/9;position:relative;background:#0f141d}
+  .show-slide img{width:100%;height:100%;display:block;object-fit:cover}
+  .show-slide::after{content:"";position:absolute;inset:auto 0 0 0;height:30%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.22));pointer-events:none}
+  .showcase-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px}
+  .showcase-dot{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.18);border:none;cursor:pointer;transition:all .25s}
+  .showcase-dot.active{width:28px;background:var(--acc)}
+  @media (max-width:900px){.showcase-top{flex-direction:column;align-items:flex-start}.showcase-nav{align-self:flex-end}.showcase-shell{padding:14px}.show-slide{aspect-ratio:4/3}}
+  @media (max-width:580px){.showcase{padding-top:12px}.showcase-copy h2{font-size:26px}.showcase-copy p{font-size:14px}.showcase-btn{width:42px;height:42px}.show-slide{aspect-ratio:1/1}}
 
 </style>
 </head>
@@ -575,6 +560,39 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
   </div>
 </header>
+
+<section id="showcase" class="showcase sec-in">
+  <div class="wrap">
+    <div class="showcase-shell rv">
+      <div class="showcase-top">
+        <div class="showcase-copy">
+          <div class="eyebrow">SHOWCASE VISUAL</div>
+          <h2>Lihat preview template<br>dan visual promo Twist.</h2>
+          <p>Slider ini menampilkan visual utama buat bantu calon pembeli cepat paham isi produk dan kategori workflow yang lo jual.</p>
+        </div>
+        <div class="showcase-nav" aria-label="Kontrol slider showcase">
+          <button class="showcase-btn" id="showPrev" type="button" aria-label="Slide sebelumnya">‹</button>
+          <button class="showcase-btn" id="showNext" type="button" aria-label="Slide berikutnya">›</button>
+        </div>
+      </div>
+      <div class="showcase-window" aria-roledescription="carousel">
+        <div class="showcase-track" id="showcaseTrack">
+          <div class="show-slide"><img src="slides/slide-1.png" alt="Slide kategori template n8n siap pakai untuk berbagai kebutuhan otomasi"></div>
+          <div class="show-slide"><img src="slides/slide-2.png" alt="Slide integrasi populer dan workflow siap pakai untuk berbagai tools"></div>
+          <div class="show-slide"><img src="slides/slide-3.png" alt="Slide satu paket untuk banyak kebutuhan bisnis dan automation"></div>
+          <div class="show-slide"><img src="slides/slide-4.png" alt="Slide kategori template n8n untuk customer service, marketing, penjualan, produktivitas, integrasi, dan crypto"></div>
+        </div>
+      </div>
+      <div class="showcase-dots" id="showcaseDots" aria-label="Navigasi slide">
+        <button class="showcase-dot active" type="button" aria-label="Buka slide 1"></button>
+        <button class="showcase-dot" type="button" aria-label="Buka slide 2"></button>
+        <button class="showcase-dot" type="button" aria-label="Buka slide 3"></button>
+        <button class="showcase-dot" type="button" aria-label="Buka slide 4"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ============ DEMO (inline) ============ -->
 <section id="demo" class="demo sec-in">
@@ -683,50 +701,47 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
       <button class="chip" data-c="freelancer">Freelancer (3)</button>
       <button class="chip" data-c="produktivitas">Produktivitas (3)</button>
       <button class="chip" data-c="devops">DevOps (3)</button>
-    </div>
-    <p style="font-size:12.5px;color:var(--dim);margin-bottom:14px;font-family:var(--mono)">Harga di bawah = harga <b style="color:var(--txt)">satu template</b> kalau beli satuan (Rp 149rb – 199rb, tergantung kompleksitas). Ambil <b style="color:var(--txt)">Bundle 10 (Rp 799rb)</b> atau <b style="color:var(--txt)">All Access (Rp 1.999.000)</b> — jauh lebih murah.</p>
-    <div class="tpl-grid" id="tplGrid">
     <div class="tpl rv" data-cat="aicontent">
           <div class="tpl-num">AI CONTENT · 01</div>
           <h3>Deskripsi Produk Otomatis (Marketplace Ready)</h3>
           <p>Deskripsi produk, caption, dan copy iklan pakai AI.</p>
           <div class="tpl-tags"><span class="tag">AI Content</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="aicontent">
           <div class="tpl-num">AI CONTENT · 02</div>
           <h3>Caption Sosmed Harian (IG/TikTok/FB)</h3>
           <p>Deskripsi produk, caption, dan copy iklan pakai AI.</p>
           <div class="tpl-tags"><span class="tag">AI Content</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">8 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="aicontent">
           <div class="tpl-num">AI CONTENT · 03</div>
           <h3>Copy Iklan Multi-Variasi (A/B Test Ready)</h3>
           <p>Deskripsi produk, caption, dan copy iklan pakai AI.</p>
           <div class="tpl-tags"><span class="tag">AI Content</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="creator">
           <div class="tpl-num">CREATOR · 04</div>
           <h3>YouTube Comment Monitor (Komentar Baru → Notif)</h3>
           <p>Bantu kreator: komentar, ide konten, laporan engagement.</p>
           <div class="tpl-tags"><span class="tag">Creator</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="creator">
           <div class="tpl-num">CREATOR · 05</div>
           <h3>Trending Topic Harian (Ide Konten)</h3>
           <p>Bantu kreator: komentar, ide konten, laporan engagement.</p>
           <div class="tpl-tags"><span class="tag">Creator</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="creator">
           <div class="tpl-num">CREATOR · 06</div>
           <h3>Laporan Engagement Mingguan (Multi Platform)</h3>
           <p>Bantu kreator: komentar, ide konten, laporan engagement.</p>
           <div class="tpl-tags"><span class="tag">Creator</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         
         <div class="tpl rv" data-cat="crypto">
@@ -734,259 +749,259 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
           <h3>Wallet Balance Monitor (BNB/BSC)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 09</div>
           <h3>New Token Scanner (DexScreener)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 10</div>
           <h3>Gas Price Monitor + Alert Murah</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">8 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 11</div>
           <h3>Daily Portfolio Report (Sheets + Telegram)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">9 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">9 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 12</div>
           <h3>NFT Mint Watcher (Eligibility + Alert)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 13</div>
           <h3>Staking Reward Tracker (Harian)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 14</div>
           <h3>Airdrop Deadline Reminder (Jangan Sampai Kelewat)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 15</div>
           <h3>Funding Rate Scanner (Cari Peluang Arbitrage)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 16</div>
           <h3>Whale Alert (Transfer Besar di BSC)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 17</div>
           <h3>DCA Reminder (Pengingat Beli Berkala)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="crypto">
           <div class="tpl-num">CRYPTO · 18</div>
           <h3>Bridge / Tx Status Monitor (Pantau Sampai Selesai)</h3>
           <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
           <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="cs">
           <div class="tpl-num">CS · 19</div>
           <h3>AI CS + Switch ke Manusia + Auto-Tutup</h3>
           <p>Customer service hybrid — AI jawab, eskalasi ke manusia, auto-tutup.</p>
           <div class="tpl-tags"><span class="tag">CS</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 199rb</span><span class="tpl-nodes">29 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">29 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="cs">
           <div class="tpl-num">CS · 20</div>
           <h3>Watchdog + Auto-Tutup</h3>
           <p>Customer service hybrid — AI jawab, eskalasi ke manusia, auto-tutup.</p>
           <div class="tpl-tags"><span class="tag">CS</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 199rb</span><span class="tpl-nodes">15 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">15 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="devops">
           <div class="tpl-num">DEVOPS · 21</div>
           <h3>Website Uptime Monitor (Down → Alert)</h3>
           <p>Pantau uptime, SSL, dan rilis repo otomatis.</p>
           <div class="tpl-tags"><span class="tag">DevOps</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="devops">
           <div class="tpl-num">DEVOPS · 22</div>
           <h3>SSL Certificate Expiry Checker</h3>
           <p>Pantau uptime, SSL, dan rilis repo otomatis.</p>
           <div class="tpl-tags"><span class="tag">DevOps</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="devops">
           <div class="tpl-num">DEVOPS · 23</div>
           <h3>GitHub Release Notifier (Rilis Baru → Notif)</h3>
           <p>Pantau uptime, SSL, dan rilis repo otomatis.</p>
           <div class="tpl-tags"><span class="tag">DevOps</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="education">
           <div class="tpl-num">EDUCATION · 24</div>
           <h3>Pendaftaran Siswa Baru (Auto Konfirmasi)</h3>
           <p>Pendaftaran, reminder kelas, tagihan, kehadiran siswa.</p>
           <div class="tpl-tags"><span class="tag">Education</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="education">
           <div class="tpl-num">EDUCATION · 25</div>
           <h3>Reminder Kelas + Tagihan Siswa</h3>
           <p>Pendaftaran, reminder kelas, tagihan, kehadiran siswa.</p>
           <div class="tpl-tags"><span class="tag">Education</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="education">
           <div class="tpl-num">EDUCATION · 26</div>
           <h3>Laporan Kehadiran Mingguan (Orang Tua)</h3>
           <p>Pendaftaran, reminder kelas, tagihan, kehadiran siswa.</p>
           <div class="tpl-tags"><span class="tag">Education</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="event">
           <div class="tpl-num">EVENT · 27</div>
           <h3>RSVP + Reminder Undangan (Wedding/Event)</h3>
           <p>RSVP, countdown, check-in, dan doorprize.</p>
           <div class="tpl-tags"><span class="tag">Event</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="event">
           <div class="tpl-num">EVENT · 28</div>
           <h3>Countdown Reminder (H-3 & H-1 ke Tamu)</h3>
           <p>RSVP, countdown, check-in, dan doorprize.</p>
           <div class="tpl-tags"><span class="tag">Event</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="event">
           <div class="tpl-num">EVENT · 29</div>
           <h3>Seating Plan + Doorprize Draw Otomatis</h3>
           <p>RSVP, countdown, check-in, dan doorprize.</p>
           <div class="tpl-tags"><span class="tag">Event</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 199rb</span><span class="tpl-nodes">11 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">11 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="fnb">
           <div class="tpl-num">F&B · 30</div>
           <h3>Reservasi Meja</h3>
           <p>Reservasi, menu harian, dan tracking delivery.</p>
           <div class="tpl-tags"><span class="tag">F&B</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">9 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">9 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="fnb">
           <div class="tpl-num">F&B · 31</div>
           <h3>Menu Harian Broadcast (Pelanggan Setia)</h3>
           <p>Reservasi, menu harian, dan tracking delivery.</p>
           <div class="tpl-tags"><span class="tag">F&B</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="fnb">
           <div class="tpl-num">F&B · 32</div>
           <h3>Delivery Order Tracker (Status ke Pelanggan)</h3>
           <p>Reservasi, menu harian, dan tracking delivery.</p>
           <div class="tpl-tags"><span class="tag">F&B</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">8 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="freelancer">
           <div class="tpl-num">FREELANCER · 33</div>
           <h3>Invoice Reminder (Klien Telat Bayar)</h3>
           <p>Tagihan, lead, dan deadline biar gak ada yang telat.</p>
           <div class="tpl-tags"><span class="tag">Freelancer</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="freelancer">
           <div class="tpl-num">FREELANCER · 34</div>
           <h3>Lead Follow-Up</h3>
           <p>Tagihan, lead, dan deadline biar gak ada yang telat.</p>
           <div class="tpl-tags"><span class="tag">Freelancer</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="freelancer">
           <div class="tpl-num">FREELANCER · 35</div>
           <h3>Project Deadline Tracker (Jangan Telat Delivery)</h3>
           <p>Tagihan, lead, dan deadline biar gak ada yang telat.</p>
           <div class="tpl-tags"><span class="tag">Freelancer</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="marketplace">
           <div class="tpl-num">MARKETPLACE · 36</div>
           <h3>Multi-Platform Order Sync (Shopee/Tokopedia/TikTok)</h3>
           <p>Sinkron order, stok, dan chat Shopee/Tokopedia.</p>
           <div class="tpl-tags"><span class="tag">Marketplace</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="marketplace">
           <div class="tpl-num">MARKETPLACE · 37</div>
           <h3>Stok Multi-Platform Sync (Habis → Alert)</h3>
           <p>Sinkron order, stok, dan chat Shopee/Tokopedia.</p>
           <div class="tpl-tags"><span class="tag">Marketplace</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="marketplace">
           <div class="tpl-num">MARKETPLACE · 38</div>
           <h3>Chat Marketplace Auto-Reply (Shopee/Tokopedia)</h3>
           <p>Sinkron order, stok, dan chat Shopee/Tokopedia.</p>
           <div class="tpl-tags"><span class="tag">Marketplace</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="produktivitas">
           <div class="tpl-num">PRODUKTIVITAS · 39</div>
           <h3>Morning Briefing (Cuaca + Crypto + Berita)</h3>
           <p>Briefing pagi, catat pengeluaran, ingatkan istirahat.</p>
           <div class="tpl-tags"><span class="tag">Produktivitas</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="produktivitas">
           <div class="tpl-num">PRODUKTIVITAS · 40</div>
           <h3>Expense Tracker</h3>
           <p>Briefing pagi, catat pengeluaran, ingatkan istirahat.</p>
           <div class="tpl-tags"><span class="tag">Produktivitas</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="produktivitas">
           <div class="tpl-num">PRODUKTIVITAS · 41</div>
           <h3>Water & Break Reminder (Jangan Lupa Minum)</h3>
           <p>Briefing pagi, catat pengeluaran, ingatkan istirahat.</p>
           <div class="tpl-tags"><span class="tag">Produktivitas</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">3 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">3 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="properti">
           <div class="tpl-num">PROPERTI · 42</div>
           <h3>Lead Qualify + Follow-Up Otomatis</h3>
           <p>Lead qualify, jadwal viewing, laporan listing.</p>
           <div class="tpl-tags"><span class="tag">Properti</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 199rb</span><span class="tpl-nodes">10 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">10 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="properti">
           <div class="tpl-num">PROPERTI · 43</div>
           <h3>Jadwal Viewing + Reminder Otomatis</h3>
           <p>Lead qualify, jadwal viewing, laporan listing.</p>
           <div class="tpl-tags"><span class="tag">Properti</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">9 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">9 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="properti">
           <div class="tpl-num">PROPERTI · 44</div>
           <h3>Laporan Performa Listing Mingguan</h3>
           <p>Lead qualify, jadwal viewing, laporan listing.</p>
           <div class="tpl-tags"><span class="tag">Properti</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">4 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
         </div>
         
         <div class="tpl rv" data-cat="umkm">
@@ -994,99 +1009,103 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
           <h3>Order Masuk → Notifikasi + Google Sheets</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 47</div>
           <h3>Invoice Otomatis</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 48</div>
           <h3>Laporan Harian Otomatis (Rekap Penjualan)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 49</div>
           <h3>Form Order (Google Form) → Notifikasi + Sheets</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 50</div>
           <h3>Minta Review Google (Setelah Order Selesai)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 51</div>
           <h3>Stok Alert (Inventory Monitor)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 52</div>
           <h3>Order Status Tracker (Cek Pesanan)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">8 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 53</div>
           <h3>Birthday Wish (Ucapan + Diskon Otomatis)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">7 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 54</div>
           <h3>Cek Ongkir Otomatis (Customer Chat → Tarif)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">3 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">3 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 55</div>
           <h3>Cart Reminder</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 56</div>
           <h3>Follow-Up Pembayaran (Belum Bayar → Ingatkan)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 57</div>
           <h3>Absensi Karyawan</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">6 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 58</div>
           <h3>Auto Post Marketplace (Sheets → Format Iklan)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
         <div class="tpl rv" data-cat="umkm">
           <div class="tpl-num">UMKM · 59</div>
           <h3>Rekap Pajak & Pendapatan (Bulanan)</h3>
           <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
           <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
-          <div class="tpl-meta"><span class="tpl-price">Rp 149rb</span><span class="tpl-nodes">5 nodes</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
         </div>
+      </div>
+
+    <p style="font-size:12.5px;color:var(--dim);margin-bottom:14px;font-family:var(--mono)">Harga di bawah = harga <b style="color:var(--txt)">satu template</b> kalau beli satuan (Rp 99rb – 139rb, tergantung kompleksitas). Ambil <b style="color:var(--txt)">Bundle 10 (Rp 299rb)</b> atau <b style="color:var(--txt)">All Access (Rp 799rb)</b> — jauh lebih murah.</p>
+    <div class="tpl-grid" id="tplGrid">
 
       <div class="tpl rv" data-cat="umkm">
         <div class="hot">PALING LAKU</div>
@@ -1094,7 +1113,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
         <h3>Auto-Reply WhatsApp</h3>
         <p>Bot jawab pertanyaan pelanggan otomatis 24 jam — harga, jam buka, alamat, cara order. Nggak perlu CS lagi kalau lagi sibuk.</p>
         <div class="tpl-tags"><span class="tag">WhatsApp</span><span class="tag">Keyword Bot</span><span class="tag">UMKM</span></div>
-        <div class="tpl-meta"><span class="tpl-price">Rp 199rb</span><span class="tpl-nodes">12 nodes</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">12 nodes</span></div>
       </div>
         
 
@@ -1104,7 +1123,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
         <h3>Price Alert</h3>
         <p>Set harga target lo (misal BTC di atas $70K). Begitu tercapai, notifikasi langsung masuk WhatsApp. Nggak perlu buka exchange tiap 5 menit.</p>
         <div class="tpl-tags"><span class="tag">CoinGecko</span><span class="tag">WhatsApp</span><span class="tag">Trigger</span></div>
-        <div class="tpl-meta"><span class="tpl-price">Rp 179rb</span><span class="tpl-nodes">8 nodes</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
       </div>
         
 
@@ -1124,7 +1143,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
 
       <div class="pk rv">
         <h3>Single</h3>
-        <div class="pk-amt">Rp 149rb</div>
+        <div class="pk-amt">Rp 99rb</div>
         <div class="pk-note">coba dulu, 1 template</div>
         <ul>
           <li>1 template pilihan lo (dari 59 template)</li>
@@ -1140,8 +1159,8 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
       <div class="pk pk-best rv rv-d1">
         <div class="pk-badge">PALING WORTH</div>
         <h3>Bundle 10</h3>
-        <div class="pk-amt">Rp 799rb</div>
-        <div class="pk-note">lebih hemat dibanding beli satuan</div>
+        <div class="pk-amt">Rp 299rb</div>
+        <div class="pk-note">hemat 70% dari harga satuan</div>
         <ul>
           <li>10 template pilihan lo (campur kategori boleh)</li>
           <li>Semua file JSON siap import</li>
@@ -1155,7 +1174,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
 
       <div class="pk rv rv-d2">
         <h3>All Access</h3>
-        <div class="pk-amt">Rp 1.999.000</div>
+        <div class="pk-amt">Rp 799rb</div>
         <div class="pk-note">semua 59 template, lifetime</div>
         <ul>
           <li>Semua 59 template (13 kategori)</li>
@@ -1369,26 +1388,28 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
   </div>
 </section>
 
-<!-- ============ KONTAK ============ -->
-<section id="kontak" class="contact-section sec-in">
+<!-- ============ CTA ============ -->
+<section class="cta sec-in">
   <div class="wrap">
-    <div class="contact-panel rv">
-      <div class="contact-copy">
-        <span class="contact-eyebrow">KONTAK &amp; KONSULTASI</span>
-        <h2>Butuh automation untuk bisnis lo?</h2>
-        <p>Ceritain kebutuhan lo. Kita pilih template atau workflow custom yang paling pas.</p>
-        <div class="contact-trust"><span>✓ Konsultasi gratis</span><span>✓ Template n8n siap pakai</span></div>
+    <div class="cta-box rv">
+      <h2>Siap berhenti kerja manual?</h2>
+      <p>Chat aja, gue bantu pilih template yang paling cocok buat bisnis lo. Konsultasi gratis.</p>
+      <div class="cta-row">
+        <a href="https://wa.me/6285171228302" class="btn btn-wa">Chat WhatsApp <span class="arw">→</span></a>
+        <a href="#demo" class="btn btn-s">Coba Bot Lagi</a>
       </div>
-      <div class="contact-action">
-        <div class="contact-channel"><span class="contact-channel-icon" aria-hidden="true">✆</span><div><small>Hubungi lewat WhatsApp</small><strong>0851-7122-8302</strong></div></div>
-        <a class="contact-wa" href="https://wa.me/6285171228302?text=Halo%2C%20saya%20mau%20konsultasi%20tentang%20automation%20n8n" target="_blank" rel="noopener noreferrer">Mulai Konsultasi <span aria-hidden="true">↗</span></a>
-        <span class="contact-footnote">Langsung terhubung ke WhatsApp</span>
-      </div>
+      <div class="cta-num">atau langsung WA: <b>0851-7122-8302</b></div>
+      <div class="cta-note">Bisa <b>custom workflow</b> sesuai kebutuhan bisnis lo.</div>
     </div>
   </div>
 </section>
 
-<footer class="site-footer"><div class="wrap footer-row"><span class="footer-brand">twist<span>.automation</span></span><span>Template n8n &amp; automation bisnis</span><a href="https://wa.me/6285171228302" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></footer>
+<footer>
+  <div class="wrap">
+    <p>twist.automation — template n8n untuk UMKM &amp; crypto. Dibuat di Indonesia.</p>
+    <p style="margin-top:6px">WhatsApp <a href="https://wa.me/6285171228302">0851-7122-8302</a> · Email <a href="mailto:GANTI_EMAIL_LO">GANTI_EMAIL_LO</a></p>
+  </div>
+</footer>
 
 <script>
 /* ============ CURTAIN ============ */
@@ -1548,7 +1569,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
  if(cs.take){cs.take.addEventListener('click',()=>handoff());cs.ret.textContent='Selesaikan Chat & Aktifkan AI';cs.ret.addEventListener('click',()=>resume(false));cs.send.addEventListener('click',()=>{const val=cs.reply.value.trim();if(!val||mode!=='human')return;adminReply(val);cs.reply.value=''});cs.reply.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();cs.send.click()}})}
  const LIMIT=15*60*1000;let mode='ai',handoffAt=0,adminHasReplied=false,timeout=null,replyTimeout=null;
  const kb=[
-  {keys:['harga','price','berapa','biaya'],text:'Harga satuan template mulai Rp 149rb. Ada juga Bundle 10 Rp 299rb dan All Access Rp 799rb. Mau lihat paket yang cocok?'},
+  {keys:['harga','price','berapa','biaya'],text:'Harga satuan template mulai Rp 99rb. Ada juga Bundle 10 Rp 299rb dan All Access Rp 799rb. Mau lihat paket yang cocok?'},
   {keys:['order','beli','pesan','checkout'],text:'Untuk pemesanan, pilih paket di bagian Harga. Setelah itu klik tombol WhatsApp untuk terhubung dengan penjual.'},
   {keys:['jam buka','operasional'],text:'Ini demo otomatisasi. Bot bisa merespons pertanyaan kapan pun; jam operasional bisnis aslinya dapat disesuaikan.'},
   {keys:['alamat','lokasi'],text:'Toko pada percakapan ini hanya contoh simulasi. Kamu bisa mengatur alamat dan kontak bisnis sendiri di workflow n8n.'},
@@ -1584,6 +1605,40 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 64, behavior: 'smooth' });
   });
 });
+
+  // showcase slider
+  const showcaseTrack = document.getElementById('showcaseTrack');
+  const showcaseDots = [...document.querySelectorAll('#showcaseDots .showcase-dot')];
+  const showPrev = document.getElementById('showPrev');
+  const showNext = document.getElementById('showNext');
+  if(showcaseTrack && showcaseDots.length){
+    let showIndex = 0;
+    let showTimer = null;
+    const total = showcaseDots.length;
+    const paintShow = () => {
+      showcaseTrack.style.transform = `translateX(-${showIndex * 100}%)`;
+      showcaseDots.forEach((dot,i)=>dot.classList.toggle('active', i===showIndex));
+    };
+    const goShow = (i) => { showIndex = (i + total) % total; paintShow(); resetShowAuto(); };
+    const nextShow = () => { showIndex = (showIndex + 1) % total; paintShow(); };
+    const resetShowAuto = () => {
+      if(showTimer) clearInterval(showTimer);
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+        showTimer = setInterval(nextShow, 5000);
+      }
+    };
+    showcaseDots.forEach((dot,i)=>dot.addEventListener('click', ()=>goShow(i)));
+    showPrev && showPrev.addEventListener('click', ()=>goShow(showIndex - 1));
+    showNext && showNext.addEventListener('click', ()=>goShow(showIndex + 1));
+    let startX = 0;
+    let deltaX = 0;
+    showcaseTrack.addEventListener('touchstart', e=>{ startX = e.touches[0].clientX; deltaX = 0; }, {passive:true});
+    showcaseTrack.addEventListener('touchmove', e=>{ deltaX = e.touches[0].clientX - startX; }, {passive:true});
+    showcaseTrack.addEventListener('touchend', ()=>{ if(Math.abs(deltaX) > 50) goShow(showIndex + (deltaX < 0 ? 1 : -1)); else paintShow(); });
+    paintShow();
+    resetShowAuto();
+  }
+
 </script>
 
 <script>
@@ -1618,6 +1673,40 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
  document.querySelectorAll('.faq-q,.acc-h').forEach(btn=>{btn.setAttribute('aria-expanded',String(btn.parentElement.classList.contains('open')));btn.addEventListener('click',()=>requestAnimationFrame(()=>{document.querySelectorAll('.faq-q,.acc-h').forEach(b=>b.setAttribute('aria-expanded',String(b.parentElement.classList.contains('open'))))}))});
  if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.rv').forEach(e=>e.classList.add('in'));document.querySelectorAll('.sec-in').forEach(e=>e.classList.add('on'))}
 })();
+
+  // showcase slider
+  const showcaseTrack = document.getElementById('showcaseTrack');
+  const showcaseDots = [...document.querySelectorAll('#showcaseDots .showcase-dot')];
+  const showPrev = document.getElementById('showPrev');
+  const showNext = document.getElementById('showNext');
+  if(showcaseTrack && showcaseDots.length){
+    let showIndex = 0;
+    let showTimer = null;
+    const total = showcaseDots.length;
+    const paintShow = () => {
+      showcaseTrack.style.transform = `translateX(-${showIndex * 100}%)`;
+      showcaseDots.forEach((dot,i)=>dot.classList.toggle('active', i===showIndex));
+    };
+    const goShow = (i) => { showIndex = (i + total) % total; paintShow(); resetShowAuto(); };
+    const nextShow = () => { showIndex = (showIndex + 1) % total; paintShow(); };
+    const resetShowAuto = () => {
+      if(showTimer) clearInterval(showTimer);
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+        showTimer = setInterval(nextShow, 5000);
+      }
+    };
+    showcaseDots.forEach((dot,i)=>dot.addEventListener('click', ()=>goShow(i)));
+    showPrev && showPrev.addEventListener('click', ()=>goShow(showIndex - 1));
+    showNext && showNext.addEventListener('click', ()=>goShow(showIndex + 1));
+    let startX = 0;
+    let deltaX = 0;
+    showcaseTrack.addEventListener('touchstart', e=>{ startX = e.touches[0].clientX; deltaX = 0; }, {passive:true});
+    showcaseTrack.addEventListener('touchmove', e=>{ deltaX = e.touches[0].clientX - startX; }, {passive:true});
+    showcaseTrack.addEventListener('touchend', ()=>{ if(Math.abs(deltaX) > 50) goShow(showIndex + (deltaX < 0 ? 1 : -1)); else paintShow(); });
+    paintShow();
+    resetShowAuto();
+  }
+
 </script>
 </body>
 </html>
