@@ -1589,39 +1589,6 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
  if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.rv').forEach(e=>e.classList.add('in'));document.querySelectorAll('.sec-in').forEach(e=>e.classList.add('on'))}
 })();
 
-  // showcase slider
-  const showcaseTrack = document.getElementById('showcaseTrack');
-  const showcaseDots = [...document.querySelectorAll('#showcaseDots .showcase-dot')];
-  const showPrev = document.getElementById('showPrev');
-  const showNext = document.getElementById('showNext');
-  if(showcaseTrack && showcaseDots.length){
-    let showIndex = 0;
-    let showTimer = null;
-    const total = showcaseDots.length;
-    const paintShow = () => {
-      showcaseTrack.style.transform = `translateX(-${showIndex * 100}%)`;
-      showcaseDots.forEach((dot,i)=>dot.classList.toggle('active', i===showIndex));
-    };
-    const goShow = (i) => { showIndex = (i + total) % total; paintShow(); resetShowAuto(); };
-    const nextShow = () => { showIndex = (showIndex + 1) % total; paintShow(); };
-    const resetShowAuto = () => {
-      if(showTimer) clearInterval(showTimer);
-      if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
-        showTimer = setInterval(nextShow, 5000);
-      }
-    };
-    showcaseDots.forEach((dot,i)=>dot.addEventListener('click', ()=>goShow(i)));
-    showPrev && showPrev.addEventListener('click', ()=>goShow(showIndex - 1));
-    showNext && showNext.addEventListener('click', ()=>goShow(showIndex + 1));
-    let startX = 0;
-    let deltaX = 0;
-    showcaseTrack.addEventListener('touchstart', e=>{ startX = e.touches[0].clientX; deltaX = 0; }, {passive:true});
-    showcaseTrack.addEventListener('touchmove', e=>{ deltaX = e.touches[0].clientX - startX; }, {passive:true});
-    showcaseTrack.addEventListener('touchend', ()=>{ if(Math.abs(deltaX) > 50) goShow(showIndex + (deltaX < 0 ? 1 : -1)); else paintShow(); });
-    paintShow();
-    resetShowAuto();
-  }
-
 </script>
 </body>
 </html>
