@@ -1,0 +1,86 @@
+{
+  "name": "UMKM 04 — Laporan Harian Otomatis (Rekap Penjualan)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 20 * * *" }]
+        }
+      },
+      "id": "sched",
+      "name": "Setiap Hari Jam 8 Malam",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 320]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "GANTI_SPREADSHEET_ID", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Orders", "mode": "name" },
+        "options": {}
+      },
+      "id": "read",
+      "name": "Baca Semua Order",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 320],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GANTI_CREDENTIAL_ID",
+          "name": "Google Sheets UMKM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rekap penjualan hari ini\nconst rows = $input.all();\nconst today = new Date().toISOString().slice(0, 10);\n\nlet totalOrder = 0;\nlet totalPendapatan = 0;\nlet totalItem = 0;\nconst perProduk = {};\n\nfor (const r of rows) {\n  const j = r.json;\n  const tgl = String(j['Tanggal'] || j['tanggal'] || '').slice(0, 10);\n  if (tgl !== today) continue;\n\n  totalOrder++;\n  const total = Number(j['Total'] || j['total'] || 0);\n  totalPendapatan += total;\n  const qty = Number(j['Jumlah'] || j['jumlah'] || 1);\n  totalItem += qty;\n\n  const produk = String(j['Produk'] || j['produk'] || 'Lainnya');\n  if (!perProduk[produk]) perProduk[produk] = { qty: 0, pendapatan: 0 };\n  perProduk[produk].qty += qty;\n  perProduk[produk].pendapatan += total;\n}\n\nconst rupiah = n => 'Rp ' + Number(n).toLocaleString('id-ID');\n\nlet pesan = '📊 LAPORAN PENJUALAN HARIAN\\n';\npesan += 'Tanggal: ' + today + '\\n';\npesan += '━━━━━━━━━━━━━━━━━━\\n\\n';\npesan += '🛒 Total Order   : ' + totalOrder + '\\n';\npesan += '📦 Total Item    : ' + totalItem + '\\n';\npesan += '💰 Total Pendapatan: ' + rupiah(totalPendapatan) + '\\n\\n';\n\nif (Object.keys(perProduk).length > 0) {\n  pesan += '📌 PRODUK TERJUAL\\n';\n  const sorted = Object.entries(perProduk).sort((a, b) => b[1].pendapatan - a[1].pendapatan);\n  for (const [nama, d] of sorted) {\n    pesan += '• ' + nama + ' — ' + d.qty + ' pcs (' + rupiah(d.pendapatan) + ')\\n';\n  }\n} else {\n  pesan += 'Belum ada order hari ini.';\n}\n\nreturn [{ json: { laporan: pesan, total_order: totalOrder, total_pendapatan: totalPendapatan } }];"
+      },
+      "id": "rekap",
+      "name": "Hitung Rekap",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 320]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID",
+        "text": "={{ $json.laporan }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Kirim Laporan Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 320],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_CREDENTIAL_ID",
+          "name": "Telegram Bot UMKM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## UMKM 04 — Laporan Harian Otomatis\n\n**Alur:**\nSetiap hari jam 20.00 → baca Google Sheets → hitung rekap → kirim Telegram\n\n**Isi laporan:**\n- Total order hari ini\n- Total item terjual\n- Total pendapatan\n- Rincian per produk (urut pendapatan)\n\n**Yang diedit:**\n- `GANTI_SPREADSHEET_ID` → ID Google Sheet order lo\n- `GANTI_CHAT_ID` → chat ID Telegram lo\n\n**Butuh:**\n- Google Sheets credential (OAuth2)\n- Sheet dengan tab *Orders* (kolom: Tanggal, Produk, Jumlah, Total)\n\n**Bonus:**\nGanti cron di node *Setiap Hari Jam 8 Malam* untuk jam lain.\nFormat: menit jam * * * (waktu server UTC, WIB = UTC+7)",
+        "height": 380,
+        "width": 620,
+        "color": 6
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Setiap Hari Jam 8 Malam": { "main": [[{ "node": "Baca Semua Order", "type": "main", "index": 0 }]] },
+    "Baca Semua Order": { "main": [[{ "node": "Hitung Rekap", "type": "main", "index": 0 }]] },
+    "Hitung Rekap": { "main": [[{ "node": "Kirim Laporan Telegram", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

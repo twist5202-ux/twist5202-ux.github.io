@@ -1,0 +1,179 @@
+{
+  "name": "UMKM 15 — Rekap Pajak & Pendapatan (Bulanan)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 1 * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap Tanggal 1 Jam 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Semua Order Bulan Lalu",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst omzet = rows.reduce((s, r) => s + Number(r.total || 0), 0);\nconst pphFinal = omzet * 0.005;      // 0.5% UMKM\nconst ppn = 0;                        // kalau belum PKP\nconst bulan = new Date().toLocaleString('id', { month: 'long', year: 'numeric' });\n\nconst laporan =\n  'REKAP BULANAN — ' + bulan + '\\n' +\n  '=========================\\n' +\n  'Total order   : ' + rows.length + '\\n' +\n  'Omzet         : Rp ' + omzet.toLocaleString('id') + '\\n' +\n  'Rata-rata     : Rp ' + Math.round(omzet / Math.max(rows.length,1)).toLocaleString('id') + '\\n\\n' +\n  'PAJAK\\n' +\n  'PPh Final 0.5%: Rp ' + Math.round(pphFinal).toLocaleString('id') + '\\n' +\n  'PPN          : Rp ' + ppn.toLocaleString('id') + ' (belum PKP)\\n\\n' +\n  'Simpan buat lapor SPT tahunan.';\n\nreturn [{ json: { laporan, omzet, pphFinal } }];\n"
+      },
+      "id": "n3",
+      "name": "Hitung Pajak & Omzet",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.laporan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Kirim Rekap ke Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Arsipkan Rekap",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap Tanggal 1 Jam 07:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Semua Order Bulan Lalu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Semua Order Bulan Lalu": {
+      "main": [
+        [
+          {
+            "node": "Hitung Pajak & Omzet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hitung Pajak & Omzet": {
+      "main": [
+        [
+          {
+            "node": "Kirim Rekap ke Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim Rekap ke Admin": {
+      "main": [
+        [
+          {
+            "node": "Arsipkan Rekap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

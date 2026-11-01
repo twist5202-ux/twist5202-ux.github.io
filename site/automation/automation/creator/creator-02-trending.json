@@ -1,0 +1,130 @@
+{
+  "name": "CREATOR 02 — Trending Topic Harian (Ide Konten)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://trends.google.co.id/trending/rss?geo=ID",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Ambil Google Trends ID",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst raw = $input.first().json;\n// n8n HTTP node mengembalikan objek; ambil string XML kalau ada\nconst xml = typeof raw === 'string' ? raw : JSON.stringify(raw);\nconst titles = [...xml.matchAll(/<title>(.*?)<\\/title>/g)].map(m => m[1]);\n// buang 2 pertama (header RSS + channel)\nconst top = titles.slice(2, 12);\nlet out = 'TRENDING TOPIC HARI INI\\n=====================\\n';\ntop.forEach((t, i) => { out += (i+1) + '. ' + t.replace(/&amp;/g,'&') + '\\n'; });\nout += '\\n💡 Pilih 1, bikin konten hari ini.';\nreturn [{ json: { laporan: out } }];\n"
+      },
+      "id": "n3",
+      "name": "Ekstrak 10 Trending",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.laporan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Kirim Ide Konten",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 07:00": {
+      "main": [
+        [
+          {
+            "node": "Ambil Google Trends ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Google Trends ID": {
+      "main": [
+        [
+          {
+            "node": "Ekstrak 10 Trending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ekstrak 10 Trending": {
+      "main": [
+        [
+          {
+            "node": "Kirim Ide Konten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

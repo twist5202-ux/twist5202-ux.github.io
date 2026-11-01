@@ -1,0 +1,190 @@
+{
+  "name": "DEVOPS 01 — Website Uptime Monitor (Down → Alert)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/5 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap 5 Menit",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://GANTI_DOMAIN_LO.com",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Cek Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "n3-c",
+              "leftValue": "={{$json.statusCode || 200}}",
+              "rightValue": "200",
+              "operator": {
+                "type": "number",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n3",
+      "name": "Website Down?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "🚨 WEBSITE DOWN!\\n\\nDomain : GANTI_DOMAIN_LO.com\\nStatus : {{$json.statusCode || 'no response'}}\\nWaktu  : {{$now}}\\n\\nCek segera!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Alert Website Down",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "✅ Website normal lagi.\\nStatus: {{$json.statusCode}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Konfirmasi Normal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap 5 Menit": {
+      "main": [
+        [
+          {
+            "node": "Cek Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Website": {
+      "main": [
+        [
+          {
+            "node": "Website Down?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Down?": {
+      "main": [
+        [
+          {
+            "node": "Alert Website Down",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Konfirmasi Normal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

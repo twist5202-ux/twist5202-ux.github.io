@@ -1,0 +1,362 @@
+{
+  "name": "PROPERTI 01 — Lead Qualify + Follow-Up Otomatis",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "prop-lead",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Lead Masuk",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        300
+      ],
+      "webhookId": "prop-lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst b = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  nama: b.nama || 'Calon pembeli',\n  wa: String(b.wa || b.phone || '').replace(/[^0-9]/g, ''),\n  tipe: b.tipe_properti || 'rumah',\n  budget: b.budget || '-',\n  lokasi: b.lokasi || '-',\n  tujuan: b.tujuan || 'tinggal',\n  waktu: new Date().toLocaleString('id-ID'),\n  status: 'baru'\n}}];\n"
+      },
+      "id": "n2",
+      "name": "Normalize Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        300
+      ],
+      "notes": "Samakan format lead properti."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Catat Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "Halo {{$json.nama}} 👋\\n\\nTerima kasih sudah menghubungi kami soal {{$json.tipe}} di {{$json.lokasi}}.\\n\\nAgar kami bisa carikan yang paling pas, boleh tahu:\\n1. Budget yang direncanakan?\\n2. Kapan rencana survey / viewing?\\n\\nKami siap bantu."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Balas Cepat ke Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "LEAD BARU 🏠\\n==========\\nNama    : {{$('Normalize Lead').first().json.nama}}\\nTipe    : {{$('Normalize Lead').first().json.tipe}}\\nLokasi  : {{$('Normalize Lead').first().json.lokasi}}\\nBudget  : {{$('Normalize Lead').first().json.budget}}\\nTujuan  : {{$('Normalize Lead').first().json.tujuan}}\\nWA      : {{$('Normalize Lead').first().json.wa}}\\n\\nFollow up dalam 1 jam."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Notif Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n6",
+      "name": "Cek Lead Diam Tiap Hari 10:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Baca Lead Aktif",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        420,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = Date.now();\nreturn rows.filter(r => {\n  if (r.status !== 'baru') return false;\n  const t = new Date(r.waktu).getTime();\n  return (now - t) / 86400000 >= 2;\n}).map(r => ({ json: r }));\n"
+      },
+      "id": "n8",
+      "name": "Filter Diam > 2 Hari",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        520
+      ],
+      "notes": "Lead yang diam lebih dari 2 hari."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "Halo {{$json.nama}}, masih cari {{$json.tipe}} di {{$json.lokasi}}?\\n\\nKami baru update beberapa listing yang mungkin cocok. Mau dikabari? Balas aja ya."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n9",
+      "name": "Follow-Up Lead Diam",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "wa"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "n10",
+      "name": "Update Status Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1140,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "Lead Masuk": {
+      "main": [
+        [
+          {
+            "node": "Normalize Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Lead": {
+      "main": [
+        [
+          {
+            "node": "Catat Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catat Lead": {
+      "main": [
+        [
+          {
+            "node": "Balas Cepat ke Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Balas Cepat ke Lead": {
+      "main": [
+        [
+          {
+            "node": "Notif Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Lead Diam Tiap Hari 10:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Lead Aktif",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Lead Aktif": {
+      "main": [
+        [
+          {
+            "node": "Filter Diam > 2 Hari",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Diam > 2 Hari": {
+      "main": [
+        [
+          {
+            "node": "Follow-Up Lead Diam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow-Up Lead Diam": {
+      "main": [
+        [
+          {
+            "node": "Update Status Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

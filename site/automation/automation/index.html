@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twist Automation Studio — Template n8n untuk Bisnis Modern</title>
+<meta name="description" content="59 template automation n8n siap pakai untuk UMKM, crypto, marketplace, education, F&amp;B, AI content, properti, dan event. Coba bot WhatsApp-nya langsung di halaman ini. Sekali bayar, pakai selamanya.">
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --line:#1f2a38;
+    --txt:#e6edf3; --dim:#8b98a8;
+    --acc:#e8b339; --acc2:#f5d076;
+    --grn:#3fb950; --blue:#58a6ff; --red:#f85149; --pur:#bc8cff; --cyn:#39c5cf;
+    --wa:#25d366; --wa2:#128c7e;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --ease:cubic-bezier(.16,1,.3,1);
+    --ease-back:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--acc);text-decoration:none}
+  a:hover{color:var(--acc2)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 clamp(16px,4vw,24px)}
+  section[id]{scroll-margin-top:66px}
+  p,li,h1,h2,h3{overflow-wrap:break-word}
+
+  /* ============ FX LAYER ============ */
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  #glow{position:fixed;width:380px;height:380px;border-radius:50%;pointer-events:none;z-index:1;
+    background:radial-gradient(circle,rgba(232,179,57,.05) 0%,transparent 65%);transform:translate(-50%,-50%);transition:opacity .3s}
+  @media(pointer:coarse){#glow{display:none}}
+  #prog{position:fixed;top:0;left:0;height:2.5px;width:0;z-index:101;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+  #curtain{position:fixed;inset:0;background:var(--bg);z-index:9999;pointer-events:none;
+    transform:translateY(0);transition:transform .6s cubic-bezier(.76,0,.24,1)}
+  #curtain.up{transform:translateY(-100%)}
+  #curtain .cw{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    font-family:var(--mono);font-size:13px;color:var(--acc);letter-spacing:3px;opacity:.9;transition:opacity .3s}
+  #curtain.up .cw{opacity:0}
+
+  /* ============ NAV ============ */
+  nav{position:fixed;top:0;left:0;right:0;background:rgba(10,14,20,.92);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);z-index:100}
+  .nav-in{max-width:1100px;margin:0 auto;padding:12px clamp(16px,4vw,24px);
+    display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .logo{font-weight:700;font-size:16px;letter-spacing:-.3px;white-space:nowrap}
+  .logo span{color:var(--acc)}
+  .nav-links{display:flex;gap:18px;font-size:13px;color:var(--dim);align-items:center;flex-wrap:wrap}
+  .nav-links a{color:var(--dim);position:relative}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1.5px;background:var(--acc);transition:width .3s var(--ease)}
+  .nav-links a:hover{color:var(--txt)}
+  .nav-links a:hover::after{width:100%}
+  .nav-cta{background:var(--wa);color:#fff;padding:7px 16px;border-radius:100px;font-weight:700;font-size:12.5px;
+    transition:.25s var(--ease-back);white-space:nowrap}
+  .nav-cta:hover{background:var(--wa2);color:#fff;transform:translateY(-2px)}
+  @media(max-width:860px){.nav-links{display:none}}
+
+  /* ============ HERO ============ */
+  .hero{padding:clamp(104px,15vw,132px) 0 clamp(44px,7vw,68px);position:relative;overflow:hidden;text-align:center}
+  .hero::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:900px;height:900px;
+    background:radial-gradient(circle,rgba(232,179,57,.07) 0%,transparent 60%);pointer-events:none;
+    animation:drift 11s ease-in-out infinite alternate}
+  @keyframes drift{from{transform:translateX(-50%) translateY(0)}to{transform:translateX(-50%) translateY(26px)}}
+  .hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .hero-stats{opacity:0}
+  body.ready .hero .badge{animation:fUp .7s var(--ease) .05s forwards}
+  body.ready .hero h1{animation:fUp .8s var(--ease) .15s forwards}
+  body.ready .hero .sub{animation:fUp .8s var(--ease) .3s forwards}
+  body.ready .hero .cta-row{animation:fUp .8s var(--ease) .42s forwards}
+  body.ready .hero .hero-stats{animation:fUp .8s var(--ease) .55s forwards}
+  @keyframes fUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .hero h1 .ln{display:block;overflow:hidden}
+  .hero h1 .ln i{display:block;font-style:normal;transform:translateY(108%)}
+  body.ready .hero h1 .ln i{animation:lnUp .9s var(--ease) forwards}
+  body.ready .hero h1 .ln:nth-child(1) i{animation-delay:.18s}
+  body.ready .hero h1 .ln:nth-child(2) i{animation-delay:.3s}
+  @keyframes lnUp{to{transform:translateY(0)}}
+
+  .badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;color:var(--wa);
+    border:1px solid rgba(37,211,102,.3);background:rgba(37,211,102,.08);padding:6px 15px;border-radius:100px;
+    margin-bottom:22px;letter-spacing:1.4px}
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--wa);animation:blip 2s infinite}
+  @keyframes blip{0%,100%{opacity:1}50%{opacity:.4}}
+  h1{font-size:clamp(28px,5.6vw,52px);font-weight:800;letter-spacing:-1.8px;line-height:1.08;margin-bottom:18px}
+  h1 em{font-style:normal;background:linear-gradient(100deg,var(--acc),var(--acc2));-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{font-size:clamp(14.5px,2.2vw,17px);color:var(--dim);max-width:600px;margin:0 auto 30px}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 28px;border-radius:100px;
+    font-size:14.5px;font-weight:700;position:relative;overflow:hidden;
+    transition:transform .25s var(--ease-back),box-shadow .25s,background .25s,border-color .25s}
+  .btn-wa{background:var(--wa);color:#fff;box-shadow:0 6px 0 -2px var(--wa2),0 12px 24px -10px rgba(37,211,102,.45)}
+  .btn-wa:hover{transform:translateY(-3px);box-shadow:0 9px 0 -2px var(--wa2),0 18px 32px -10px rgba(37,211,102,.55)}
+  .btn-wa:active{transform:translateY(2px);box-shadow:0 3px 0 -2px var(--wa2)}
+  .btn-p{background:var(--acc);color:#0a0e14;box-shadow:0 5px 0 -1px #a87d1f,0 10px 22px -8px rgba(232,179,57,.4)}
+  .btn-p:hover{background:var(--acc2);transform:translateY(-3px);box-shadow:0 8px 0 -1px #a87d1f,0 16px 30px -10px rgba(232,179,57,.5)}
+  .btn-p:active{transform:translateY(2px);box-shadow:0 2px 0 -1px #a87d1f}
+  .btn-s{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  .btn-s:hover{border-color:var(--dim);transform:translateY(-2px)}
+  .btn .arw{transition:transform .3s var(--ease)}
+  .btn:hover .arw{transform:translateX(5px)}
+  .btn-p::after,.btn-wa::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);
+    transform:skewX(-18deg);transition:left .55s ease}
+  .btn-p:hover::after,.btn-wa:hover::after{left:135%}
+
+  .hero-stats{display:flex;gap:clamp(18px,4vw,36px);justify-content:center;margin-top:46px;flex-wrap:wrap}
+  .hs b{display:block;font-size:26px;font-weight:800;color:var(--acc);font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .hs span{font-size:12.5px;color:var(--dim)}
+
+  /* ============ SECTIONS ============ */
+  section{padding:clamp(40px,7vw,64px) 0}
+  .sec-in{opacity:0;transform:translateY(30px) scale(.99);
+    transition:opacity .85s var(--ease),transform .85s var(--ease)}
+  .sec-in.on{opacity:1;transform:none}
+  .sec-head{text-align:center;margin-bottom:36px}
+  .sec-head h2{font-size:clamp(23px,3.8vw,36px);font-weight:800;letter-spacing:-1.1px;margin-bottom:12px;line-height:1.14}
+  .sec-head p{color:var(--dim);font-size:14.5px;max-width:540px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:2.2px;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+  .eyebrow::before,.eyebrow::after{content:"";width:22px;height:1px;background:var(--acc)}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+  .rv.in{opacity:1;transform:none}
+  .rv-d1{transition-delay:.07s}.rv-d2{transition-delay:.14s}.rv-d3{transition-delay:.21s}
+  .rv-d4{transition-delay:.28s}.rv-d5{transition-delay:.35s}.rv-d6{transition-delay:.42s}
+
+  /* ============ DEMO SECTION ============ */
+  .demo{background:var(--bg2)}
+  .demo-grid{display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:start}
+  @media(max-width:900px){.demo-grid{grid-template-columns:1fr}}
+
+  .phone{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;
+    box-shadow:0 30px 60px -34px rgba(0,0,0,.8)}
+  .phone-bar{background:var(--wa2);padding:12px 16px;display:flex;align-items:center;gap:11px}
+  .phone-bar .av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:15px}
+  .phone-bar .who b{display:block;font-size:13.5px;font-weight:600;color:#fff}
+  .phone-bar .who span{display:block;font-size:10.5px;color:rgba(255,255,255,.72)}
+  .phone-bar .acts{margin-left:auto;display:flex;gap:12px;color:rgba(255,255,255,.85);font-size:14px}
+
+  .chat{height:380px;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:9px;
+    background:#0b1119;background-image:radial-gradient(rgba(255,255,255,.022) 1px,transparent 1px);background-size:18px 18px}
+  .msg{max-width:78%;padding:9px 12px;border-radius:12px;font-size:13.5px;line-height:1.55;
+    animation:msgIn .3s var(--ease);word-wrap:break-word}
+  @keyframes msgIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+  .msg.in{background:#1f2a38;color:var(--txt);align-self:flex-start;border-bottom-left-radius:4px}
+  .msg.out{background:var(--wa2);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .msg .t{display:block;font-size:9.5px;opacity:.55;margin-top:4px;text-align:right;font-family:var(--mono)}
+  .msg.typing{display:flex;gap:4px;align-items:center;padding:12px}
+  .msg.typing i{width:6px;height:6px;border-radius:50%;background:var(--dim);animation:tp 1.2s infinite}
+  .msg.typing i:nth-child(2){animation-delay:.2s}
+  .msg.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes tp{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  .quick{padding:10px 12px;border-top:1px solid var(--line);display:flex;gap:6px;flex-wrap:wrap;background:var(--card)}
+  .quick button{font-size:11.5px;padding:6px 12px;border-radius:100px;border:1px solid var(--line);color:var(--dim);
+    transition:.2s;background:var(--bg2)}
+  .quick button:hover{border-color:var(--wa);color:var(--wa);transform:translateY(-2px)}
+
+  .input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--card)}
+  .input-row input{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:100px;padding:11px 17px;
+    font-size:13.5px;font-family:inherit;color:var(--txt);outline:none;transition:border-color .25s}
+  .input-row input:focus{border-color:var(--wa)}
+  .input-row input::placeholder{color:#5a6675}
+  .send{width:42px;height:42px;border-radius:50%;background:var(--wa);display:grid;place-items:center;flex-shrink:0;
+    transition:.25s var(--ease-back)}
+  .send:hover{background:var(--wa2);transform:scale(1.08)}
+  .send svg{width:17px;height:17px;fill:#fff}
+
+  .demo-side{display:flex;flex-direction:column;gap:13px}
+  .dbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:19px}
+  .dbox h3{font-size:13.5px;font-weight:700;margin-bottom:11px;letter-spacing:-.2px}
+  .dbox p{font-size:12.5px;color:var(--dim);line-height:1.7}
+  .dbox ul{list-style:none;margin-top:7px}
+  .dbox li{font-size:12.5px;color:var(--dim);padding:5px 0;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  .dbox li .ck{color:var(--grn);font-weight:700;flex-shrink:0}
+  .dbox li .n{color:var(--acc);font-weight:700;flex-shrink:0;font-family:var(--mono);font-size:11px}
+  .d-stat{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px}
+  .d-stat div{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:11px;text-align:center}
+  .d-stat b{display:block;font-family:var(--mono);font-size:17px;color:var(--acc);font-weight:800}
+  .d-stat span{font-size:10px;color:var(--dim)}
+  .try-list{display:flex;flex-wrap:wrap;gap:6px}
+  .try-list button{font-size:11.5px;padding:6px 12px;border-radius:100px;border:1px solid var(--line);color:var(--dim);
+    background:var(--bg2);transition:.22s;font-family:var(--mono)}
+  .try-list button:hover{border-color:var(--wa);color:var(--wa);transform:translateY(-2px)}
+
+  /* ============ FILTER CHIPS ============ */
+  .filters{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:26px}
+  .chip{padding:9px 19px;border-radius:100px;border:1px solid var(--line);font-size:13px;font-weight:600;
+    color:var(--dim);transition:.25s var(--ease-back);background:var(--card)}
+  .chip:hover{border-color:var(--dim);color:var(--txt);transform:translateY(-2px)}
+  .chip.on{background:var(--acc);color:#0a0e14;border-color:var(--acc)}
+
+  /* ============ TEMPLATE CARDS ============ */
+  .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:clamp(12px,2.4vw,16px)}
+  .tpl{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:clamp(18px,3.5vw,24px);
+    position:relative;transition:border-color .3s,transform .45s var(--ease),box-shadow .45s;display:flex;flex-direction:column}
+  .tpl::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;pointer-events:none;
+    background:radial-gradient(480px circle at var(--mx,50%) var(--my,50%),rgba(232,179,57,.07),transparent 45%)}
+  .tpl:hover{border-color:rgba(232,179,57,.4);transform:translateY(-6px);box-shadow:0 22px 44px -24px rgba(0,0,0,.75)}
+  .tpl:hover::before{opacity:1}
+  .tpl::after{content:"";position:absolute;top:0;left:-130%;width:70%;height:100%;pointer-events:none;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.05),transparent);
+    transform:skewX(-16deg);transition:left .75s ease}
+  .tpl:hover::after{left:145%}
+  .tpl-num{font-family:var(--mono);font-size:10.5px;color:var(--acc);letter-spacing:1.2px;margin-bottom:10px}
+  .tpl h3{font-size:16.5px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+  .tpl p{font-size:13px;color:var(--dim);margin-bottom:13px;flex:1;line-height:1.6}
+  .tpl-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}
+  .tag{font-family:var(--mono);font-size:10px;color:var(--dim);background:var(--bg2);border:1px solid var(--line);
+    padding:3px 8px;border-radius:5px;transition:border-color .25s,color .25s}
+  .tpl:hover .tag{border-color:rgba(232,179,57,.3);color:var(--acc2)}
+  .tpl-meta{display:flex;justify-content:space-between;align-items:center;padding-top:13px;border-top:1px solid var(--line);gap:10px;flex-wrap:wrap}
+  .tpl-price{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--grn)}
+  .tpl-nodes{font-size:11px;color:var(--dim);font-family:var(--mono)}
+  .tpl.hide{display:none}
+  .hot{position:absolute;top:10px;right:14px;background:var(--acc);color:#0a0e14;font-size:9.5px;font-weight:700;
+    padding:3px 9px;border-radius:100px;letter-spacing:.5px;animation:hotPulse 2.4s ease-in-out infinite}
+  @keyframes hotPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,179,57,.45)}50%{box-shadow:0 0 0 7px rgba(232,179,57,0)}}
+
+  /* ============ PRICING ============ */
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));
+    gap:clamp(12px,2.4vw,16px);align-items:stretch}
+  .pk{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:clamp(20px,4vw,28px) clamp(16px,3vw,24px);display:flex;flex-direction:column;position:relative;
+    transition:border-color .3s,transform .45s var(--ease),box-shadow .45s}
+  .pk::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;pointer-events:none;
+    background:radial-gradient(480px circle at var(--mx,50%) var(--my,50%),rgba(232,179,57,.07),transparent 45%)}
+  .pk:hover{transform:translateY(-6px);box-shadow:0 22px 44px -24px rgba(0,0,0,.75)}
+  .pk:hover::before{opacity:1}
+  .pk-best{border-color:var(--acc);background:linear-gradient(160deg,rgba(232,179,57,.06),var(--card));
+    animation:bestGlow 3.2s ease-in-out infinite}
+  @keyframes bestGlow{0%,100%{box-shadow:0 0 0 0 rgba(232,179,57,.18)}50%{box-shadow:0 0 22px 2px rgba(232,179,57,.1)}}
+  .pk-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--acc);color:#0a0e14;
+    font-size:10px;font-weight:700;padding:4px 14px;border-radius:100px;letter-spacing:.5px;white-space:nowrap}
+  .pk h3{font-size:14.5px;color:var(--dim);font-weight:600;margin-bottom:6px}
+  .pk-amt{font-family:var(--mono);font-size:clamp(26px,5vw,32px);font-weight:800;letter-spacing:-1px;margin-bottom:4px;font-variant-numeric:tabular-nums}
+  .pk-note{font-size:11.5px;color:var(--dim);margin-bottom:19px}
+  .pk ul{list-style:none;margin-bottom:23px;flex:1}
+  .pk li{font-size:13px;color:var(--dim);padding:6px 0;border-bottom:1px solid rgba(31,42,56,.5);display:flex;gap:9px}
+  .pk li::before{content:"✓";color:var(--grn);font-weight:700;flex-shrink:0}
+  .pk li.no{color:#5a6675}
+  .pk li.no::before{content:"—";color:#5a6675}
+  .pk .btn{text-align:center;width:100%}
+
+  /* ============ ACCORDION (panduan inline) ============ */
+  .acc{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);overflow:hidden;
+    transition:border-color .3s}
+  .acc:hover{border-color:rgba(232,179,57,.3)}
+  .acc-h{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:16px 20px;font-size:14px;font-weight:700;text-align:left;transition:opacity .2s}
+  .acc-h:hover{opacity:.6}
+  .acc-h .pm{font-family:var(--mono);font-size:17px;color:var(--acc);flex-shrink:0;
+    transition:transform .35s var(--ease-back);display:inline-block}
+  .acc.open .acc-h .pm{transform:rotate(45deg)}
+  .acc-b{max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
+  .acc.open .acc-b{max-height:900px}
+  .acc-b-in{padding:0 20px 18px;font-size:13.5px;color:var(--dim);line-height:1.75}
+  .acc-b-in ol{margin:10px 0 0 0;list-style:none;counter-reset:st}
+  .acc-b-in ol li{counter-increment:st;position:relative;padding:7px 0 7px 34px;border-bottom:1px solid rgba(31,42,56,.4)}
+  .acc-b-in ol li:last-child{border-bottom:none}
+  .acc-b-in ol li::before{content:counter(st);position:absolute;left:0;top:9px;width:22px;height:22px;border-radius:7px;
+    background:var(--bg2);border:1px solid var(--line);display:grid;place-items:center;
+    font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--acc)}
+  .acc-b-in code{font-family:var(--mono);font-size:12px;background:var(--bg2);border:1px solid var(--line);
+    padding:2px 7px;border-radius:5px;color:var(--acc2)}
+  .acc-b-in table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px;display:block;overflow-x:auto}
+  .acc-b-in th,.acc-b-in td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .acc-b-in th{background:var(--bg2);font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim)}
+
+  /* ============ FAQ ============ */
+  .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);
+    overflow:hidden;transition:border-color .3s}
+  .faq-item:hover{border-color:rgba(232,179,57,.3)}
+  .faq-q{padding:15px 20px;font-weight:600;font-size:14px;cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;width:100%;text-align:left}
+  .faq-q::after{content:"+";font-family:var(--mono);color:var(--acc);font-size:18px;flex-shrink:0;
+    transition:transform .3s var(--ease-back);display:inline-block}
+  .faq-item.open .faq-q::after{transform:rotate(180deg)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+  .faq-item.open .faq-a{max-height:400px}
+  .faq-a-in{padding:0 20px 16px;font-size:13.5px;color:var(--dim);line-height:1.7}
+
+  /* ============ CTA ============ */
+  .cta{padding:20px 0 66px}
+  .cta-box{background:linear-gradient(135deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:22px;padding:clamp(32px,5vw,52px);text-align:center;position:relative;overflow:hidden}
+  .cta-box::before{content:"";position:absolute;top:-140px;left:50%;transform:translateX(-50%);width:520px;height:300px;
+    background:radial-gradient(ellipse at center,rgba(232,179,57,.15),transparent 68%);pointer-events:none}
+  .cta-box h2{font-size:clamp(23px,3.6vw,36px);font-weight:800;letter-spacing:-1.1px;margin-bottom:12px;position:relative}
+  .cta-box p{color:var(--dim);font-size:14.5px;max-width:440px;margin:0 auto 24px;position:relative}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+  .cta-num{margin-top:18px;font-family:var(--mono);font-size:13px;color:var(--dim);position:relative}
+  .cta-num b{color:var(--wa);font-weight:700}
+  .cta-note{margin-top:20px;font-size:12.5px;color:var(--dim);position:relative}
+  .cta-note b{color:var(--txt);font-weight:600}
+
+  footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:12.5px;color:#5a6675}
+  footer a{color:var(--dim)}
+
+  /* ============ SHOOTING STARS ============ */
+  .shoot{position:fixed;width:2px;height:2px;border-radius:50%;background:#fff;z-index:1;
+    pointer-events:none;box-shadow:0 0 8px #fff}
+  .shoot::after{content:"";position:absolute;left:0;top:0;width:90px;height:1px;
+    background:linear-gradient(90deg,#fff,transparent);transform-origin:0 50%}
+
+  @media print{
+    nav,.cta-row,.hero-cta,#stars,#glow,#prog,#curtain,.quick,.input-row{display:none}
+    body{background:#fff;color:#111}
+    .tpl,.pk,.acc,.faq-item,.dbox,.cta-box,.phone{background:#fff;border:1px solid #ddd;transform:none!important;box-shadow:none}
+    .rv,.sec-in{opacity:1;transform:none}
+    .hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .hero-stats{opacity:1;transform:none}
+    .hero h1 .ln i{transform:none}
+    h1 em{-webkit-text-fill-color:#8a6d1f;color:#8a6d1f}
+    .box p,.tpl p,.pk li,.dbox p,.acc-b-in,.faq-a-in{color:#444}
+    h1,h2,h3{color:#111}
+    section{padding:18px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    .rv,.sec-in{opacity:1;transform:none}
+    .hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .hero-stats{opacity:1;transform:none}
+    .hero h1 .ln i{transform:none}
+    #curtain{display:none}
+  }
+
+/* TWIST EXPERIENCE UPDATE • 2026 */
+:root{--bg:#080b12;--bg2:#0e1420;--card:#121b2a;--line:#283247;--txt:#f6f7fb;--dim:#a5afbf;--acc:#f2bc59;--acc2:#ffe2a3;--ease:cubic-bezier(.22,1,.36,1)}
+body{background:radial-gradient(ellipse 70% 28% at 50% -5%,rgba(242,188,89,.095),transparent 75%),var(--bg)}
+nav{background:rgba(8,11,18,.78);border-bottom:1px solid rgba(242,188,89,.12);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.nav-in{min-height:70px}.logo{font-size:18px;letter-spacing:-.65px}.nav-links a{transition:color .25s}.nav-links a:focus-visible,.btn:focus-visible,.chip:focus-visible,.tpl:focus-visible{outline:2px solid var(--acc);outline-offset:4px}
+.hero{padding-top:clamp(122px,16vw,165px);padding-bottom:clamp(65px,8vw,105px)}
+.hero::before{background:radial-gradient(circle,rgba(245,189,81,.13) 0%,rgba(79,112,172,.035) 38%,transparent 67%)}
+.hero h1{font-size:clamp(37px,6.5vw,72px);letter-spacing:-.065em;line-height:1.07;margin-bottom:25px}
+.hero h1 em{background-image:linear-gradient(115deg,#fff1c7,#f3be63 55%,#e59d32)}
+.sub{font-size:clamp(15px,2.1vw,18px);line-height:1.8}.badge{background:rgba(242,188,89,.065);border-color:rgba(242,188,89,.28);color:var(--acc);font-weight:700}
+.btn{min-height:48px;transition:transform .34s var(--ease),box-shadow .34s var(--ease),background .25s,border-color .25s}
+.btn-p{background:linear-gradient(120deg,#f7c872,#e7ad3c);box-shadow:0 12px 36px rgba(230,164,54,.18)}.btn-p:hover{box-shadow:0 17px 42px rgba(230,164,54,.26)}
+.btn-s{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.14)}
+section{position:relative}.sec-head{margin-bottom:44px}.sec-head h2{letter-spacing:-.045em;line-height:1.13}.sec-head p{line-height:1.85}
+.tpl,.pk,.phone,.dbox,.acc,.faq-item{border-color:rgba(150,173,210,.16)!important;box-shadow:0 12px 40px rgba(0,0,0,.12)}
+.tpl,.pk{position:relative;isolation:isolate;transition:transform .42s var(--ease),border-color .35s,box-shadow .42s,opacity .35s!important}
+.tpl:not(.hide):hover,.pk:hover{transform:translateY(-8px);border-color:rgba(242,188,89,.45)!important;box-shadow:0 22px 65px rgba(0,0,0,.31),0 0 0 1px rgba(242,188,89,.08)}
+.tpl::after,.pk::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(450px circle at var(--mx,50%) var(--my,0%),rgba(242,188,89,.085),transparent 58%);z-index:-1}.tpl:hover::after,.pk:hover::after{opacity:1}
+.tpl h3{letter-spacing:-.02em}.tpl p{line-height:1.75}.tag{border-radius:8px}.tpl-price{letter-spacing:-.025em}
+.filters{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:9px}.chip{transition:background .25s,color .25s,transform .25s,border-color .25s}.chip:hover{transform:translateY(-2px)}
+.twist-tools{max-width:740px;margin:0 auto 22px;display:flex;gap:12px;align-items:center}.twist-search{width:100%;min-width:0;background:#141e2e;border:1px solid rgba(177,194,221,.23);border-radius:15px;color:#fff;padding:15px 18px;font:inherit;font-size:14px;transition:border-color .25s,box-shadow .25s}.twist-search:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(242,188,89,.1)}.twist-search::placeholder{color:#8794a9}.twist-count{font:12px var(--mono);color:var(--dim);white-space:nowrap}.twist-empty{display:none;text-align:center;color:var(--dim);padding:34px 15px;border:1px dashed var(--line);border-radius:16px;margin-top:14px}.twist-empty.show{display:block}
+.twist-top{position:fixed;right:22px;bottom:24px;z-index:90;width:45px;height:45px;border-radius:14px;background:#f2bc59;color:#131313;display:grid;place-items:center;box-shadow:0 12px 32px rgba(0,0,0,.35);opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .3s,transform .3s}.twist-top.show{opacity:1;transform:translateY(0);pointer-events:auto}.twist-top:hover{transform:translateY(-4px)}
+.twist-menu{display:none;align-items:center;justify-content:center;width:43px;height:43px;border:1px solid var(--line);border-radius:12px;font-size:21px;background:rgba(255,255,255,.04)}
+@media(max-width:860px){.nav-in{flex-wrap:wrap}.twist-menu{display:flex;margin-left:auto}.nav-links{display:none;order:5;flex-basis:100%;width:100%;flex-direction:column;align-items:stretch;gap:0;padding:10px 2px 14px}.nav-links.twist-open{display:flex}.nav-links a{display:block;padding:12px 8px;border-bottom:1px solid var(--line)}.nav-cta{padding:9px 12px}.hero{padding-top:120px}}
+@media(max-width:560px){.hero h1{letter-spacing:-.045em}.hero-stats{gap:22px}.twist-tools{flex-direction:column;gap:7px}.twist-count{align-self:flex-end}.tpl-grid{gap:15px}.twist-top{right:13px;bottom:14px}.nav-in{gap:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.rv,.sec-in,.hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .hero-stats{opacity:1!important;transform:none!important}.hero h1 .ln i{transform:none!important}#curtain{display:none}}
+
+
+/* ===== TWIST STUDIO / COMPLETE VISUAL REBRAND ===== */
+:root{--bg:#f7f9ff;--bg2:#edf2fc;--card:#ffffff;--line:#dce3f1;--txt:#17213a;--dim:#66748c;--acc:#6257e9;--acc2:#8e78ff;--grn:#0f9c88;--blue:#4d67e9;--red:#f25a72;--pur:#8061e9;--cyn:#0a9dac;--wa:#16a58e;--wa2:#087c75;--sans:Inter,"Segoe UI",Arial,sans-serif}
+body{background:#f7f9ff!important;color:#17213a!important}
+#stars,#glow{display:none!important}#curtain{background:#f7f9ff}#curtain .cw{color:#6358dd}
+#prog{height:4px;background:linear-gradient(90deg,#7866fa,#fd879d,#ffb761)}
+a{color:#6556e7}a:hover{color:#4334b9}
+.wrap{max-width:1200px}
+nav{background:rgba(255,255,255,.91)!important;border-bottom:1px solid #e4e7f4!important;box-shadow:0 6px 35px rgba(41,50,96,.045)}
+.nav-in{max-width:1200px;min-height:78px}.logo{font-size:21px;font-weight:850;color:#1b2143!important;letter-spacing:-1.1px}.logo span{color:#6e59eb}.nav-links{gap:25px}.nav-links a{color:#57647e}.nav-links a:hover{color:#6556e7}.nav-links a::after{background:#7561ef}
+.nav-cta{background:#6557e9!important;color:white!important;box-shadow:0 8px 19px #6557e928;border-radius:12px;padding:11px 17px}
+.hero{padding:155px 0 108px;text-align:left;background:radial-gradient(ellipse 45% 65% at 90% 40%,rgba(189,168,255,.30),transparent 78%),radial-gradient(ellipse 38% 60% at -10% 65%,rgba(129,206,255,.20),transparent 76%),#f7f9ff;overflow:hidden}
+.hero::before{content:"";left:auto;right:-210px;top:35px;width:760px;height:760px;background:radial-gradient(circle,rgba(116,93,243,.10),transparent 65%);animation:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);column-gap:48px;align-items:center}
+.hero .badge,.hero h1,.hero .sub,.hero .cta-row{grid-column:1}
+.hero .badge{width:max-content;background:#ece8ff!important;border:1px solid #d9d0ff;color:#5e4de0;letter-spacing:.6px;font-size:11px;font-weight:800;padding:9px 15px;margin-bottom:25px}
+.badge .dot{background:#7966f7}
+.hero h1{font-size:clamp(43px,5.4vw,76px);line-height:1.045;letter-spacing:-.073em;color:#17213a;margin-bottom:23px}
+.hero h1 em{background:linear-gradient(105deg,#6355e9 0%,#8e67ed 48%,#f17691 100%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{margin:0 0 30px;max-width:570px;color:#6a728a;font-size:17px;line-height:1.75}
+.cta-row{justify-content:flex-start}.btn{border-radius:14px;padding:14px 23px;min-height:51px;font-size:14px}
+.btn-wa{background:#6657e9!important;color:white!important;box-shadow:0 12px 26px #6959ea38!important}
+.btn-wa:hover{background:#5041d0!important}
+.btn-p{background:#17213a!important;color:#fff!important;box-shadow:0 12px 26px #17213a1f!important}
+.btn-p:hover{background:#303d5b!important}
+.btn-s{background:white!important;color:#273350!important;border:1px solid #d8ddec!important}
+.hero-stats{grid-column:1 / -1;justify-content:space-between;gap:22px;margin-top:83px;padding:30px 38px;background:white;border:1px solid #e9e9f2;border-radius:22px;box-shadow:0 20px 65px #2b317512}
+.hs b{color:#6657e9;font-family:var(--sans);font-size:29px;letter-spacing:-1px}.hs span{color:#68758d}
+.twist-feature{grid-column:2;grid-row:1 / 5;align-self:center;position:relative;min-height:430px;background:linear-gradient(145deg,#242a56,#3e368b);border-radius:28px;padding:26px;box-shadow:0 32px 75px #5041c03b;overflow:hidden;transform:rotate(2deg);animation:tw-float 6s ease-in-out infinite}
+.twist-feature::before{content:"";position:absolute;width:280px;height:280px;right:-80px;top:-95px;background:radial-gradient(circle,#a288ff7f,transparent 68%)}.twist-feature::after{content:"";position:absolute;width:210px;height:210px;bottom:-90px;left:-90px;background:radial-gradient(circle,#66d7fc50,transparent 70%)}
+.tw-f-top{position:relative;z-index:1;color:#e4e1ff;font-size:12px;letter-spacing:1px;display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid #ffffff22}.tw-f-pill{border:1px solid #ffffff42;border-radius:30px;padding:6px 12px;color:#9ff0d7;background:#29bda71c}
+.tw-f-heading{position:relative;color:white;font-size:24px;font-weight:800;letter-spacing:-1px;margin:24px 0 20px}
+.tw-flow{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:13px}
+.tw-flow-step{display:flex;align-items:center;gap:13px;padding:16px 18px;border:1px solid #ffffff29;background:#ffffff16;backdrop-filter:blur(10px);border-radius:15px;color:white;font-size:14px;font-weight:700}
+.tw-flow-icon{display:grid;place-items:center;width:38px;height:38px;background:#ffffff25;border-radius:11px;font-size:20px}
+.tw-flow-arrow{text-align:center;color:#bcb0ff;font-size:16px;height:9px;line-height:9px}
+.tw-f-bottom{position:relative;z-index:1;color:#d6d4f5;font-size:12px;margin-top:21px}.tw-f-bottom b{color:#aaf3de}
+@keyframes tw-float{0%,100%{transform:rotate(2deg) translateY(0)}50%{transform:rotate(1deg) translateY(-12px)}}
+section{padding:90px 0}.demo,#harga,#faq{background:#eef2fb!important}
+.sec-head h2{color:#19223f;font-size:clamp(30px,4vw,48px);letter-spacing:-.055em}.sec-head p{color:#6a7790}
+.eyebrow{color:#6657e9;font-weight:800;letter-spacing:1.4px}.eyebrow::before,.eyebrow::after{background:#8472f8}
+.tpl,.pk,.phone,.dbox,.acc,.faq-item{background:#fff!important;color:#19243b!important;border:1px solid #dde3f0!important;box-shadow:0 14px 45px #26346d0b!important}
+.tpl,.pk{border-radius:22px!important;overflow:hidden}
+.tpl:not(.hide):hover,.pk:hover{border-color:#a79bf8!important;box-shadow:0 25px 55px #6260ca20!important;transform:translateY(-9px)}
+.tpl::after,.pk::after{background:radial-gradient(450px circle at var(--mx,50%) var(--my,0%),#8d80fa16,transparent 65%)}
+.tpl h3,.pk h3,.dbox h3{color:#19243b}.tpl p,.pk-note,.tpl-nodes{color:#69758b!important}.tpl-num{color:#7561eb!important}
+.tpl-price,.pk-amt{color:#6254dc!important}.tag{background:#f0edff!important;color:#6554ce!important;border-color:#e2dcff!important}
+.hot,.pk-badge{background:#ffedf1!important;color:#d54366!important}
+.filters{gap:10px;margin-bottom:21px}.chip{border-color:#dbe1f0!important;background:white!important;color:#52627c!important;padding:11px 19px}.chip.on,.chip:hover{background:#6657e9!important;color:#fff!important;border-color:#6657e9!important}
+.twist-search{background:white!important;color:#1d2642!important;border-color:#d9e0ed!important;box-shadow:0 6px 22px #2436740a}.twist-search::placeholder{color:#8190a7}.twist-count{color:#657089}.twist-empty{background:white;color:#657089}
+.pk-best{border:2px solid #7b68f0!important;box-shadow:0 22px 58px #7866ef20!important}
+.phone-bar{background:#6154d5!important}.chat{background:#f0f4fb!important}.msg.in{background:#ffffff!important;color:#25344c!important}.msg.out{background:#dedafa!important;color:#25254c!important}.quick button{background:#fff!important;color:#6657e9!important;border-color:#dbd5fa!important}
+.input-row{background:white!important}.input-row input{color:#25344c!important}.send{background:#6657e9!important}
+.dbox li,.dbox p,.acc-b,.faq-a{color:#637189!important}.d-stat b{color:#6352df!important}
+.acc-h,.faq-q{color:#1d2943!important}.acc-b-in{color:#56647a}.acc table{background:white;color:#23314b}.acc th{background:#edf0fa;color:#26324c}
+#harga .pk li{color:#536279}footer{background:#19213c!important;color:#c0cbdf!important}
+.twist-menu{background:#f2f0ff!important;color:#6656e6!important;border-color:#ded8ff!important}.nav-links.twist-open{background:white;border-radius:16px;padding:14px;box-shadow:0 20px 45px #37416d1c}
+.twist-top{background:#6958e9!important;color:white!important}
+@media(max-width:950px){.hero .wrap{grid-template-columns:1fr}.hero .badge,.hero h1,.hero .sub,.hero .cta-row{grid-column:1}.twist-feature{grid-column:1;grid-row:auto;max-width:640px;width:100%;margin:55px auto 0;min-height:390px}.hero-stats{grid-column:1;margin-top:45px}.hero{text-align:center}.hero .badge{margin-left:auto;margin-right:auto}.hero .sub{margin-left:auto;margin-right:auto}.hero .cta-row{justify-content:center}}
+@media(max-width:600px){.hero{padding:118px 0 62px}.hero h1{font-size:clamp(38px,10vw,54px)}.hero .sub{font-size:15px}.twist-feature{transform:none;animation:none;min-height:0;padding:19px;margin-top:35px;border-radius:22px}.tw-f-heading{font-size:21px}.tw-flow-step{padding:11px 13px}.hero-stats{padding:20px;display:grid;grid-template-columns:1fr 1fr;text-align:center;border-radius:18px}.hs b{font-size:23px}section{padding:65px 0}.nav-in{min-height:68px}.logo{font-size:18px}.nav-links{gap:0}.nav-links a{color:#3b4665}}
+@media(prefers-reduced-motion:reduce){.twist-feature{animation:none!important;transform:none!important}}
+
+
+/* AI handoff demo redesign */
+.demo-grid{grid-template-columns:minmax(0,1.35fr) minmax(270px,.75fr);gap:26px}
+.phone{border-radius:24px!important;overflow:hidden;box-shadow:0 20px 65px #343a8a19!important}
+.phone-bar{padding:17px 20px;background:linear-gradient(100deg,#554ad1,#8070e9)!important}
+.phone-bar .av{width:43px;height:43px;background:#ffffff2d}.phone-bar .who b{font-size:15px}.phone-bar .who span{font-size:11px;color:#c5ffed}
+.phone-bar .acts{display:none}
+.demo-mode-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 18px;background:#f5f4ff;color:#6459b3;font-size:10px;letter-spacing:.5px;font-weight:800}
+.demo-mode-line button{font-size:11px;color:#5745d7;text-decoration:underline;font-weight:800}
+.handoff-timer{padding:10px 18px;background:#fff1e8;color:#a15a24;font-size:12px;font-weight:700;text-align:center}
+.chat{height:420px!important;background:#f5f7fc!important;background-image:radial-gradient(#dfe5f0 1px,transparent 1px)!important;background-size:19px 19px!important;padding:23px!important;gap:13px}
+.msg{max-width:82%;padding:12px 15px;border-radius:16px;font-size:13px;box-shadow:0 4px 15px #2836600b}
+.msg.out{background:#6556e7!important;color:white!important}.msg.in{background:white!important;color:#273653!important}
+.demo-note{align-self:center;max-width:94%;text-align:center;background:#e9e7fb;border:1px solid #dcd7fa;border-radius:11px;padding:7px 12px;color:#6558a4;font-size:11px;line-height:1.5}
+.quick{padding:13px 17px!important;gap:8px}.quick button{border-radius:10px!important;padding:8px 11px!important}
+.input-row{padding:15px 17px!important}.input-row input{background:#f5f7fc!important;color:#26314b!important;border-radius:12px!important}.send{background:#6657e9!important;border-radius:12px!important}
+.admin-tools{background:#f7f5ff;border-top:1px solid #e2dcfb;padding:15px 18px}.admin-tools label{display:block;font-size:12px;font-weight:800;color:#5342b9;margin-bottom:9px}.admin-compose{display:flex;gap:8px}.admin-compose input{flex:1;min-width:0;background:white;border:1px solid #d6cff6;border-radius:9px;padding:11px;font:inherit;font-size:13px;color:#25344c}.admin-compose button{background:#6557e9;color:white;font-weight:700;padding:10px 12px;border-radius:9px;font-size:12px;white-space:nowrap}.admin-tools small{display:block;margin-top:8px;color:#7c7793;font-size:11px}
+[hidden]{display:none!important}
+@media(max-width:900px){.demo-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.chat{height:375px!important;padding:15px!important}.admin-compose{flex-direction:column}.admin-compose button{width:100%}.msg{max-width:90%}.demo-mode-line{font-size:9px}}
+
+
+/* Customer service dashboard - integrated demo */
+.cs-dashboard{margin-top:30px;background:#fff;border:1px solid #dde3f0;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px #27397818;color:#25314c}
+.cs-head{display:flex;align-items:center;justify-content:space-between;padding:24px 27px;border-bottom:1px solid #e8ebf3;background:linear-gradient(120deg,#fff,#f6f4ff)}
+.cs-overline{display:block;font-size:10px;letter-spacing:1.8px;color:#7162de;font-weight:800;margin-bottom:7px}.cs-head h3{font-size:23px;letter-spacing:-.7px;color:#1d2643}.cs-head p{font-size:12px;color:#748098;margin-top:3px}.cs-live{font-size:10px;color:#087f72;background:#dff8ef;padding:6px 9px;letter-spacing:0;border-radius:30px;vertical-align:middle}.cs-avatar{width:43px;height:43px;background:#e9e5ff;color:#6150d0;display:grid;place-items:center;border-radius:13px;font-weight:800}
+.cs-metrics{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid #e8ebf3}.cs-metrics>div{padding:16px 25px;border-right:1px solid #e8ebf3;display:flex;justify-content:space-between;align-items:center}.cs-metrics>div:last-child{border:0}.cs-metrics span{font-size:12px;color:#738098}.cs-metrics strong{font-size:22px;color:#574cbb}
+.cs-workspace{display:grid;grid-template-columns:280px 1fr;min-height:370px}.cs-inbox{border-right:1px solid #e8ebf3;background:#f9faff;padding:19px 14px}.cs-label{display:flex;justify-content:space-between;font-size:11px;color:#59678b;font-weight:800;letter-spacing:1px;padding:0 9px 14px}.cs-label span{font-weight:500;letter-spacing:0;color:#939fb1}.cs-contact{width:100%;padding:12px 9px;display:flex;gap:10px;align-items:center;text-align:left;border-radius:13px}.cs-contact.selected{background:#eeeaff}.cs-contact-av{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:#6d5ce4;color:white;display:grid;place-items:center;font-weight:800}.cs-contact strong{font-size:12px;display:block;color:#28324b}.cs-contact small{font-size:10px;display:block;color:#7c87a1;margin-top:3px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cs-inbox p{font-size:10px;color:#929bad;padding:16px 9px;line-height:1.6}.cs-unread{margin-left:auto;font-size:10px;color:white;background:#ed678b;border-radius:30px;padding:2px 7px}
+.cs-thread{display:flex;flex-direction:column;min-width:0}.cs-thread-head{padding:14px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #edf0f7}.cs-thread-head strong{display:block;font-size:13px}.cs-thread-head small{display:block;font-size:10px;color:#11a18a;margin-top:3px}.cs-thread-head>span{font-size:11px;color:#8a95a8}
+.cs-log{height:198px;overflow-y:auto;padding:18px 23px;background:#fcfdff;display:flex;flex-direction:column;gap:10px}.cs-bubble{align-self:flex-start;max-width:82%;background:#f0f2f9;border-radius:12px 12px 12px 3px;padding:9px 13px;font-size:12px;color:#43516c;line-height:1.5;overflow-wrap:anywhere}.cs-bubble.out{align-self:flex-end;background:#e7e2ff;color:#5447b1;border-radius:12px 12px 3px 12px}.cs-bubble.system{align-self:center;background:transparent;color:#8d96aa;text-align:center;font-size:10px;padding:4px}
+.cs-actions{display:flex;flex-wrap:wrap;gap:8px;padding:10px 18px;border-top:1px solid #edf0f7}.cs-actions button,.cs-compose button{background:#6657e9;color:white;border-radius:9px;padding:9px 13px;font-weight:700;font-size:11px}.cs-actions .cs-secondary{background:#eae7fb;color:#6558c3}.cs-actions button:disabled,.cs-compose button:disabled{opacity:.4;cursor:not-allowed}.cs-compose{display:flex;gap:8px;padding:0 18px 8px}.cs-compose input{flex:1;min-width:0;border:1px solid #dee3f0;padding:12px 13px;border-radius:10px;background:#f9faff;font:inherit;font-size:12px;color:#2e3854}.cs-compose input:disabled{opacity:.55}.cs-hint{padding:0 18px 14px;color:#8994aa;font-size:10px}
+@media(max-width:690px){.cs-head{padding:19px}.cs-head h3{font-size:19px}.cs-metrics>div{padding:13px 10px;display:block;text-align:center}.cs-metrics strong{display:block}.cs-workspace{grid-template-columns:1fr}.cs-inbox{border-right:0;border-bottom:1px solid #e8ebf3;padding:12px}.cs-inbox p{display:none}.cs-log{height:220px}.cs-head .cs-avatar{display:none}}
+
+
+/* FIXED CATALOG STRUCTURE & RESPONSIVE LAYOUT */
+:root{--bg:#f7f9ff;--bg2:#eef2fb;--card:#fff;--line:#dce3f1;--txt:#17213a;--dim:#66748c;--acc:#6257e9;--acc2:#8e78ff}
+body{background:#f7f9ff;color:#17213a;line-height:1.55}
+.wrap{max-width:1180px}
+#stars,#glow{display:none!important}
+.hero{padding-top:140px;padding-bottom:65px}
+.hero .wrap{min-width:0}
+.hero h1{font-size:clamp(39px,5.8vw,72px);line-height:1.07}
+.hero .sub{font-size:16px;max-width:520px}
+.hero-stats{display:none!important}
+.twist-feature{transform:none!important;animation:none!important;min-width:0;max-width:100%}
+.sec-head{margin-bottom:29px}
+.sec-head h2{font-size:clamp(30px,4.4vw,46px)}
+#template .filters{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:5px 0 14px;max-width:100%;justify-content:flex-start;scrollbar-width:thin}
+#template .filters .chip{flex:0 0 auto;white-space:nowrap;font-size:12px;padding:10px 15px}
+#template .tpl-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:17px!important;width:100%;align-items:stretch}
+#template .tpl{min-width:0!important;width:auto!important;max-width:none!important;padding:22px!important;display:flex;flex-direction:column;border-radius:16px!important;transform:none;overflow:hidden}
+#template .tpl.hide,#template .tpl[hidden]{display:none!important}
+#template .tpl h3{font-size:17px;line-height:1.35;overflow-wrap:normal;word-break:normal}
+#template .tpl p{font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#template .tpl-tags{min-height:25px}
+#template .tpl-meta{margin-top:auto}
+#template .tpl:hover{transform:translateY(-3px)!important}
+.catalog-more{display:block;margin:27px auto 0;padding:12px 22px;border-radius:12px;background:#6657e9;color:#fff;font-weight:700;font-size:14px;box-shadow:0 8px 20px #6657e926}
+.catalog-more[hidden]{display:none!important}
+.demo-grid{gap:24px}
+@media(max-width:950px){.hero .wrap{grid-template-columns:1fr}.hero{text-align:center}.twist-feature{width:100%;max-width:620px;margin:32px auto 0}.hero .cta-row{justify-content:center}#template .tpl-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:580px){.hero{padding:110px 0 48px}.hero h1{font-size:clamp(36px,10vw,53px)}.hero .sub{font-size:14px}.twist-feature{padding:18px;min-height:0}#template .tpl-grid{grid-template-columns:1fr!important}#template .tpl{padding:20px!important}section{padding:58px 0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Contact section — focused, responsive, no duplicate contact details */
+.contact-section{padding:64px 0 86px!important;background:#eef2fb!important}
+.contact-panel{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.85fr);align-items:center;gap:clamp(24px,5vw,68px);padding:clamp(28px,5vw,62px);background:#fff;border:1px solid #dfe5f1;border-radius:28px;box-shadow:0 24px 70px rgba(29,44,90,.07)}
+.contact-eyebrow{display:inline-block;color:#6859d9;font-size:11px;font-weight:800;letter-spacing:1.3px;margin-bottom:17px}
+.contact-copy h2{font-size:clamp(28px,3.7vw,43px);font-weight:800;line-height:1.15;letter-spacing:-1.5px;color:#1b2741;max-width:570px;margin:0 0 16px}
+.contact-copy p{max-width:470px;font-size:15px;line-height:1.7;color:#65728a;margin:0}
+.contact-trust{display:flex;gap:9px 18px;flex-wrap:wrap;margin-top:22px;color:#64718c;font-size:12px;font-weight:600}
+.contact-action{background:#f7f8fe;border:1px solid #e5e9f4;border-radius:20px;padding:24px;min-width:0}
+.contact-channel{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.contact-channel-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#e8e4ff;color:#6657e9;font-size:25px;flex-shrink:0}
+.contact-channel small{display:block;color:#77849c;font-size:11px;margin-bottom:4px}
+.contact-channel strong{display:block;font-size:clamp(15px,1.8vw,19px);color:#24314d;white-space:nowrap}
+.contact-wa{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#6657e9;color:#fff!important;border-radius:12px;padding:15px 18px;font-weight:750;font-size:14px;transition:background .2s,transform .2s;text-decoration:none}
+.contact-wa:hover{background:#5142d0;transform:translateY(-2px)}
+.contact-footnote{display:block;color:#8a95a9;font-size:11px;text-align:center;margin-top:12px}
+.site-footer{padding:25px 0!important;background:#19213c!important;color:#c0cbdf!important;text-align:left!important}
+.footer-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px}
+.footer-brand{font-size:17px;font-weight:850;letter-spacing:-.5px;color:#fff}.footer-brand span{color:#9b8efb}
+.site-footer a{color:#d6d0ff!important;text-decoration:none;font-weight:700}
+@media(max-width:740px){.contact-section{padding:45px 0 60px!important}.contact-panel{grid-template-columns:minmax(0,1fr);gap:25px;border-radius:20px;padding:27px 22px}.contact-copy h2{letter-spacing:-1px}.contact-action{padding:18px}.footer-row{justify-content:center;text-align:center}.footer-row>span:nth-child(2){width:100%;order:3}}
+
+
+/* Bundle 10 visibility and layout fix — accessible light-theme pricing */
+#harga .pgrid {grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch;padding-top:20px}
+#harga .pk {min-width:0;overflow:visible!important;padding:30px 24px 24px;background:#fff!important;color:#19243b!important;isolation:isolate}
+#harga .pk-best {background:#f8f6ff!important;border:2px solid #7968ed!important;box-shadow:0 16px 42px rgba(99,83,206,.14)!important}
+#harga .pk-best .pk-badge {top:-15px;z-index:3;background:#6c58de!important;color:#fff!important;font-size:11px;padding:6px 15px}
+#harga .pk h3 {font-size:18px;color:#26324b!important;font-weight:750}
+#harga .pk .pk-amt {color:#5541d2!important;font-size:clamp(27px,3vw,36px);font-weight:850;line-height:1.3;overflow-wrap:normal;white-space:nowrap}
+#harga .pk-note {color:#52627d!important;font-size:13px;font-weight:550;line-height:1.5}
+#harga .pk ul {min-width:0}
+#harga .pk li {color:#33435d!important;font-size:13px;line-height:1.5;overflow-wrap:break-word;border-bottom-color:#e6e9f1}
+#harga .pk li.no {color:#68758b!important}
+#harga .pk li.no::before {color:#68758b!important}
+#harga .pk .btn {margin-top:auto;position:relative;z-index:2;min-height:48px}
+#harga .pk-best .btn-p {background:#6354dd!important;color:#fff!important}
+@media(max-width:850px){#harga .pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){#harga .pgrid{grid-template-columns:minmax(0,1fr);gap:26px}#harga .pk{padding:27px 20px 22px}#harga .pk .pk-amt{font-size:32px}}
+
+</style>
+</head>
+<body>
+
+<div id="curtain"><div class="cw">twist.automation</div></div>
+<canvas id="stars"></canvas>
+<div id="glow"></div>
+<div id="prog"></div>
+
+<nav>
+  <div class="nav-in">
+    <a href="#" class="logo">twist<span>.automation</span></a>
+    <div class="nav-links">
+      <a href="#demo">Coba Demo</a>
+      <a href="#template">Template</a>
+      <a href="#harga">Harga</a>
+      <a href="#panduan">Panduan</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://wa.me/6285171228302" class="nav-cta">Chat WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="badge"><span class="dot"></span> TEMPLATE N8N SIAP PAKAI</div>
+    <h1>
+      <span class="ln"><i>Automasi cerdas.</i></span>
+      <span class="ln"><i><em>Bisnis makin cepat.</em></i></span>
+    </h1>
+    <p class="sub">Otomatiskan pekerjaan berulang. Pilih template, coba demonya, dan mulai lebih cepat.</p>
+    <div class="cta-row">
+      <a href="#demo" class="btn btn-wa">Coba Demo <span class="arw">↓</span></a>
+      <a href="#harga" class="btn btn-p">Lihat Paket</a>
+    </div>
+    <div class="twist-feature" aria-label="Visual alur automasi bisnis">
+ <div class="tw-f-top"><span>TWIST / AUTOMATION STUDIO</span><span class="tw-f-pill">● Workflow active</span></div>
+ <div class="tw-f-heading">Bisnis berjalan.<br>Otomatis.</div>
+ <div class="tw-flow">
+  <div class="tw-flow-step"><span class="tw-flow-icon">💬</span><span>Customer mengirim pesan</span></div>
+  <div class="tw-flow-arrow">↓</div>
+  <div class="tw-flow-step"><span class="tw-flow-icon">⚡</span><span>n8n memproses workflow</span></div>
+  <div class="tw-flow-arrow">↓</div>
+  <div class="tw-flow-step"><span class="tw-flow-icon">✅</span><span>Balasan & data terkirim</span></div>
+ </div>
+ <div class="tw-f-bottom"><b>● Connected</b> &nbsp; • &nbsp; Workflow siap diintegrasikan</div>
+</div>
+<div class="hero-stats">
+      <div class="hs"><b>15</b><span>template siap pakai</span></div>
+      <div class="hs"><b>109</b><span>node terpasang</span></div>
+      <div class="hs"><b>24/7</b><span>jalan nonstop</span></div>
+      <div class="hs"><b>1x</b><span>bayar, bukan langganan</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ DEMO (inline) ============ -->
+<section id="demo" class="demo sec-in">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">COBA GRATIS · TANPA DAFTAR</div>
+      <h2 class="rv rv-d1">Coba chatbot langsung.</h2>
+      <p class="rv rv-d2">Simulasikan chat AI dan layanan admin manusia.</p>
+    </div>
+
+    <div class="demo-grid">
+      <div class="phone rv">
+        <div class="phone-bar">
+          <div class="av">🏪</div>
+          <div class="who">
+            <b>Toko Online Lo</b>
+            <span id="demoMode" aria-live="polite">● AI Bot aktif</span>
+          </div>
+          <div class="acts"><span>📞</span><span>🎥</span><span>⋯</span></div>
+        </div>
+        <div class="demo-mode-line"><span>DEMO INTERAKTIF · BUKAN CHAT WHATSAPP LIVE</span><button id="backToAI" hidden type="button">↩ Kembali ke AI</button></div><div id="handoffTimer" class="handoff-timer" hidden aria-live="off"></div><div class="chat" id="chat" role="log" aria-live="polite">
+          <div class="msg in">Halo! Selamat datang di Toko Online Lo 👋<br>Saya bot otomatis. Ketik <b>menu</b> buat liat pilihan.<span class="t">09:00</span></div>
+        </div>
+        <div class="quick" id="quick">
+          <button data-q="menu">menu</button>
+          <button data-q="harga">harga</button>
+          <button data-q="jam buka">jam buka</button>
+          <button data-q="alamat">alamat</button>
+          <button data-q="order">order</button>
+          <button data-q="admin">admin</button>
+        </div>
+        <div class="input-row">
+          <input type="text" id="msgInput" placeholder="Ketik pesan..." autocomplete="off">
+          <button class="send" id="sendBtn" aria-label="Kirim">
+            <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+          </button>
+        </div>
+        <div class="admin-tools" id="adminTools" hidden><label for="adminInput">Simulasi balasan admin manusia</label><div class="admin-compose"><input id="adminInput" type="text" placeholder="Ketik balasan sebagai admin..."><button id="adminSend" type="button">Balas sebagai admin</button></div><small>Panel ini hanya untuk demonstrasi. Tidak terhubung ke staf atau WhatsApp asli.</small></div>
+      </div>
+
+      <div class="demo-side rv rv-d1">
+        <div class="dbox">
+          <h3>🧪 Coba kirim pesan ini</h3>
+          <div class="try-list">
+            <button data-q="menu">menu</button>
+            <button data-q="harga">harga</button>
+            <button data-q="jam buka">jam buka</button>
+            <button data-q="alamat">alamat</button>
+            <button data-q="order">order</button>
+            <button data-q="admin">admin</button>
+            <button data-q="makasih">makasih</button>
+            <button data-q="apa itu n8n">apa itu n8n</button>
+          </div>
+        </div>
+        <div class="dbox">
+          <h3>⚡ Alur AI → Admin → AI</h3>
+          <ul><li><span class="n">1.</span> AI menanggapi pertanyaan otomatis</li><li><span class="n">2.</span> Customer minta berbicara dengan admin</li><li><span class="n">3.</span> Bot berhenti dan chat masuk mode manusia</li><li><span class="n">4.</span> Timer 15 menit menunggu balasan admin</li><li><span class="n">5.</span> Tanpa balasan, AI kembali aktif otomatis</li></ul>
+          <p style="margin-top:9px">Semua dalam <b style="color:var(--wa)">kurang dari 2 detik</b>, 24 jam.</p>
+        </div>
+        <div class="dbox">
+          <h3>📊 Manfaatnya buat toko lo</h3>
+          <div class="d-stat">
+            <div><b>24/7</b><span>jalan nonstop</span></div>
+            <div><b>&lt;2s</b><span>cepat bales</span></div>
+          </div>
+          <ul>
+            <li><span class="ck">✓</span> Hemat 2-3 jam admin per hari</li>
+            <li><span class="ck">✓</span> Customer gak pergi gara-gara gak dibales</li>
+            <li><span class="ck">✓</span> Jawaban konsisten, gak ada yang lupa</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="cs-dashboard rv" id="csDashboard">
+<div class="cs-head"><div><span class="cs-overline">TWIST / CS CONTROL CENTER</span><h3>Dashboard Admin <span class="cs-live">● Demo Live</span></h3><p>Kelola percakapan pelanggan dari satu panel.</p></div><div class="cs-avatar">CS</div></div>
+<div class="cs-metrics"><div><span>Aktif</span><strong>1</strong></div><div><span>Mode AI</span><strong id="csAiCount">1</strong></div><div><span>Ditangani CS</span><strong id="csHumanCount">0</strong></div></div>
+<div class="cs-workspace"><div class="cs-inbox"><div class="cs-label">INBOX <span>1 percakapan</span></div><button class="cs-contact selected" type="button" id="csContact"><span class="cs-contact-av">P</span><span><strong>Pelanggan Demo</strong><small id="csContactPreview">Halo! Mau tanya soal template...</small></span><span class="cs-unread" id="csUnread" hidden>1</span></button><p>Ini data simulasi, bukan chat WhatsApp sungguhan.</p></div>
+<div class="cs-thread"><div class="cs-thread-head"><div><strong>Pelanggan Demo</strong><small id="csStatus">● Dijawab AI</small></div><span id="csTime">—</span></div>
+<div class="cs-log" id="csLog" role="log" aria-live="polite"><div class="cs-bubble">Halo! Ada yang bisa dibantu?</div></div>
+<div class="cs-actions"><button type="button" id="csTakeover">Ambil alih ke manusia</button><button type="button" id="csReturn" class="cs-secondary" disabled>Aktifkan AI</button></div>
+<div class="cs-compose"><input type="text" id="csReply" placeholder="Ambil alih untuk membalas..." aria-label="Pesan admin" disabled><button type="button" id="csReplySend" disabled>Kirim ↗</button></div><div class="cs-hint" id="csHint">AI sedang menangani chat. Admin dapat mengambil alih kapan saja.</div></div></div></div>
+  </div>
+</section>
+
+<!-- ============ TEMPLATE ============ -->
+<section id="template" class="sec-in">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">KATALOG AUTOMASI</div>
+      <h2 class="rv rv-d1">Temukan automasi<br>yang cocok.</h2>
+      <p class="rv rv-d2">Cari workflow yang sesuai kebutuhan bisnis lo.</p>
+    </div>
+
+    <div class="filters rv" id="filters">
+      <button class="chip on" data-c="all">Semua (59)</button>
+      <button class="chip" data-c="umkm">UMKM (15)</button>
+      <button class="chip" data-c="crypto">Crypto (12)</button>
+      <button class="chip" data-c="cs">CS (2)</button>
+      <button class="chip" data-c="marketplace">Marketplace (3)</button>
+      <button class="chip" data-c="education">Education (3)</button>
+      <button class="chip" data-c="fnb">F&amp;B (3)</button>
+      <button class="chip" data-c="aicontent">AI Content (3)</button>
+      <button class="chip" data-c="properti">Properti (3)</button>
+      <button class="chip" data-c="event">Event (3)</button>
+      <button class="chip" data-c="creator">Creator (3)</button>
+      <button class="chip" data-c="freelancer">Freelancer (3)</button>
+      <button class="chip" data-c="produktivitas">Produktivitas (3)</button>
+      <button class="chip" data-c="devops">DevOps (3)</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--dim);margin-bottom:14px;font-family:var(--mono)">Harga di bawah = harga <b style="color:var(--txt)">satu template</b> kalau beli satuan (Rp 99rb – 139rb, tergantung kompleksitas). Ambil <b style="color:var(--txt)">Bundle 10 (Rp 299rb)</b> atau <b style="color:var(--txt)">All Access (Rp 799rb)</b> — jauh lebih murah.</p>
+    <div class="tpl-grid" id="tplGrid">
+    <div class="tpl rv" data-cat="aicontent">
+          <div class="tpl-num">AI CONTENT · 01</div>
+          <h3>Deskripsi Produk Otomatis (Marketplace Ready)</h3>
+          <p>Deskripsi produk, caption, dan copy iklan pakai AI.</p>
+          <div class="tpl-tags"><span class="tag">AI Content</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="aicontent">
+          <div class="tpl-num">AI CONTENT · 02</div>
+          <h3>Caption Sosmed Harian (IG/TikTok/FB)</h3>
+          <p>Deskripsi produk, caption, dan copy iklan pakai AI.</p>
+          <div class="tpl-tags"><span class="tag">AI Content</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="aicontent">
+          <div class="tpl-num">AI CONTENT · 03</div>
+          <h3>Copy Iklan Multi-Variasi (A/B Test Ready)</h3>
+          <p>Deskripsi produk, caption, dan copy iklan pakai AI.</p>
+          <div class="tpl-tags"><span class="tag">AI Content</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="creator">
+          <div class="tpl-num">CREATOR · 04</div>
+          <h3>YouTube Comment Monitor (Komentar Baru → Notif)</h3>
+          <p>Bantu kreator: komentar, ide konten, laporan engagement.</p>
+          <div class="tpl-tags"><span class="tag">Creator</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="creator">
+          <div class="tpl-num">CREATOR · 05</div>
+          <h3>Trending Topic Harian (Ide Konten)</h3>
+          <p>Bantu kreator: komentar, ide konten, laporan engagement.</p>
+          <div class="tpl-tags"><span class="tag">Creator</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="creator">
+          <div class="tpl-num">CREATOR · 06</div>
+          <h3>Laporan Engagement Mingguan (Multi Platform)</h3>
+          <p>Bantu kreator: komentar, ide konten, laporan engagement.</p>
+          <div class="tpl-tags"><span class="tag">Creator</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 08</div>
+          <h3>Wallet Balance Monitor (BNB/BSC)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 09</div>
+          <h3>New Token Scanner (DexScreener)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 10</div>
+          <h3>Gas Price Monitor + Alert Murah</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 11</div>
+          <h3>Daily Portfolio Report (Sheets + Telegram)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">9 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 12</div>
+          <h3>NFT Mint Watcher (Eligibility + Alert)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 13</div>
+          <h3>Staking Reward Tracker (Harian)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 14</div>
+          <h3>Airdrop Deadline Reminder (Jangan Sampai Kelewat)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 15</div>
+          <h3>Funding Rate Scanner (Cari Peluang Arbitrage)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 16</div>
+          <h3>Whale Alert (Transfer Besar di BSC)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 17</div>
+          <h3>DCA Reminder (Pengingat Beli Berkala)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="crypto">
+          <div class="tpl-num">CRYPTO · 18</div>
+          <h3>Bridge / Tx Status Monitor (Pantau Sampai Selesai)</h3>
+          <p>Pantau harga, wallet, gas, dan peluang on-chain otomatis.</p>
+          <div class="tpl-tags"><span class="tag">Crypto</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="cs">
+          <div class="tpl-num">CS · 19</div>
+          <h3>AI CS + Switch ke Manusia + Auto-Tutup</h3>
+          <p>Customer service hybrid — AI jawab, eskalasi ke manusia, auto-tutup.</p>
+          <div class="tpl-tags"><span class="tag">CS</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">29 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="cs">
+          <div class="tpl-num">CS · 20</div>
+          <h3>Watchdog + Auto-Tutup</h3>
+          <p>Customer service hybrid — AI jawab, eskalasi ke manusia, auto-tutup.</p>
+          <div class="tpl-tags"><span class="tag">CS</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">15 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="devops">
+          <div class="tpl-num">DEVOPS · 21</div>
+          <h3>Website Uptime Monitor (Down → Alert)</h3>
+          <p>Pantau uptime, SSL, dan rilis repo otomatis.</p>
+          <div class="tpl-tags"><span class="tag">DevOps</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="devops">
+          <div class="tpl-num">DEVOPS · 22</div>
+          <h3>SSL Certificate Expiry Checker</h3>
+          <p>Pantau uptime, SSL, dan rilis repo otomatis.</p>
+          <div class="tpl-tags"><span class="tag">DevOps</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="devops">
+          <div class="tpl-num">DEVOPS · 23</div>
+          <h3>GitHub Release Notifier (Rilis Baru → Notif)</h3>
+          <p>Pantau uptime, SSL, dan rilis repo otomatis.</p>
+          <div class="tpl-tags"><span class="tag">DevOps</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="education">
+          <div class="tpl-num">EDUCATION · 24</div>
+          <h3>Pendaftaran Siswa Baru (Auto Konfirmasi)</h3>
+          <p>Pendaftaran, reminder kelas, tagihan, kehadiran siswa.</p>
+          <div class="tpl-tags"><span class="tag">Education</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="education">
+          <div class="tpl-num">EDUCATION · 25</div>
+          <h3>Reminder Kelas + Tagihan Siswa</h3>
+          <p>Pendaftaran, reminder kelas, tagihan, kehadiran siswa.</p>
+          <div class="tpl-tags"><span class="tag">Education</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="education">
+          <div class="tpl-num">EDUCATION · 26</div>
+          <h3>Laporan Kehadiran Mingguan (Orang Tua)</h3>
+          <p>Pendaftaran, reminder kelas, tagihan, kehadiran siswa.</p>
+          <div class="tpl-tags"><span class="tag">Education</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="event">
+          <div class="tpl-num">EVENT · 27</div>
+          <h3>RSVP + Reminder Undangan (Wedding/Event)</h3>
+          <p>RSVP, countdown, check-in, dan doorprize.</p>
+          <div class="tpl-tags"><span class="tag">Event</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="event">
+          <div class="tpl-num">EVENT · 28</div>
+          <h3>Countdown Reminder (H-3 & H-1 ke Tamu)</h3>
+          <p>RSVP, countdown, check-in, dan doorprize.</p>
+          <div class="tpl-tags"><span class="tag">Event</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="event">
+          <div class="tpl-num">EVENT · 29</div>
+          <h3>Seating Plan + Doorprize Draw Otomatis</h3>
+          <p>RSVP, countdown, check-in, dan doorprize.</p>
+          <div class="tpl-tags"><span class="tag">Event</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">11 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="fnb">
+          <div class="tpl-num">F&B · 30</div>
+          <h3>Reservasi Meja</h3>
+          <p>Reservasi, menu harian, dan tracking delivery.</p>
+          <div class="tpl-tags"><span class="tag">F&B</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">9 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="fnb">
+          <div class="tpl-num">F&B · 31</div>
+          <h3>Menu Harian Broadcast (Pelanggan Setia)</h3>
+          <p>Reservasi, menu harian, dan tracking delivery.</p>
+          <div class="tpl-tags"><span class="tag">F&B</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="fnb">
+          <div class="tpl-num">F&B · 32</div>
+          <h3>Delivery Order Tracker (Status ke Pelanggan)</h3>
+          <p>Reservasi, menu harian, dan tracking delivery.</p>
+          <div class="tpl-tags"><span class="tag">F&B</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="freelancer">
+          <div class="tpl-num">FREELANCER · 33</div>
+          <h3>Invoice Reminder (Klien Telat Bayar)</h3>
+          <p>Tagihan, lead, dan deadline biar gak ada yang telat.</p>
+          <div class="tpl-tags"><span class="tag">Freelancer</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="freelancer">
+          <div class="tpl-num">FREELANCER · 34</div>
+          <h3>Lead Follow-Up</h3>
+          <p>Tagihan, lead, dan deadline biar gak ada yang telat.</p>
+          <div class="tpl-tags"><span class="tag">Freelancer</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="freelancer">
+          <div class="tpl-num">FREELANCER · 35</div>
+          <h3>Project Deadline Tracker (Jangan Telat Delivery)</h3>
+          <p>Tagihan, lead, dan deadline biar gak ada yang telat.</p>
+          <div class="tpl-tags"><span class="tag">Freelancer</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="marketplace">
+          <div class="tpl-num">MARKETPLACE · 36</div>
+          <h3>Multi-Platform Order Sync (Shopee/Tokopedia/TikTok)</h3>
+          <p>Sinkron order, stok, dan chat Shopee/Tokopedia.</p>
+          <div class="tpl-tags"><span class="tag">Marketplace</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="marketplace">
+          <div class="tpl-num">MARKETPLACE · 37</div>
+          <h3>Stok Multi-Platform Sync (Habis → Alert)</h3>
+          <p>Sinkron order, stok, dan chat Shopee/Tokopedia.</p>
+          <div class="tpl-tags"><span class="tag">Marketplace</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="marketplace">
+          <div class="tpl-num">MARKETPLACE · 38</div>
+          <h3>Chat Marketplace Auto-Reply (Shopee/Tokopedia)</h3>
+          <p>Sinkron order, stok, dan chat Shopee/Tokopedia.</p>
+          <div class="tpl-tags"><span class="tag">Marketplace</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="produktivitas">
+          <div class="tpl-num">PRODUKTIVITAS · 39</div>
+          <h3>Morning Briefing (Cuaca + Crypto + Berita)</h3>
+          <p>Briefing pagi, catat pengeluaran, ingatkan istirahat.</p>
+          <div class="tpl-tags"><span class="tag">Produktivitas</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="produktivitas">
+          <div class="tpl-num">PRODUKTIVITAS · 40</div>
+          <h3>Expense Tracker</h3>
+          <p>Briefing pagi, catat pengeluaran, ingatkan istirahat.</p>
+          <div class="tpl-tags"><span class="tag">Produktivitas</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="produktivitas">
+          <div class="tpl-num">PRODUKTIVITAS · 41</div>
+          <h3>Water & Break Reminder (Jangan Lupa Minum)</h3>
+          <p>Briefing pagi, catat pengeluaran, ingatkan istirahat.</p>
+          <div class="tpl-tags"><span class="tag">Produktivitas</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">3 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="properti">
+          <div class="tpl-num">PROPERTI · 42</div>
+          <h3>Lead Qualify + Follow-Up Otomatis</h3>
+          <p>Lead qualify, jadwal viewing, laporan listing.</p>
+          <div class="tpl-tags"><span class="tag">Properti</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">10 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="properti">
+          <div class="tpl-num">PROPERTI · 43</div>
+          <h3>Jadwal Viewing + Reminder Otomatis</h3>
+          <p>Lead qualify, jadwal viewing, laporan listing.</p>
+          <div class="tpl-tags"><span class="tag">Properti</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">9 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="properti">
+          <div class="tpl-num">PROPERTI · 44</div>
+          <h3>Laporan Performa Listing Mingguan</h3>
+          <p>Lead qualify, jadwal viewing, laporan listing.</p>
+          <div class="tpl-tags"><span class="tag">Properti</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">4 nodes</span></div>
+        </div>
+        
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 46</div>
+          <h3>Order Masuk → Notifikasi + Google Sheets</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 47</div>
+          <h3>Invoice Otomatis</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 48</div>
+          <h3>Laporan Harian Otomatis (Rekap Penjualan)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 49</div>
+          <h3>Form Order (Google Form) → Notifikasi + Sheets</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 50</div>
+          <h3>Minta Review Google (Setelah Order Selesai)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 51</div>
+          <h3>Stok Alert (Inventory Monitor)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 52</div>
+          <h3>Order Status Tracker (Cek Pesanan)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 53</div>
+          <h3>Birthday Wish (Ucapan + Diskon Otomatis)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">7 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 54</div>
+          <h3>Cek Ongkir Otomatis (Customer Chat → Tarif)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">3 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 55</div>
+          <h3>Cart Reminder</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 56</div>
+          <h3>Follow-Up Pembayaran (Belum Bayar → Ingatkan)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 57</div>
+          <h3>Absensi Karyawan</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">6 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 58</div>
+          <h3>Auto Post Marketplace (Sheets → Format Iklan)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+        <div class="tpl rv" data-cat="umkm">
+          <div class="tpl-num">UMKM · 59</div>
+          <h3>Rekap Pajak & Pendapatan (Bulanan)</h3>
+          <p>Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.</p>
+          <div class="tpl-tags"><span class="tag">UMKM</span><span class="tag">n8n</span><span class="tag">WhatsApp</span></div>
+          <div class="tpl-meta"><span class="tpl-price">Rp 99rb</span><span class="tpl-nodes">5 nodes</span></div>
+        </div>
+
+      <div class="tpl rv" data-cat="umkm">
+        <div class="hot">PALING LAKU</div>
+        <div class="tpl-num">TEMPLATE 01</div>
+        <h3>Auto-Reply WhatsApp</h3>
+        <p>Bot jawab pertanyaan pelanggan otomatis 24 jam — harga, jam buka, alamat, cara order. Nggak perlu CS lagi kalau lagi sibuk.</p>
+        <div class="tpl-tags"><span class="tag">WhatsApp</span><span class="tag">Keyword Bot</span><span class="tag">UMKM</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 139rb</span><span class="tpl-nodes">12 nodes</span></div>
+      </div>
+        
+
+      <div class="tpl rv" data-cat="crypto">
+        <div class="hot">PALING LAKU</div>
+        <div class="tpl-num">CRYPTO 01</div>
+        <h3>Price Alert</h3>
+        <p>Set harga target lo (misal BTC di atas $70K). Begitu tercapai, notifikasi langsung masuk WhatsApp. Nggak perlu buka exchange tiap 5 menit.</p>
+        <div class="tpl-tags"><span class="tag">CoinGecko</span><span class="tag">WhatsApp</span><span class="tag">Trigger</span></div>
+        <div class="tpl-meta"><span class="tpl-price">Rp 119rb</span><span class="tpl-nodes">8 nodes</span></div>
+      </div>
+        
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ HARGA ============ -->
+<section id="harga" class="sec-in" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">HARGA</div>
+      <h2 class="rv rv-d1">Harga simpel.<br>Sekali bayar.</h2>
+      <p class="rv rv-d2">File JSON siap import ke n8n lo. Bukan langganan. Mau yang langsung jadi? <a href="/harga/" style="color:var(--acc)">Lihat paket jasa setup →</a></p>
+    </div>
+    <div class="pgrid">
+
+      <div class="pk rv">
+        <h3>Single</h3>
+        <div class="pk-amt">Rp 99rb</div>
+        <div class="pk-note">coba dulu, 1 template</div>
+        <ul>
+          <li>1 template pilihan lo (dari 59 template)</li>
+          <li>File JSON siap import</li>
+          <li>Panduan ganti placeholder</li>
+          <li>Daftar GANTI_... yang harus diisi</li>
+          <li class="no">Setup jadi</li>
+          <li class="no">Custom prompt / keyword</li>
+        </ul>
+        <a href="https://wa.me/6285171228302" class="btn btn-s">Pilih Basic</a>
+      </div>
+
+      <div class="pk pk-best rv rv-d1">
+        <div class="pk-badge">PALING WORTH</div>
+        <h3>Bundle 10</h3>
+        <div class="pk-amt">Rp 299rb</div>
+        <div class="pk-note">hemat 70% dari harga satuan</div>
+        <ul>
+          <li>10 template pilihan lo (campur kategori boleh)</li>
+          <li>Semua file JSON siap import</li>
+          <li>Panduan lengkap tiap template</li>
+          <li>Struktur Google Sheets</li>
+          <li>Update template gratis 6 bulan</li>
+          <li class="no">Setup jadi</li>
+        </ul>
+        <a href="https://wa.me/6285171228302" class="btn btn-p">Pilih Standard</a>
+      </div>
+
+      <div class="pk rv rv-d2">
+        <h3>All Access</h3>
+        <div class="pk-amt">Rp 799rb</div>
+        <div class="pk-note">semua 59 template, lifetime</div>
+        <ul>
+          <li>Semua 59 template (13 kategori)</li>
+          <li>Template baru masuk gratis</li>
+          <li>Panduan lengkap + struktur Sheets</li>
+          <li>Update selamanya</li>
+          <li>Prioritas request template baru</li>
+          <li class="no">Setup jadi</li>
+        </ul>
+        <a href="https://wa.me/6285171228302" class="btn btn-p">Pilih Premium</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--dim)">
+      Butuh custom? <a href="https://wa.me/6285171228302">Chat aja</a> — workflow khusus sesuai kebutuhan bisnis lo.
+    </p>
+  </div>
+</section>
+
+<!-- ============ PANDUAN (inline accordion) ============ -->
+<section id="panduan" class="sec-in">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">PANDUAN SETUP</div>
+      <h2 class="rv rv-d1">Mulai dalam beberapa langkah.</h2>
+      <p class="rv rv-d2">Klik tiap langkah buat liat detailnya. Semua ada gambar penjelas.</p>
+    </div>
+
+    <div class="acc rv">
+      <button class="acc-h">1. Siapin apa aja yang dibutuhin <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <table>
+          <tr><th>Komponen</th><th>Buat apa</th><th>Biaya</th></tr>
+          <tr><td><b>n8n</b></td><td>Aplikasi automation-nya</td><td>Gratis – Rp 150rb/bln</td></tr>
+          <tr><td><b>Google Sheets</b></td><td>Nyimpen data order, stok, customer</td><td>Gratis</td></tr>
+          <tr><td><b>Gateway WhatsApp</b></td><td>Buat kirim pesan WA otomatis</td><td>Rp 22rb – 150rb/bln</td></tr>
+        </table>
+        <p style="margin-top:10px">Rekomendasi: <b>n8n Cloud</b> (paling gampang) + <b>Wablas</b> (Rp 22rb/bulan, free trial 15 hari).</p>
+      </div></div>
+    </div>
+
+    <div class="acc rv rv-d1">
+      <button class="acc-h">2. Install n8n <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <p><b>Cara termudah — n8n Cloud:</b></p>
+        <ol>
+          <li>Buka <b>n8n.io</b> → klik <b>"Start free trial"</b></li>
+          <li>Daftar pakai email lo</li>
+          <li>Pilih region <b>Singapore</b></li>
+          <li>Selesai — langsung bisa dipakai</li>
+        </ol>
+        <p style="margin-top:12px"><b>Cara termurah — VPS sendiri (jalan 24 jam):</b></p>
+        <p>Jalankan di server Ubuntu:</p>
+        <p><code>docker run -d --restart unless-stopped --name n8n -p 5678:5678 -v n8n_data:/home/node/.n8n n8nio/n8n</code></p>
+        <p>Lalu buka <code>http://IP-SERVER-LO:5678</code></p>
+      </div></div>
+    </div>
+
+    <div class="acc rv rv-d2">
+      <button class="acc-h">3. Connect Google Sheets <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <ol>
+          <li>Di n8n, klik ikon <b>kunci</b> (Credential) di panel kiri</li>
+          <li>Klik <b>Add Credential</b></li>
+          <li>Pilih <b>Google Sheets</b></li>
+          <li>Klik <b>Sign in with Google</b> → pilih akun Gmail lo</li>
+          <li>Klik <b>Allow</b> / Izinkan akses</li>
+          <li>Klik <b>Save</b></li>
+        </ol>
+        <p style="margin-top:10px">Credential ini cuma perlu <b>sekali</b>. Semua template bisa pakai credential yang sama.</p>
+      </div></div>
+    </div>
+
+    <div class="acc rv rv-d3">
+      <button class="acc-h">4. Daftar Gateway WhatsApp &amp; ambil token <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <table>
+          <tr><th>Gateway</th><th>Harga</th><th>Catatan</th></tr>
+          <tr><td><b>Wablas</b> ⭐</td><td>Rp 22rb/bln</td><td>Paling murah, ada node n8n resmi, free trial 15 hari</td></tr>
+          <tr><td>MPWA</td><td>Rp 50rb/bln</td><td>10.000 pesan, Ultimate Rp 300rb/tahun</td></tr>
+          <tr><td>Fonnte</td><td>Rp 25rb/bln</td><td>Populer, 1.000 pesan text-only</td></tr>
+        </table>
+        <p style="margin-top:12px"><b>Cara daftar &amp; ambil token (Wablas):</b></p>
+        <ol>
+          <li>Buka <b>wablas.com</b> → Daftar</li>
+          <li>Verifikasi email</li>
+          <li>Klik <b>Add Device</b></li>
+          <li>Buka WhatsApp di HP → <b>Perangkat Tertaut</b> → <b>Tautkan Perangkat</b></li>
+          <li><b>Scan QR</b> yang muncul di layar</li>
+          <li>Buka menu <b>Device</b> → <b>copy Token</b></li>
+          <li>Top up saldo (mulai Rp 50.000)</li>
+        </ol>
+      </div></div>
+    </div>
+
+    <div class="acc rv rv-d4">
+      <button class="acc-h">5. Import template <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <ol>
+          <li>Buka n8n lo</li>
+          <li>Klik <b>"..."</b> (titik tiga) di pojok kanan atas</li>
+          <li>Pilih <b>"Import from File"</b></li>
+          <li>Pilih file <code>.json</code> template</li>
+          <li>Workflow muncul di canvas</li>
+          <li>Ulangi buat setiap template</li>
+        </ol>
+      </div></div>
+    </div>
+
+    <div class="acc rv rv-d5">
+      <button class="acc-h">6. Ganti token &amp; nomor WA (paling penting) <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <ol>
+          <li>Klik <b>2x</b> kotak yang namanya ada <b>"WhatsApp"</b> atau <b>"Kirim"</b></li>
+          <li>Scroll ke bawah sampai ketemu <b>Send Headers</b></li>
+          <li>Di kolom Value, ganti <code>GANTI_TOKEN_FONNTE</code> jadi token lo</li>
+          <li>Scroll ke <b>Send Body</b></li>
+          <li>Ganti <code>GANTI_NOMOR_WA_ADMIN</code> jadi nomor WA lo</li>
+          <li>Klik di luar panel buat nyimpan</li>
+        </ol>
+        <table style="margin-top:12px">
+          <tr><th>Tulisan lama</th><th>Ganti jadi</th><th>Contoh</th></tr>
+          <tr><td><code>GANTI_TOKEN_FONNTE</code></td><td>Token gateway lo</td><td><code>AbC123XyZ...</code></td></tr>
+          <tr><td><code>GANTI_NOMOR_WA_ADMIN</code></td><td>Nomor WA admin</td><td><code>628123456789</code></td></tr>
+          <tr><td><code>GANTI_SPREADSHEET_ID</code></td><td>ID Google Sheets</td><td><code>1AbCdEf...</code></td></tr>
+          <tr><td><code>GANTI_PLACE_ID</code></td><td>Place ID Google Maps</td><td><code>ChIJ...</code></td></tr>
+        </table>
+        <p style="margin-top:10px"><b>Format nomor WA:</b> wajib <code>62</code> di depan. ❌ <code>0812-3456-789</code> → ✅ <code>628123456789</code></p>
+        <p style="margin-top:8px"><b>Cara ambil ID Google Sheets:</b> buka spreadsheet, liat URL — <code>docs.google.com/spreadsheets/d/<b>1AbCdEf...</b>/edit</code>. Yang tebal itu yang di-copy.</p>
+      </div></div>
+    </div>
+
+    <div class="acc rv rv-d6">
+      <button class="acc-h">7. Aktifin &amp; tes <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <ol>
+          <li>Klik <b>Save</b> (pojok kanan atas)</li>
+          <li>Klik tombol <b>Inactive</b> → jadi <b>Active</b></li>
+          <li>Tes: klik <b>Execute Workflow</b> (tombol play ▶)</li>
+          <li>Cek HP lo — harusnya ada WhatsApp masuk</li>
+          <li>Kalau masuk, <b>selesai!</b></li>
+        </ol>
+        <p style="margin-top:10px"><b>Cek gak ada yang ketinggalan:</b> tekan <code>Ctrl + F</code>, ketik <code>GANTI</code>. Kalau masih ada hasil = belum kelar.</p>
+      </div></div>
+    </div>
+
+    <div class="acc rv">
+      <button class="acc-h">8. Struktur Google Sheets <span class="pm">+</span></button>
+      <div class="acc-b"><div class="acc-b-in">
+        <p><b>Sheet "Data Order"</b> (template 02, 04, 06, 08):</p>
+        <table>
+          <tr><th>Kolom</th><th>Contoh</th></tr>
+          <tr><td><code>order_id</code></td><td>ORD-001</td></tr>
+          <tr><td><code>nama_pembeli</code></td><td>Budi Santoso</td></tr>
+          <tr><td><code>nomor_wa</code></td><td>628123456789</td></tr>
+          <tr><td><code>produk</code></td><td>Kaos Polos Hitam</td></tr>
+          <tr><td><code>jumlah</code></td><td>2</td></tr>
+          <tr><td><code>total</code></td><td>150000</td></tr>
+          <tr><td><code>status</code></td><td>Selesai / Dikirim / Proses</td></tr>
+          <tr><td><code>kurir</code></td><td>JNE</td></tr>
+          <tr><td><code>resi</code></td><td>JNE123456789</td></tr>
+          <tr><td><code>waktu</code></td><td>2026-10-27 14:30</td></tr>
+        </table>
+        <p style="margin-top:12px"><b>Sheet "Data Stok"</b> (template 07): <code>produk</code>, <code>stok</code>, <code>minimum</code></p>
+        <p style="margin-top:8px"><b>Sheet "Data Customer"</b> (template 09): <code>nama</code>, <code>nomor_wa</code>, <code>tanggal_lahir</code> (format dd-MM)</p>
+        <p style="margin-top:10px">⚠️ Nama kolom harus <b>persis sama</b> dan <b>huruf kecil semua</b>.</p>
+      </div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="sec-in" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">FAQ</div>
+      <h2 class="rv rv-d1">Masih ada pertanyaan?</h2>
+    </div>
+
+    <div class="faq-item rv">
+      <button class="faq-q">Saya gak ngerti coding. Bisa pakai?</button>
+      <div class="faq-a"><div class="faq-a-in">Bisa. Gue yang setup semuanya. Lo tinggal pakai. Kalau ada yang perlu diubah (harga, alamat, nama toko), gue ajarin lewat training.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d1">
+      <button class="faq-q">n8n itu apa? Harus install apa?</button>
+      <div class="faq-a"><div class="faq-a-in">n8n itu aplikasi automation gratis. Gue yang install dan setup — bisa di komputer lo atau di server (VPS). Kalau mau yang paling simpel, gue setup di VPS biar jalan 24 jam tanpa perlu nyalain komputer.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d2">
+      <button class="faq-q">Beda sama Zapier / Make?</button>
+      <div class="faq-a"><div class="faq-a-in">Zapier bayar bulanan dan makin mahal kalau makin banyak. n8n sekali setup, gak ada biaya bulanan ke platform. Plus data lo tetap di server lo sendiri.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d3">
+      <button class="faq-q">Perlu bayar gateway WhatsApp berapa?</button>
+      <div class="faq-a"><div class="faq-a-in">Mulai Rp 22rb/bulan (Wablas) atau bayar per saldo. Satu pesan sekitar Rp 150-300. Untuk UMKM kecil, realistis Rp 50-100rb/bulan.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d4">
+      <button class="faq-q">Bayar gimana?</button>
+      <div class="faq-a"><div class="faq-a-in">Transfer bank, e-wallet (DANA/GoPay/OVO), atau USDC. Bisa DP 50% dulu, pelunasan setelah setup jalan.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d5">
+      <button class="faq-q">Kalau rusak setelah jadi?</button>
+      <div class="faq-a"><div class="faq-a-in">Paket Premium dapat support 1 bulan penuh. Kalau ada masalah, chat aja — gue benerin gratis selama masa support.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ KONTAK ============ -->
+<section id="kontak" class="contact-section sec-in">
+  <div class="wrap">
+    <div class="contact-panel rv">
+      <div class="contact-copy">
+        <span class="contact-eyebrow">KONTAK &amp; KONSULTASI</span>
+        <h2>Butuh automation untuk bisnis lo?</h2>
+        <p>Ceritain kebutuhan lo. Kita pilih template atau workflow custom yang paling pas.</p>
+        <div class="contact-trust"><span>✓ Konsultasi gratis</span><span>✓ Template n8n siap pakai</span></div>
+      </div>
+      <div class="contact-action">
+        <div class="contact-channel"><span class="contact-channel-icon" aria-hidden="true">✆</span><div><small>Hubungi lewat WhatsApp</small><strong>0851-7122-8302</strong></div></div>
+        <a class="contact-wa" href="https://wa.me/6285171228302?text=Halo%2C%20saya%20mau%20konsultasi%20tentang%20automation%20n8n" target="_blank" rel="noopener noreferrer">Mulai Konsultasi <span aria-hidden="true">↗</span></a>
+        <span class="contact-footnote">Langsung terhubung ke WhatsApp</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer"><div class="wrap footer-row"><span class="footer-brand">twist<span>.automation</span></span><span>Template n8n &amp; automation bisnis</span><a href="https://wa.me/6285171228302" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></footer>
+
+<script>
+/* ============ CURTAIN ============ */
+window.addEventListener('load', function(){
+  document.body.classList.add('ready');
+  requestAnimationFrame(function(){ document.getElementById('curtain').classList.add('up'); });
+});
+
+/* ============ STARFIELD ============ */
+(function(){
+  var c = document.getElementById('stars'), ctx = c.getContext('2d');
+  var w, h, stars = [], shoot = [], N = 130;
+  function resize(){ w = c.width = innerWidth; h = c.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+  for (var i = 0; i < N; i++) stars.push({
+    x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.3 + .3,
+    s: Math.random()*.22 + .05, o: Math.random()*.45 + .18,
+    tw: Math.random()*.02 + .005, ph: Math.random()*Math.PI*2
+  });
+  function frame(){
+    ctx.clearRect(0,0,w,h);
+    if (shoot.length < 2 && Math.random() < .0035) shoot.push({
+      x: Math.random()*w*.7, y: Math.random()*h*.4,
+      vx: 5 + Math.random()*4, vy: 2 + Math.random()*2, life: 1
+    });
+    for (var i = 0; i < stars.length; i++){
+      var st = stars[i];
+      st.y += st.s; if (st.y > h){ st.y = -2; st.x = Math.random()*w; }
+      st.ph += st.tw;
+      var o = st.o * (0.6 + 0.4*Math.sin(st.ph));
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(232,179,57,' + o.toFixed(3) + ')'; ctx.fill();
+    }
+    for (var j = shoot.length - 1; j >= 0; j--){
+      var s2 = shoot[j];
+      s2.x += s2.vx; s2.y += s2.vy; s2.life -= .012;
+      if (s2.life <= 0 || s2.x > w || s2.y > h){ shoot.splice(j,1); continue; }
+      var g = ctx.createLinearGradient(s2.x, s2.y, s2.x - s2.vx*8, s2.y - s2.vy*8);
+      g.addColorStop(0, 'rgba(245,208,118,' + (s2.life*.8).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(245,208,118,0)');
+      ctx.beginPath(); ctx.moveTo(s2.x, s2.y); ctx.lineTo(s2.x - s2.vx*8, s2.y - s2.vy*8);
+      ctx.strokeStyle = g; ctx.lineWidth = 1.4; ctx.stroke();
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ============ CURSOR GLOW ============ */
+(function(){
+  var g = document.getElementById('glow'), tx = 0, ty = 0, cx = 0, cy = 0;
+  addEventListener('mousemove', function(e){ tx = e.clientX; ty = e.clientY; });
+  (function loop(){
+    cx += (tx - cx) * .12; cy += (ty - cy) * .12;
+    g.style.left = cx + 'px'; g.style.top = cy + 'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ============ SCROLL PROGRESS ============ */
+(function(){
+  var p = document.getElementById('prog');
+  addEventListener('scroll', function(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    p.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+/* ============ REVEAL + SECTION ============ */
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+}, { threshold: .12, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+var io2 = new IntersectionObserver(function(es){
+  es.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('on'); io2.unobserve(en.target); } });
+}, { threshold: .06 });
+document.querySelectorAll('.sec-in').forEach(function(el){ io2.observe(el); });
+
+/* ============ COUNT UP ============ */
+var io3 = new IntersectionObserver(function(es){
+  es.forEach(function(en){
+    if (!en.isIntersecting) return;
+    var el = en.target; io3.unobserve(el);
+    var raw = el.textContent.trim();
+    var num = parseFloat(raw);
+    if (isNaN(num)) return;
+    var suffix = raw.replace(/^[\d.,\s]+/, '');
+    var dur = 1100, t0 = performance.now();
+    (function tick(t){
+      var p = Math.min((t - t0) / dur, 1);
+      el.textContent = Math.round(num * (1 - Math.pow(1 - p, 3))) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  });
+}, { threshold: .5 });
+document.querySelectorAll('.hs b').forEach(function(el){ io3.observe(el); });
+
+/* ============ CARD SPOTLIGHT ============ */
+document.querySelectorAll('.tpl,.pk').forEach(function(c){
+  c.addEventListener('mousemove', function(e){
+    var r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  });
+});
+
+/* ============ TEMPLATE FILTER ============ */
+(function(){
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('#tplGrid .tpl');
+  chips.forEach(function(ch){
+    ch.addEventListener('click', function(){
+      chips.forEach(function(x){ x.classList.remove('on'); });
+      ch.classList.add('on');
+      var cat = ch.dataset.c;
+      cards.forEach(function(card){
+        var show = cat === 'all' || card.dataset.cat === cat;
+        card.classList.toggle('hide', !show);
+        if (show){
+          card.classList.remove('in');
+          requestAnimationFrame(function(){
+            requestAnimationFrame(function(){ card.classList.add('in'); });
+          });
+        }
+      });
+    });
+  });
+})();
+
+/* ============ ACCORDION (panduan) ============ */
+document.querySelectorAll('.acc-h').forEach(function(h){
+  h.addEventListener('click', function(){
+    h.parentElement.classList.toggle('open');
+  });
+});
+
+/* ============ FAQ ============ */
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click', function(){
+    var item = q.parentElement;
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+/* ============ AI / HUMAN HANDOFF INTERACTIVE DEMO ============ */
+(function(){
+ const chat=document.getElementById('chat'), input=document.getElementById('msgInput'), sendBtn=document.getElementById('sendBtn');
+ const badge=document.getElementById('demoMode'),timer=document.getElementById('handoffTimer'),adminTools=document.getElementById('adminTools'),adminInput=document.getElementById('adminInput');
+ const back=document.getElementById('backToAI'),adminSend=document.getElementById('adminSend');
+ if(!chat||!input||!badge)return;
+ const cs={log:document.getElementById('csLog'),take:document.getElementById('csTakeover'),ret:document.getElementById('csReturn'),reply:document.getElementById('csReply'),send:document.getElementById('csReplySend'),status:document.getElementById('csStatus'),hint:document.getElementById('csHint'),preview:document.getElementById('csContactPreview'),ai:document.getElementById('csAiCount'),human:document.getElementById('csHumanCount')};
+ function csMessage(text,kind='in'){if(!cs.log)return;const el=document.createElement('div');el.className='cs-bubble '+kind;el.textContent=text;cs.log.append(el);cs.log.scrollTop=cs.log.scrollHeight;if(kind!=='system')cs.preview.textContent=text.slice(0,55)}
+ function syncCS(){if(!cs.log)return;const human=mode==='human';cs.status.textContent=human?'● Ditangani admin manusia':'● Dijawab AI';cs.status.style.color=human?'#d98732':'#11a18a';cs.ai.textContent=human?'0':'1';cs.human.textContent=human?'1':'0';cs.take.disabled=human;cs.ret.disabled=!human;cs.reply.disabled=!human;cs.send.disabled=!human;cs.reply.placeholder=human?'Ketik balasan admin...':'Ambil alih untuk membalas...';cs.hint.textContent=human?(adminHasReplied?'Admin sedang menangani pelanggan. Klik Selesaikan Chat & Aktifkan AI jika percakapan sudah selesai.':'AI dijeda. Jika admin belum memberi balasan pertama selama 15 menit, chat kembali ke AI.'):'AI aktif. Admin dapat mengambil alih kapan saja.'}
+ if(cs.take){cs.take.addEventListener('click',()=>handoff());cs.ret.textContent='Selesaikan Chat & Aktifkan AI';cs.ret.addEventListener('click',()=>resume(false));cs.send.addEventListener('click',()=>{const val=cs.reply.value.trim();if(!val||mode!=='human')return;adminReply(val);cs.reply.value=''});cs.reply.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();cs.send.click()}})}
+ const LIMIT=15*60*1000;let mode='ai',handoffAt=0,adminHasReplied=false,timeout=null,replyTimeout=null;
+ const kb=[
+  {keys:['harga','price','berapa','biaya'],text:'Harga satuan template mulai Rp 99rb. Ada juga Bundle 10 Rp 299rb dan All Access Rp 799rb. Mau lihat paket yang cocok?'},
+  {keys:['order','beli','pesan','checkout'],text:'Untuk pemesanan, pilih paket di bagian Harga. Setelah itu klik tombol WhatsApp untuk terhubung dengan penjual.'},
+  {keys:['jam buka','operasional'],text:'Ini demo otomatisasi. Bot bisa merespons pertanyaan kapan pun; jam operasional bisnis aslinya dapat disesuaikan.'},
+  {keys:['alamat','lokasi'],text:'Toko pada percakapan ini hanya contoh simulasi. Kamu bisa mengatur alamat dan kontak bisnis sendiri di workflow n8n.'},
+  {keys:['n8n','automation','otomatis'],text:'n8n adalah platform untuk menghubungkan aplikasi dan mengotomatisasi pekerjaan seperti balas chat, mencatat order, dan membuat laporan.'},
+  {keys:['menu','help','bantuan'],text:'Silakan coba: harga, order, jam buka, alamat, atau n8n. Ketik “admin” jika ingin mencoba pengalihan ke manusia.'},
+  {keys:['halo','hai','hello','pagi'],text:'Halo! 👋 Selamat datang di simulasi Twist Automation. Mau tanya soal harga, order, atau coba bicara dengan admin?'},
+  {keys:['terima kasih','makasih'],text:'Sama-sama! Senang bisa membantu 🙌'}
+ ];
+ function clock(){return new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}
+ function msg(text,kind='in'){const el=document.createElement('div');el.className='msg '+kind;el.textContent=text;const t=document.createElement('span');t.className='t';t.textContent=clock();el.append(t);chat.append(el);chat.scrollTop=chat.scrollHeight;csMessage(text,kind)}
+ function note(text){const el=document.createElement('div');el.className='demo-note';el.textContent=text;chat.append(el);chat.scrollTop=chat.scrollHeight;csMessage(text,'system')}
+ function refresh(){let human=mode==='human';badge.textContent=human?'● Menunggu admin manusia':'● AI Bot aktif';badge.classList.toggle('human',human);timer.hidden=!human;adminTools.hidden=!human;back.hidden=!human;badge.textContent=human?(adminHasReplied?'● Sedang ditangani admin':'● Menunggu admin manusia'):'● AI Bot aktif';input.placeholder=human?'Kirim pesan untuk admin...':'Tanya sesuatu ke AI demo...';syncCS();if(human){if(adminHasReplied){timer.textContent='Admin sedang melayani • Mode AI nonaktif sampai chat diselesaikan';}else{let remaining=Math.max(0,Math.ceil((handoffAt+LIMIT-Date.now())/1000));let m=String(Math.floor(remaining/60)).padStart(2,'0'),sec=String(remaining%60).padStart(2,'0');timer.textContent='Menunggu balasan pertama admin: '+m+':'+sec;}} }
+ function resume(expired){if(mode!=='human')return;mode='ai';adminHasReplied=false;clearTimeout(timeout);clearTimeout(replyTimeout);refresh();note(expired?'15 menit tanpa balasan admin — sistem otomatis mengembalikan chat ke AI.':'Percakapan selesai. AI sekarang aktif kembali.');if(expired)msg('Maaf admin belum merespons. Saya AI bot yang kembali membantu. Ada yang ingin ditanyakan?')}
+ function handoff(){if(mode==='human')return;mode='human';adminHasReplied=false;handoffAt=Date.now();clearTimeout(replyTimeout);clearTimeout(timeout);timeout=setTimeout(()=>resume(true),LIMIT);refresh();note('Percakapan dialihkan ke admin manusia. Balasan AI dihentikan sementara.');msg('Permintaan terhubung ke admin diterima. Pada demo ini, gunakan panel “Simulasi balasan admin” untuk mencoba respons manusia.')}
+ function answer(text){const q=text.toLocaleLowerCase('id-ID');if(/\b(admin|manusia|human|operator|customer service|cs)\b/i.test(q)){handoff();return}const hit=kb.find(item=>item.keys.some(k=>q.includes(k)));msg(hit?hit.text:'Saya bisa bantu menjelaskan harga, cara order, dan template n8n. Kamu juga bisa ketik “admin” untuk simulasi handoff.')}
+ function send(text){text=String(text||'').trim();if(!text)return;msg(text,'out');input.value='';if(mode==='human'){note('Pesan masuk ke antrean admin; AI tidak membalas selama mode manusia.');return}replyTimeout=setTimeout(()=>{if(mode==='ai')answer(text)},480)}
+ sendBtn.addEventListener('click',()=>send(input.value));input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send(input.value)}});document.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.q)));
+ function adminReply(value){if(mode!=='human')return;clearTimeout(timeout);adminHasReplied=true;msg('Admin: '+value);refresh()}
+ back.textContent='✓ Selesaikan Chat & Aktifkan AI';back.addEventListener('click',()=>resume(false));adminSend.addEventListener('click',()=>{const value=adminInput.value.trim();if(!value||mode!=='human')return;adminReply(value);adminInput.value=''});
+ adminInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adminSend.click()}});
+ setInterval(()=>{if(mode==='human'){if(!adminHasReplied&&Date.now()>=handoffAt+LIMIT)resume(true);else refresh()}},1000);
+ refresh();
+})();
+
+/* ============ SMOOTH SCROLL ============ */
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var id = a.getAttribute('href');
+    if (id.length < 2) return;
+    var el = document.querySelector(id);
+    if (!el) return;
+    e.preventDefault();
+    window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 64, behavior: 'smooth' });
+  });
+});
+</script>
+
+<script>
+/* Enhanced discovery, navigation and motion */
+(function(){
+ const grid=document.getElementById('tplGrid'),filters=document.getElementById('filters');
+ if(grid&&filters){
+  const cards=Array.from(grid.querySelectorAll('.tpl'));
+  const tools=document.createElement('div');tools.className='twist-tools';
+  const search=document.createElement('input');search.className='twist-search';search.type='search';search.placeholder='Cari template: WhatsApp, invoice, crypto...';search.setAttribute('aria-label','Cari template automation');
+  const count=document.createElement('span');count.className='twist-count';count.setAttribute('aria-live','polite');
+  tools.append(search,count);filters.after(tools);
+  const empty=document.createElement('p');empty.className='twist-empty';empty.textContent='Belum ada template yang cocok. Coba kata kunci lain.';grid.after(empty);
+  let active='all', expanded=false;
+  const more=document.createElement('button');more.type='button';more.className='catalog-more';more.textContent='Lihat semua template';grid.after(more);
+  more.addEventListener('click',()=>{expanded=!expanded;render();if(!expanded)document.getElementById('template').scrollIntoView({behavior:'smooth'});});
+  function render(){let shown=0,matched=0;let q=search.value.trim().toLocaleLowerCase('id-ID');cards.forEach(card=>{let ok=(active==='all'||card.dataset.cat===active)&&card.textContent.toLocaleLowerCase('id-ID').includes(q);if(ok)matched++;let visible=ok&&(expanded||active!=='all'||q||shown<6);card.classList.toggle('hide',!visible);card.hidden=!visible;if(visible){shown++;card.classList.add('in');}});count.textContent=matched+' template tersedia';empty.classList.toggle('show',matched===0);more.hidden=!!q||active!=='all'||matched<=6;more.textContent=expanded?'Tampilkan lebih sedikit':'Lihat semua '+matched+' template';} 
+  filters.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{active=chip.dataset.c;requestAnimationFrame(render)}));
+  search.addEventListener('input',render);render();
+ }
+ const nav=document.querySelector('.nav-in'),links=document.querySelector('.nav-links');
+ if(nav&&links){
+  const menu=document.createElement('button');menu.type='button';menu.className='twist-menu';menu.textContent='☰';menu.setAttribute('aria-label','Buka menu navigasi');menu.setAttribute('aria-expanded','false');nav.insertBefore(menu,links);
+  function close(){links.classList.remove('twist-open');menu.setAttribute('aria-expanded','false');menu.textContent='☰'}
+  menu.addEventListener('click',()=>{let open=links.classList.toggle('twist-open');menu.setAttribute('aria-expanded',String(open));menu.textContent=open?'✕':'☰'});
+  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))close()});
+ }
+ const top=document.createElement('button');top.type='button';top.className='twist-top';top.textContent='↑';top.setAttribute('aria-label','Kembali ke atas');document.body.append(top);top.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));
+ let raf=false;addEventListener('scroll',()=>{if(raf)return;raf=true;requestAnimationFrame(()=>{top.classList.toggle('show',scrollY>650);raf=false})},{passive:true});
+ document.querySelectorAll('.faq-q,.acc-h').forEach(btn=>{btn.setAttribute('aria-expanded',String(btn.parentElement.classList.contains('open')));btn.addEventListener('click',()=>requestAnimationFrame(()=>{document.querySelectorAll('.faq-q,.acc-h').forEach(b=>b.setAttribute('aria-expanded',String(b.parentElement.classList.contains('open'))))}))});
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.rv').forEach(e=>e.classList.add('in'));document.querySelectorAll('.sec-in').forEach(e=>e.classList.add('on'))}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jasa Macro &amp; Automation Windows Custom — Twist</title>
+<meta name="description" content="Jasa bikin macro AutoHotkey custom sesuai kebutuhan lo. Excel, data entry, game, trading, apa aja yang repetitif. Garansi jalan.">
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0f1520; --card:#141b26; --line:#1f2a38;
+    --txt:#e6edf3; --dim:#8b98a8;
+    --acc:#e8b339; --acc2:#f5d076;
+    --grn:#3fb950; --wa:#25d366; --wa2:#128c7e;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --ease:cubic-bezier(.16,1,.3,1);
+    --ease-back:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--acc);text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 clamp(16px,4vw,24px)}
+  section[id]{scroll-margin-top:66px}
+
+  /* FX */
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  #glow{position:fixed;width:380px;height:380px;border-radius:50%;pointer-events:none;z-index:1;
+    background:radial-gradient(circle,rgba(232,179,57,.05) 0%,transparent 65%);transform:translate(-50%,-50%)}
+  @media(pointer:coarse){#glow{display:none}}
+  #prog{position:fixed;top:0;left:0;height:2.5px;width:0;z-index:101;
+    background:linear-gradient(90deg,var(--acc),var(--acc2))}
+  #curtain{position:fixed;inset:0;background:var(--bg);z-index:9999;pointer-events:none;
+    transform:translateY(0);transition:transform .6s cubic-bezier(.76,0,.24,1)}
+  #curtain.up{transform:translateY(-100%)}
+  #curtain .cw{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    font-family:var(--mono);font-size:13px;color:var(--acc);letter-spacing:3px;transition:opacity .3s}
+  #curtain.up .cw{opacity:0}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(10,14,20,.92);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line)}
+  .nav-in{max-width:1000px;margin:0 auto;padding:12px clamp(16px,4vw,24px);
+    display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .logo{font-weight:700;font-size:15px;letter-spacing:-.3px;white-space:nowrap}
+  .logo span{color:var(--acc)}
+  .nav-r{display:flex;gap:14px;align-items:center;font-size:12.5px}
+  .nav-r a{color:var(--dim);transition:color .2s}
+  .nav-r a:hover{color:var(--txt)}
+  .nav-cta{background:var(--wa);color:#fff;padding:7px 16px;border-radius:100px;font-weight:700;
+    font-size:12px;transition:.25s var(--ease-back);white-space:nowrap}
+  .nav-cta:hover{background:var(--wa2);color:#fff;transform:translateY(-2px)}
+  @media(max-width:700px){.nav-r a:not(.nav-cta){display:none}}
+
+  /* HERO */
+  .hero{padding:clamp(48px,8vw,84px) 0 30px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);
+    width:900px;height:900px;pointer-events:none;
+    background:radial-gradient(circle,rgba(232,179,57,.07) 0%,transparent 60%);
+    animation:drift 11s ease-in-out infinite alternate}
+  @keyframes drift{from{transform:translateX(-50%) translateY(0)}to{transform:translateX(-50%) translateY(26px)}}
+  .hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .stats{opacity:0}
+  body.ready .hero .badge{animation:fUp .7s var(--ease) .05s forwards}
+  body.ready .hero h1{animation:fUp .8s var(--ease) .15s forwards}
+  body.ready .hero .sub{animation:fUp .8s var(--ease) .3s forwards}
+  body.ready .hero .cta-row{animation:fUp .8s var(--ease) .42s forwards}
+  body.ready .hero .stats{animation:fUp .8s var(--ease) .55s forwards}
+  @keyframes fUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .hero h1 .ln{display:block;overflow:hidden}
+  .hero h1 .ln i{display:block;font-style:normal;transform:translateY(108%)}
+  body.ready .hero h1 .ln i{animation:lnUp .9s var(--ease) forwards}
+  body.ready .hero h1 .ln:nth-child(1) i{animation-delay:.18s}
+  body.ready .hero h1 .ln:nth-child(2) i{animation-delay:.3s}
+  @keyframes lnUp{to{transform:translateY(0)}}
+
+  .badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;
+    color:var(--acc);border:1px solid rgba(232,179,57,.3);background:rgba(232,179,57,.08);
+    padding:6px 15px;border-radius:100px;margin-bottom:22px;letter-spacing:1.4px}
+  h1{font-size:clamp(27px,5.4vw,48px);font-weight:800;letter-spacing:-1.7px;line-height:1.1;margin-bottom:16px}
+  h1 em{font-style:normal;background:linear-gradient(100deg,var(--acc),var(--acc2));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{font-size:clamp(14.5px,2.2vw,17px);color:var(--dim);max-width:580px;margin:0 auto 28px}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 28px;
+    border-radius:100px;font-size:14.5px;font-weight:700;position:relative;overflow:hidden;
+    transition:transform .25s var(--ease-back),box-shadow .25s,background .25s,border-color .25s}
+  .btn-wa{background:var(--wa);color:#fff;box-shadow:0 6px 0 -2px var(--wa2),0 12px 24px -10px rgba(37,211,102,.45)}
+  .btn-wa:hover{transform:translateY(-3px);box-shadow:0 9px 0 -2px var(--wa2),0 18px 32px -10px rgba(37,211,102,.55)}
+  .btn-wa:active{transform:translateY(2px);box-shadow:0 3px 0 -2px var(--wa2)}
+  .btn-p{background:var(--acc);color:#0a0e14;box-shadow:0 5px 0 -1px #a87d1f,0 10px 22px -8px rgba(232,179,57,.4)}
+  .btn-p:hover{background:var(--acc2);transform:translateY(-3px);box-shadow:0 8px 0 -1px #a87d1f,0 16px 30px -10px rgba(232,179,57,.5)}
+  .btn-p:active{transform:translateY(2px);box-shadow:0 2px 0 -1px #a87d1f}
+  .btn-s{border:1px solid var(--line);color:var(--txt)}
+  .btn-s:hover{border-color:var(--dim);transform:translateY(-2px)}
+  .btn .arw{transition:transform .3s var(--ease)}
+  .btn:hover .arw{transform:translateX(5px)}
+  .btn-p::after,.btn-wa::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);
+    transform:skewX(-18deg);transition:left .55s ease}
+  .btn-p:hover::after,.btn-wa:hover::after{left:135%}
+  .stats{display:flex;gap:clamp(18px,4vw,36px);justify-content:center;margin-top:44px;flex-wrap:wrap}
+  .stats b{display:block;font-size:25px;font-weight:800;color:var(--acc);font-family:var(--mono)}
+  .stats span{font-size:12.5px;color:var(--dim)}
+
+  /* SECTIONS */
+  section{padding:clamp(40px,7vw,64px) 0}
+  .sec-in{opacity:0;transform:translateY(30px) scale(.99);
+    transition:opacity .85s var(--ease),transform .85s var(--ease)}
+  .sec-in.on{opacity:1;transform:none}
+  .sec-head{text-align:center;margin-bottom:34px}
+  .sec-head h2{font-size:clamp(23px,3.8vw,36px);font-weight:800;letter-spacing:-1.1px;margin-bottom:12px;line-height:1.14}
+  .sec-head p{color:var(--dim);font-size:14.5px;max-width:540px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:2.2px;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+  .eyebrow::before,.eyebrow::after{content:"";width:22px;height:1px;background:var(--acc)}
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+  .rv.in{opacity:1;transform:none}
+  .rv-d1{transition-delay:.07s}.rv-d2{transition-delay:.14s}.rv-d3{transition-delay:.21s}.rv-d4{transition-delay:.28s}
+
+  /* MASALAH */
+  .masalah{background:var(--bg2)}
+  .pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:14px}
+  .pain{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;
+    transition:border-color .3s,transform .45s var(--ease),box-shadow .45s}
+  .pain:hover{border-color:rgba(248,81,73,.4);transform:translateY(-5px);box-shadow:0 20px 40px -24px rgba(0,0,0,.75)}
+  .pain .ic{font-size:24px;margin-bottom:12px;display:block}
+  .pain h3{font-size:15px;font-weight:700;margin-bottom:7px;letter-spacing:-.2px}
+  .pain p{font-size:13px;color:var(--dim);line-height:1.65}
+
+  /* LAYANAN */
+  .svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:14px}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:clamp(20px,3.5vw,26px);position:relative;display:flex;flex-direction:column;
+    transition:border-color .3s,transform .45s var(--ease),box-shadow .45s}
+  .svc::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;pointer-events:none;
+    background:radial-gradient(480px circle at var(--mx,50%) var(--my,50%),rgba(232,179,57,.07),transparent 45%)}
+  .svc:hover{border-color:rgba(232,179,57,.4);transform:translateY(-6px);box-shadow:0 22px 44px -24px rgba(0,0,0,.75)}
+  .svc:hover::before{opacity:1}
+  .svc::after{content:"";position:absolute;top:0;left:-130%;width:70%;height:100%;pointer-events:none;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.05),transparent);
+    transform:skewX(-16deg);transition:left .75s ease}
+  .svc:hover::after{left:145%}
+  .svc .ic{font-size:26px;margin-bottom:14px;display:block}
+  .svc h3{font-size:16.5px;font-weight:700;margin-bottom:9px;letter-spacing:-.3px}
+  .svc p{font-size:13px;color:var(--dim);margin-bottom:14px;flex:1;line-height:1.65}
+  .svc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .tag{font-family:var(--mono);font-size:10px;color:var(--dim);background:var(--bg2);
+    border:1px solid var(--line);padding:3px 8px;border-radius:5px;transition:.25s}
+  .svc:hover .tag{border-color:rgba(232,179,57,.3);color:var(--acc2)}
+  .svc-meta{padding-top:13px;border-top:1px solid var(--line);display:flex;justify-content:space-between;
+    align-items:center;gap:10px;flex-wrap:wrap}
+  .svc-price{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--grn)}
+  .svc-time{font-size:11px;color:var(--dim);font-family:var(--mono)}
+  .hot{position:absolute;top:10px;right:14px;background:var(--acc);color:#0a0e14;font-size:9.5px;
+    font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.5px;animation:hotPulse 2.4s ease-in-out infinite}
+  @keyframes hotPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,179,57,.45)}50%{box-shadow:0 0 0 7px rgba(232,179,57,0)}}
+
+  /* PROSES */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:14px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 20px;
+    text-align:center;position:relative;transition:border-color .3s,transform .45s var(--ease)}
+  .step:hover{border-color:rgba(232,179,57,.4);transform:translateY(-5px)}
+  .step .n{width:40px;height:40px;border-radius:50%;background:var(--bg2);border:1px solid var(--line);
+    display:grid;place-items:center;font-family:var(--mono);font-size:14px;font-weight:800;
+    color:var(--acc);margin:0 auto 14px}
+  .step h3{font-size:14.5px;font-weight:700;margin-bottom:7px}
+  .step p{font-size:12.5px;color:var(--dim);line-height:1.6}
+
+  /* HARGA */
+  .harga{background:var(--bg2)}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:14px}
+  .pk{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:clamp(20px,4vw,28px) clamp(16px,3vw,24px);display:flex;flex-direction:column;
+    position:relative;transition:border-color .3s,transform .45s var(--ease),box-shadow .45s}
+  .pk::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;pointer-events:none;
+    background:radial-gradient(480px circle at var(--mx,50%) var(--my,50%),rgba(232,179,57,.07),transparent 45%)}
+  .pk:hover{transform:translateY(-6px);box-shadow:0 22px 44px -24px rgba(0,0,0,.75)}
+  .pk:hover::before{opacity:1}
+  .pk-best{border-color:var(--acc);background:linear-gradient(160deg,rgba(232,179,57,.06),var(--card));
+    animation:bestGlow 3.2s ease-in-out infinite}
+  @keyframes bestGlow{0%,100%{box-shadow:0 0 0 0 rgba(232,179,57,.18)}50%{box-shadow:0 0 22px 2px rgba(232,179,57,.1)}}
+  .pk-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--acc);
+    color:#0a0e14;font-size:10px;font-weight:700;padding:4px 14px;border-radius:100px;
+    letter-spacing:.5px;white-space:nowrap}
+  .pk h3{font-size:14.5px;color:var(--dim);font-weight:600;margin-bottom:6px}
+  .pk-amt{font-family:var(--mono);font-size:clamp(25px,5vw,31px);font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+  .pk-note{font-size:11.5px;color:var(--dim);margin-bottom:18px}
+  .pk ul{list-style:none;margin-bottom:22px;flex:1}
+  .pk li{font-size:13px;color:var(--dim);padding:6px 0;border-bottom:1px solid rgba(31,42,56,.5);display:flex;gap:9px}
+  .pk li::before{content:"✓";color:var(--grn);font-weight:700;flex-shrink:0}
+  .pk li.no{color:#5a6675}
+  .pk li.no::before{content:"—";color:#5a6675}
+  .pk .btn{width:100%;text-align:center}
+
+  /* FAQ */
+  .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);
+    overflow:hidden;transition:border-color .3s}
+  .faq-item:hover{border-color:rgba(232,179,57,.3)}
+  .faq-q{padding:15px 20px;font-weight:600;font-size:14px;cursor:pointer;display:flex;
+    justify-content:space-between;align-items:center;gap:12px;user-select:none;width:100%;text-align:left}
+  .faq-q::after{content:"+";font-family:var(--mono);color:var(--acc);font-size:18px;flex-shrink:0;
+    transition:transform .3s var(--ease-back);display:inline-block}
+  .faq-item.open .faq-q::after{transform:rotate(180deg)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+  .faq-item.open .faq-a{max-height:400px}
+  .faq-a-in{padding:0 20px 16px;font-size:13.5px;color:var(--dim);line-height:1.7}
+
+  /* CTA */
+  .cta{padding:20px 0 66px}
+  .cta-box{background:linear-gradient(135deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:22px;padding:clamp(30px,5vw,50px);text-align:center;position:relative;overflow:hidden}
+  .cta-box::before{content:"";position:absolute;top:-140px;left:50%;transform:translateX(-50%);
+    width:520px;height:300px;pointer-events:none;
+    background:radial-gradient(ellipse at center,rgba(232,179,57,.15),transparent 68%)}
+  .cta-box h2{font-size:clamp(23px,3.6vw,34px);font-weight:800;letter-spacing:-1.1px;margin-bottom:12px;position:relative}
+  .cta-box p{color:var(--dim);font-size:14.5px;max-width:440px;margin:0 auto 24px;position:relative}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+  .cta-num{margin-top:18px;font-family:var(--mono);font-size:13px;color:var(--dim);position:relative}
+  .cta-num b{color:var(--wa);font-weight:700}
+  .cta-note{margin-top:18px;font-size:12.5px;color:var(--dim);position:relative}
+  .cta-note b{color:var(--txt);font-weight:600}
+
+  footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:12.5px;color:#5a6675}
+  footer a{color:var(--dim)}
+
+  .shoot{position:fixed;width:2px;height:2px;border-radius:50%;background:#fff;z-index:1;
+    pointer-events:none;box-shadow:0 0 8px #fff}
+  .shoot::after{content:"";position:absolute;left:0;top:0;width:90px;height:1px;
+    background:linear-gradient(90deg,#fff,transparent);transform-origin:0 50%}
+
+  @media print{
+    nav,.cta-row,#stars,#glow,#prog,#curtain{display:none}
+    body{background:#fff;color:#111}
+    .pain,.svc,.pk,.step,.cta-box,.faq-item{background:#fff;border:1px solid #ddd;transform:none!important;box-shadow:none}
+    .rv,.sec-in{opacity:1;transform:none}
+    .hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .stats{opacity:1;transform:none}
+    .hero h1 .ln i{transform:none}
+    h1 em{-webkit-text-fill-color:#8a6d1f;color:#8a6d1f}
+    .pain p,.svc p,.step p,.pk li,.faq-a-in,.sub{color:#444}
+    h1,h2,h3{color:#111}
+    section{padding:18px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    .rv,.sec-in{opacity:1;transform:none}
+    .hero .badge,.hero h1,.hero .sub,.hero .cta-row,.hero .stats{opacity:1;transform:none}
+    .hero h1 .ln i{transform:none}
+    #curtain{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="curtain"><div class="cw">twist.macro</div></div>
+<canvas id="stars"></canvas>
+<div id="glow"></div>
+<div id="prog"></div>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo">twist<span>.macro</span></div>
+    <div class="nav-r">
+      <a href="#masalah">Masalah</a>
+      <a href="#layanan">Layanan</a>
+      <a href="#harga">Harga</a>
+      <a href="https://wa.me/6285171228302" class="nav-cta">Chat WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">JASA MACRO WINDOWS CUSTOM · AUTO HOTKEY</div>
+    <h1>
+      <span class="ln"><i>Kerja repetitif?</i></span>
+      <span class="ln"><i><em>Bikin macro-nya.</em></i></span>
+    </h1>
+    <p class="sub">Excel, data entry, game, trading, apa aja yang lo ulang-ulang tiap hari. Gue bikin script AutoHotkey yang jalan sendiri. Sekali bayar, pakai selamanya.</p>
+    <div class="cta-row">
+      <a href="https://wa.me/6285171228302" class="btn btn-wa">Chat Gue Sekarang <span class="arw">→</span></a>
+      <a href="#harga" class="btn btn-p">Lihat Harga</a>
+    </div>
+    <div class="stats">
+      <div><b>24h</b><span>estimasi selesai</span></div>
+      <div><b>1x</b><span>bayar, bukan langganan</span></div>
+      <div><b>2x</b><span>revisi gratis</span></div>
+      <div><b>100%</b><span>garansi jalan</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- MASALAH -->
+<section id="masalah" class="masalah sec-in">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">KENAPA LO PERLU INI</div>
+      <h2 class="rv rv-d1">Kalau lo ngulang ini tiap hari,<br>lo buang waktu.</h2>
+      <p class="rv rv-d2">Rata-rata orang habis 2-3 jam per hari buat kerja yang bisa di-automate.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain rv">
+        <span class="ic">📋</span>
+        <h3>Copy-paste data berulang</h3>
+        <p>Pindahin data dari WhatsApp ke Excel, dari Excel ke aplikasi, bolak-balik. Manual, lambat, gampang salah.</p>
+      </div>
+      <div class="pain rv rv-d1">
+        <span class="ic">📧</span>
+        <h3>Bales chat yang sama terus</h3>
+        <p>"Harga berapa?" "Ready gak?" "Ongkir ke mana?" — jawaban sama, ketik ulang 50 kali sehari.</p>
+      </div>
+      <div class="pain rv rv-d2">
+        <span class="ic">📊</span>
+        <h3>Rekap laporan manual</h3>
+        <p>Tiap akhir hari harus gabungin file, hitung total, bikin ringkasan. Padahal bisa otomatis jam 8 malam.</p>
+      </div>
+      <div class="pain rv rv-d3">
+        <span class="ic">🖱️</span>
+        <h3>Klik tombol yang sama</h3>
+        <p>App atau web yang gak punya fitur batch. Terus klik Submit, Save, Refresh — ratusan kali.</p>
+      </div>
+      <div class="pain rv rv-d4">
+        <span class="ic">🎮</span>
+        <h3>Grind game yang berulang</h3>
+        <p>Idle clicker, farming resource, afk leveling. Macro yang jalan sambil lo tidur atau kerja.</p>
+      </div>
+      <div class="pain rv rv-d1">
+        <span class="ic">📈</span>
+        <h3>Cek harga / data manual</h3>
+        <p>Buka exchange, cek harga, catat, tutup, buka lagi tiap 5 menit. Macro bisa pantau 24 jam.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYANAN -->
+<section id="layanan" class="sec-in">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">YANG BISA GUE BIKIN</div>
+      <h2 class="rv rv-d1">Macro sesuai kebutuhan lo.</h2>
+      <p class="rv rv-d2">Bukan template jadi. Gue bikin dari nol berdasarkan cara kerja lo.</p>
+    </div>
+    <div class="svc-grid">
+
+      <div class="svc rv">
+        <div class="hot">PALING DIMINTA</div>
+        <span class="ic">⌨️</span>
+        <h3>Macro Data Entry</h3>
+        <p>Ambil data dari satu tempat, olah, tulis ke tempat lain. Excel, Google Sheets, aplikasi desktop, web form — semua bisa.</p>
+        <div class="svc-tags"><span class="tag">Excel</span><span class="tag">Sheets</span><span class="tag">Web Form</span></div>
+        <div class="svc-meta"><span class="svc-price">Rp 200rb</span><span class="svc-time">1-2 hari</span></div>
+      </div>
+
+      <div class="svc rv rv-d1">
+        <span class="ic">🖱️</span>
+        <h3>Auto-Clicker Custom</h3>
+        <p>Klik otomatis di posisi tertentu, interval yang lo atur. Bisa kombinasi keyboard, bisa berhenti sendiri kalau kondisi terpenuhi.</p>
+        <div class="svc-tags"><span class="tag">Mouse</span><span class="tag">Keyboard</span><span class="tag">Conditional</span></div>
+        <div class="svc-meta"><span class="svc-price">Rp 150rb</span><span class="svc-time">1 hari</span></div>
+      </div>
+
+      <div class="svc rv rv-d2">
+        <span class="ic">💬</span>
+        <h3>Auto-Reply &amp; Clipboard</h3>
+        <p>Ketik shortcut, langsung keluar teks panjang. Atau auto-paste data berulang. Hemat ribuan ketikan per hari.</p>
+        <div class="svc-tags"><span class="tag">Hotstring</span><span class="tag">Clipboard</span><span class="tag">Chat</span></div>
+        <div class="svc-meta"><span class="svc-price">Rp 150rb</span><span class="svc-time">1 hari</span></div>
+      </div>
+
+      <div class="svc rv rv-d3">
+        <span class="ic">🎮</span>
+        <h3>Macro Game / Grind</h3>
+        <p>Auto-farm, auto-click, auto-loot, afk leveling. Jalan sambil lo tidur. Ada safety stop biar gak kedeteksi.</p>
+        <div class="svc-tags"><span class="tag">Idle</span><span class="tag">Farming</span><span class="tag">AFK</span></div>
+        <div class="svc-meta"><span class="svc-price">Rp 250rb</span><span class="svc-time">1-2 hari</span></div>
+      </div>
+
+      <div class="svc rv rv-d4">
+        <span class="ic">📁</span>
+        <h3>Auto File &amp; Folder</h3>
+        <p>Rename 100 file sekaligus, pindahin berdasarkan nama, backup otomatis, convert format. Semua dalam satu klik.</p>
+        <div class="svc-tags"><span class="tag">Rename</span><span class="tag">Move</span><span class="tag">Backup</span></div>
+        <div class="svc-meta"><span class="svc-price">Rp 200rb</span><span class="svc-time">1 hari</span></div>
+      </div>
+
+      <div class="svc rv rv-d1">
+        <span class="ic">📈</span>
+        <h3>Monitor &amp; Alert</h3>
+        <p>Pantau harga, stok, saldo, atau apa aja. Kalau ada yang masuk kriteria, notif muncul atau bunyi. Jalan 24 jam.</p>
+        <div class="svc-tags"><span class="tag">Monitor</span><span class="tag">Notif</span><span class="tag">24 Jam</span></div>
+        <div class="svc-meta"><span class="svc-price">Rp 250rb</span><span class="svc-time">1-2 hari</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROSES -->
+<section class="sec-in" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">CARA KERJA</div>
+      <h2 class="rv rv-d1">4 langkah, selesai.</h2>
+    </div>
+    <div class="steps">
+      <div class="step rv">
+        <div class="n">1</div>
+        <h3>Chat gue</h3>
+        <p>Jelasin kerja apa yang mau di-automate. Kirim screenshot atau rekam layar kalau bisa.</p>
+      </div>
+      <div class="step rv rv-d1">
+        <div class="n">2</div>
+        <h3>Deal harga</h3>
+        <p>Gue kasih estimasi harga + waktu. Setuju, DP 50%. Gue mulai garap.</p>
+      </div>
+      <div class="step rv rv-d2">
+        <div class="n">3</div>
+        <h3>Gue bikin + tes</h3>
+        <p>Gue bikin script, tes sendiri dulu, kirim video demo jalan. Lo cek.</p>
+      </div>
+      <div class="step rv rv-d3">
+        <div class="n">4</div>
+        <h3>Revisi + serah</h3>
+        <p>2x revisi gratis. Pelunasan. File + panduan dikirim. Selesai.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HARGA -->
+<section id="harga" class="harga sec-in">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">HARGA</div>
+      <h2 class="rv rv-d1">Transparan, gak ada biaya tersembunyi.</h2>
+      <p class="rv rv-d2">Sekali bayar. Bukan langganan. File jadi punya lo.</p>
+    </div>
+    <div class="pgrid">
+
+      <div class="pk rv">
+        <h3>Basic</h3>
+        <div class="pk-amt">Rp 150rb</div>
+        <div class="pk-note">macro simpel, 1 fungsi</div>
+        <ul>
+          <li>1 macro sederhana (hotstring / auto-clicker)</li>
+          <li>1 fungsi spesifik</li>
+          <li>Estimasi 1 hari</li>
+          <li>1x revisi</li>
+          <li>Panduan pakai singkat</li>
+          <li class="no">Kondisi kompleks (if/else)</li>
+          <li class="no">Integrasi API / internet</li>
+        </ul>
+        <a href="https://wa.me/6285171228302" class="btn btn-s">Pilih Basic</a>
+      </div>
+
+      <div class="pk pk-best rv rv-d1">
+        <div class="pk-badge">PALING WORTH</div>
+        <h3>Standard</h3>
+        <div class="pk-amt">Rp 300rb</div>
+        <div class="pk-note">macro dengan logika + 2 fungsi</div>
+        <ul>
+          <li>Macro dengan logika (if/else, loop)</li>
+          <li>2 fungsi atau 2 window berbeda</li>
+          <li>Estimasi 1-2 hari</li>
+          <li>2x revisi</li>
+          <li>Video demo cara pakai</li>
+          <li>Support 7 hari</li>
+          <li class="no">Integrasi API / internet</li>
+        </ul>
+        <a href="https://wa.me/6285171228302" class="btn btn-p">Pilih Standard</a>
+      </div>
+
+      <div class="pk rv rv-d2">
+        <h3>Custom</h3>
+        <div class="pk-amt">Rp 500rb+</div>
+        <div class="pk-note">sesuai kompleksitas, deal via chat</div>
+        <ul>
+          <li>Multi-fungsi, multi-window</li>
+          <li>Integrasi API / baca data internet</li>
+          <li>Baca file, database, Excel kompleks</li>
+          <li>GUI sendiri (tombol, setting)</li>
+          <li>Estimasi 2-5 hari</li>
+          <li>Revisi tanpa batas (14 hari)</li>
+          <li>Support 30 hari</li>
+        </ul>
+        <a href="https://wa.me/6285171228302" class="btn btn-p">Diskusi Dulu</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--dim)">
+      Butuh automation yang lebih besar (n8n, workflow bisnis)? <a href="https://twist5202-ux.github.io/automation/">Liat template n8n gue</a>.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec-in">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">FAQ</div>
+      <h2 class="rv rv-d1">Pertanyaan yang sering masuk.</h2>
+    </div>
+
+    <div class="faq-item rv">
+      <button class="faq-q">Gue gak ngerti coding. Bisa pakai?</button>
+      <div class="faq-a"><div class="faq-a-in">Bisa. Lo tinggal dobel klik file-nya, macro langsung jalan. Gue yang urus semua teknis. Kalau perlu, gue bikin tombol START/STOP biar gampang.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d1">
+      <button class="faq-q">Aman gak buat komputer gue?</button>
+      <div class="faq-a"><div class="faq-a-in">Aman. Script AutoHotkey cuma ngirim perintah keyboard &amp; mouse, gak ngubah sistem, gak install apa-apa. File-nya bisa lo buka sendiri pakai Notepad kalau mau liat isinya.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d2">
+      <button class="faq-q">Beda sama autoclicker gratis di internet?</button>
+      <div class="faq-a"><div class="faq-a-in">Yang gratis cuma klik biasa. Macro gue bisa baca kondisi, ambil data, olah, terus ambil keputusan. Misal: "kalau stok di bawah 10, kirim notif" — itu gak bisa dikerjain autoclicker gratis.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d3">
+      <button class="faq-q">Bayar gimana?</button>
+      <div class="faq-a"><div class="faq-a-in">Transfer bank, e-wallet (DANA/GoPay/OVO), atau USDC. DP 50% dulu, pelunasan setelah macro jalan dan lo cocok.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d4">
+      <button class="faq-q">Kalau macro-nya rusak setelah jadi?</button>
+      <div class="faq-a"><div class="faq-a-in">Paket Standard dapat support 7 hari, Custom 30 hari. Kalau ada yang error, chat aja — gue benerin gratis selama masa support.</div></div>
+    </div>
+
+    <div class="faq-item rv rv-d1">
+      <button class="faq-q">Bisa buat macro game?</button>
+      <div class="faq-a"><div class="faq-a-in">Bisa. Tapi gue jujur: beberapa game mendeteksi macro dan bisa ban akun. Gue bikin dengan safety stop biar risikonya lebih kecil, tapi keputusan dan risikonya tetap di lo.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta sec-in">
+  <div class="wrap">
+    <div class="cta-box rv">
+      <h2>Ada kerja yang mau lo otomatisin?</h2>
+      <p>Chat aja, gue kasih estimasi gratis. Kalau gak bisa, gue bilang gak bisa — gak gue paksa.</p>
+      <div class="cta-row">
+        <a href="https://wa.me/6285171228302" class="btn btn-wa">Chat WhatsApp <span class="arw">→</span></a>
+        <a href="https://twist5202-ux.github.io/automation/" class="btn btn-s">Liat Template n8n</a>
+      </div>
+      <div class="cta-num">atau langsung WA: <b>0851-7122-8302</b></div>
+      <div class="cta-note">Bisa <b>custom macro</b> sesuai kebutuhan lo.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>twist.macro — jasa macro &amp; automation Windows custom. Dibuat di Indonesia.</p>
+    <p style="margin-top:6px">WhatsApp <a href="https://wa.me/6285171228302">0851-7122-8302</a> · Email <a href="mailto:GANTI_EMAIL_LO">GANTI_EMAIL_LO</a></p>
+  </div>
+</footer>
+
+<script>
+/* CURTAIN */
+window.addEventListener('load', function(){
+  document.body.classList.add('ready');
+  requestAnimationFrame(function(){ document.getElementById('curtain').classList.add('up'); });
+});
+
+/* STARFIELD */
+(function(){
+  var c = document.getElementById('stars'), ctx = c.getContext('2d');
+  var w, h, stars = [], shoot = [], N = 130;
+  function resize(){ w = c.width = innerWidth; h = c.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+  for (var i = 0; i < N; i++) stars.push({
+    x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.3 + .3,
+    s: Math.random()*.22 + .05, o: Math.random()*.45 + .18,
+    tw: Math.random()*.02 + .005, ph: Math.random()*Math.PI*2
+  });
+  function frame(){
+    ctx.clearRect(0,0,w,h);
+    if (shoot.length < 2 && Math.random() < .0035) shoot.push({
+      x: Math.random()*w*.7, y: Math.random()*h*.4,
+      vx: 5 + Math.random()*4, vy: 2 + Math.random()*2, life: 1
+    });
+    for (var i = 0; i < stars.length; i++){
+      var st = stars[i];
+      st.y += st.s; if (st.y > h){ st.y = -2; st.x = Math.random()*w; }
+      st.ph += st.tw;
+      var o = st.o * (0.6 + 0.4*Math.sin(st.ph));
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(232,179,57,' + o.toFixed(3) + ')'; ctx.fill();
+    }
+    for (var j = shoot.length - 1; j >= 0; j--){
+      var s2 = shoot[j];
+      s2.x += s2.vx; s2.y += s2.vy; s2.life -= .012;
+      if (s2.life <= 0 || s2.x > w || s2.y > h){ shoot.splice(j,1); continue; }
+      var g = ctx.createLinearGradient(s2.x, s2.y, s2.x - s2.vx*8, s2.y - s2.vy*8);
+      g.addColorStop(0, 'rgba(245,208,118,' + (s2.life*.8).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(245,208,118,0)');
+      ctx.beginPath(); ctx.moveTo(s2.x, s2.y); ctx.lineTo(s2.x - s2.vx*8, s2.y - s2.vy*8);
+      ctx.strokeStyle = g; ctx.lineWidth = 1.4; ctx.stroke();
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* CURSOR GLOW */
+(function(){
+  var g = document.getElementById('glow'), tx = 0, ty = 0, cx = 0, cy = 0;
+  addEventListener('mousemove', function(e){ tx = e.clientX; ty = e.clientY; });
+  (function loop(){
+    cx += (tx - cx) * .12; cy += (ty - cy) * .12;
+    g.style.left = cx + 'px'; g.style.top = cy + 'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* SCROLL PROGRESS */
+(function(){
+  var p = document.getElementById('prog');
+  addEventListener('scroll', function(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    p.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+/* REVEAL + SECTION */
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+}, { threshold: .12, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+var io2 = new IntersectionObserver(function(es){
+  es.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('on'); io2.unobserve(en.target); } });
+}, { threshold: .06 });
+document.querySelectorAll('.sec-in').forEach(function(el){ io2.observe(el); });
+
+/* COUNT UP */
+var io3 = new IntersectionObserver(function(es){
+  es.forEach(function(en){
+    if (!en.isIntersecting) return;
+    var el = en.target; io3.unobserve(el);
+    var raw = el.textContent.trim();
+    var num = parseFloat(raw);
+    if (isNaN(num)) return;
+    var suffix = raw.replace(/^[\d.,\s]+/, '');
+    var dur = 1100, t0 = performance.now();
+    (function tick(t){
+      var p = Math.min((t - t0) / dur, 1);
+      el.textContent = Math.round(num * (1 - Math.pow(1 - p, 3))) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  });
+}, { threshold: .5 });
+document.querySelectorAll('.stats b').forEach(function(el){ io3.observe(el); });
+
+/* CARD SPOTLIGHT */
+document.querySelectorAll('.svc,.pk').forEach(function(c){
+  c.addEventListener('mousemove', function(e){
+    var r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  });
+});
+
+/* FAQ */
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click', function(){
+    var item = q.parentElement;
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var id = a.getAttribute('href');
+    if (id.length < 2) return;
+    var el = document.querySelector(id);
+    if (!el) return;
+    e.preventDefault();
+    window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 64, behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>

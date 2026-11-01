@@ -1,0 +1,140 @@
+{
+  "name": "FREELANCER 03 — Project Deadline Tracker (Jangan Telat Delivery)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Project",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Project Aktif",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = new Date();\nreturn rows.filter(r => {\n  if (r.status === 'selesai') return false;\n  const dl = new Date(r.deadline);\n  const sisa = Math.ceil((dl - now) / 86400000);\n  return sisa <= 2;\n}).map(r => {\n  const sisa = Math.ceil((new Date(r.deadline) - now) / 86400000);\n  return { json: { ...r, sisa_hari: sisa } };\n});\n"
+      },
+      "id": "n3",
+      "name": "Filter Deadline Dekat",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "⏰ DEADLINE DEKAT\\n\\nProject : {{$json.nama_project}}\\nKlien   : {{$json.klien}}\\nDeadline: {{$json.deadline}}\\nSisa    : {{$json.sisa_hari}} hari\\nProgress: {{$json.progress}}\\n\\nJangan sampe telat delivery!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Alert Deadline",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 08:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Project Aktif",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Project Aktif": {
+      "main": [
+        [
+          {
+            "node": "Filter Deadline Dekat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Deadline Dekat": {
+      "main": [
+        [
+          {
+            "node": "Alert Deadline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

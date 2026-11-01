@@ -1,0 +1,130 @@
+{
+  "name": "CRYPTO 11 — DCA Reminder (Pengingat Beli Berkala)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap Senin 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Cek Harga Sekarang",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst d = $input.first().json;\nconst btc = d.bitcoin;\nconst perubahan = btc.usd_24h_change.toFixed(2);\nconst arah = btc.usd_24h_change >= 0 ? '📈' : '📉';\n\nlet out = 'DCA REMINDER — SENIN\\n==================\\n\\n';\nout += 'BTC sekarang : $' + btc.usd.toLocaleString('id') + '\\n';\nout += '24 jam        : ' + arah + ' ' + perubahan + '%\\n\\n';\nout += 'Waktunya DCA mingguan!\\n';\nout += 'Nominal rencana: $GANTI_NOMINAL_DCA\\n\\n';\nif (btc.usd_24h_change < -5) {\n  out += '💡 Harga turun ' + Math.abs(perubahan) + '% — peluang bagus buat beli.';\n} else if (btc.usd_24h_change > 5) {\n  out += '⚠️ Harga naik ' + perubahan + '% — pertimbangkan kurangin size.';\n} else {\n  out += '👌 Harga relatif stabil — lanjut sesuai rencana.';\n}\nreturn [{ json: { pesan: out } }];\n"
+      },
+      "id": "n3",
+      "name": "Susun Pesan DCA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.pesan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Kirim Reminder DCA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap Senin 09:00": {
+      "main": [
+        [
+          {
+            "node": "Cek Harga Sekarang",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Harga Sekarang": {
+      "main": [
+        [
+          {
+            "node": "Susun Pesan DCA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Susun Pesan DCA": {
+      "main": [
+        [
+          {
+            "node": "Kirim Reminder DCA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

@@ -1,0 +1,165 @@
+{
+  "name": "CRYPTO 07 — Staking Reward Tracker (Harian)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Hari 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=GANTI_TOKEN_ID&vs_currencies=usd&include_24hr_change=true",
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Ambil Harga Token",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Baca Posisi Staking",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst posisi = $('Baca Posisi Staking').all().map(r => r.json);\nconst harga = $input.first().json;\n\nlet out = 'STAKING REPORT\\n================\\n';\nlet totalUsd = 0;\nfor (const p of posisi) {\n  const h = harga[p.token_id]?.usd || 0;\n  const nilai = p.jumlah * h;\n  totalUsd += nilai;\n  const rewardHarian = nilai * (p.apr / 100) / 365;\n  out += '\\n' + p.token.toUpperCase() + '\\n';\n  out += '  Jumlah   : ' + p.jumlah + '\\n';\n  out += '  APR      : ' + p.apr + '%\\n';\n  out += '  Nilai    : $' + nilai.toFixed(2) + '\\n';\n  out += '  Reward/h : $' + rewardHarian.toFixed(4) + '\\n';\n  out += '  Reward/bl: $' + (rewardHarian * 30).toFixed(2) + '\\n';\n}\nout += '\\n================\\nTOTAL: $' + totalUsd.toFixed(2);\nreturn [{ json: { laporan: out, totalUsd } }];\n"
+      },
+      "id": "n4",
+      "name": "Hitung Reward & Nilai",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "={{$json.laporan}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Kirim Laporan Staking",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Hari 08:00": {
+      "main": [
+        [
+          {
+            "node": "Ambil Harga Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Harga Token": {
+      "main": [
+        [
+          {
+            "node": "Baca Posisi Staking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Posisi Staking": {
+      "main": [
+        [
+          {
+            "node": "Hitung Reward & Nilai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hitung Reward & Nilai": {
+      "main": [
+        [
+          {
+            "node": "Kirim Laporan Staking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

@@ -1,0 +1,206 @@
+{
+  "name": "FNB 02 — Menu Harian Broadcast (Pelanggan Setia)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Tiap Pagi 09:30",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Menu",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Menu Hari Ini",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][new Date().getDay()];\n\nlet out = 'MENU HARI INI 🍽️\\n================\\n\\n';\nfor (const r of rows) {\n  out += '• ' + r.nama_menu + ' — Rp ' + Number(r.harga).toLocaleString('id') + '\\n';\n}\nout += '\\nOrder? Balas chat ini ya. Gratis antar min. Rp 100rb.';\nreturn [{ json: { broadcast: out } }];\n"
+      },
+      "id": "n3",
+      "name": "Susun Broadcast Menu",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "notes": "Susun daftar menu dari Sheets."
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Pelanggan",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Baca Daftar Pelanggan",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -60,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nreturn rows.filter(r => r.wa && (r.aktif || '').toLowerCase() !== 'tidak')\n  .map(r => ({ json: { target: String(r.wa).replace(/[^0-9]/g, '') } }));\n"
+      },
+      "id": "n5",
+      "name": "Siapkan Target Broadcast",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        500
+      ],
+      "notes": "Ambil nomor pelanggan aktif."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $('Susun Broadcast Menu').first().json.broadcast }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Kirim Menu Harian",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Tiap Pagi 09:30": {
+      "main": [
+        [
+          {
+            "node": "Baca Menu Hari Ini",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Baca Daftar Pelanggan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Menu Hari Ini": {
+      "main": [
+        [
+          {
+            "node": "Susun Broadcast Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Susun Broadcast Menu": {
+      "main": [
+        [
+          {
+            "node": "Siapkan Target Broadcast",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Daftar Pelanggan": {
+      "main": [
+        [
+          {
+            "node": "Siapkan Target Broadcast",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Siapkan Target Broadcast": {
+      "main": [
+        [
+          {
+            "node": "Kirim Menu Harian",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

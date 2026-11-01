@@ -1,0 +1,140 @@
+{
+  "name": "CRYPTO 08 — Airdrop Deadline Reminder (Jangan Sampai Kelewat)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Cek Tiap Pagi 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "GANTI_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Baca Daftar Airdrop",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rows = $input.all().map(r => r.json);\nconst now = new Date();\nconst urgent = [];\nfor (const r of rows) {\n  if (r.status === 'done') continue;\n  const deadline = new Date(r.deadline);\n  const sisaHari = Math.ceil((deadline - now) / 86400000);\n  if (sisaHari <= 3 && sisaHari >= 0) {\n    urgent.push({ ...r, sisaHari });\n  }\n}\nreturn urgent.map(r => ({ json: r }));\n"
+      },
+      "id": "n3",
+      "name": "Hitung Sisa Hari",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "GANTI_TOKEN_FONNTE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "GANTI_NOMOR_WA_ADMIN"
+            },
+            {
+              "name": "message",
+              "value": "⏰ AIRDROP DEADLINE DEKAT\\n\\nNama     : {{$json.nama}}\nSisa     : {{$json.sisaHari}} hari\\nDeadline : {{$json.deadline}}\\nTask     : {{$json.task}}\\nLink     : {{$json.link}}\\n\\nJangan sampe kelewat!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Alert Deadline Dekat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cek Tiap Pagi 07:00": {
+      "main": [
+        [
+          {
+            "node": "Baca Daftar Airdrop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Daftar Airdrop": {
+      "main": [
+        [
+          {
+            "node": "Hitung Sisa Hari",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hitung Sisa Hari": {
+      "main": [
+        [
+          {
+            "node": "Alert Deadline Dekat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {}
+}

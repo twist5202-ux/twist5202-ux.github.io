@@ -1,0 +1,143 @@
+{
+  "name": "CRYPTO 05 — Daily Portfolio Report (Sheets + Telegram)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "0 21 * * *" }] }
+      },
+      "id": "sched",
+      "name": "Setiap Jam 9 Malam",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "p1", "name": "portfolio", "value": "=[\n  { \"simbol\": \"KINS\", \"chain\": \"solana\", \"pair\": \"F42tZnKPavq1VUcrL6ymhc6YqVpt84fWwgzbNTv2wb3W\", \"jumlah\": 1000000 },\n  { \"simbol\": \"WBNB\", \"chain\": \"bsc\", \"pair\": \"GANTI_WALLET_CONTOH\", \"jumlah\": 0.003 }\n]", "type": "array" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cfg",
+      "name": "Portfolio Saya",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = [];\nfor (const p of $json.portfolio) {\n  out.push({ json: { simbol: p.simbol, chain: p.chain, pair: p.pair, jumlah: p.jumlah } });\n}\nreturn out;"
+      },
+      "id": "split",
+      "name": "Pecah Per Aset",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.dexscreener.com/latest/dex/pairs/{{ $json.chain }}/{{ $json.pair }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "fetch",
+      "name": "Ambil Harga",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const pair = $json.pair || $json.pairs?.[0] || {};\nconst simbol = $('Pecah Per Aset').item.json.simbol;\nconst jumlah = $('Pecah Per Aset').item.json.jumlah;\n\nconst harga = parseFloat(pair.priceUsd || 0);\nconst nilai = harga * jumlah;\nconst chg = parseFloat(pair.priceChange?.h24 || 0);\nconst liq = parseFloat(pair.liquidity?.usd || 0);\nconst vol = parseFloat(pair.volume?.h24 || 0);\n\nreturn [{\n  json: {\n    simbol, jumlah, harga, nilai,\n    change_24h: chg, liquidity: liq, volume_24h: vol,\n    tanggal: new Date().toISOString().slice(0, 10)\n  }\n}];"
+      },
+      "id": "calc",
+      "name": "Hitung Nilai Aset",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "value": "GANTI_SPREADSHEET_ID", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Portfolio", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Tanggal": "={{ $json.tanggal }}",
+            "Aset": "={{ $json.simbol }}",
+            "Jumlah": "={{ $json.jumlah }}",
+            "Harga": "={{ $json.harga }}",
+            "Nilai USD": "={{ $json.nilai }}",
+            "Perubahan 24j": "={{ $json.change_24h }}",
+            "Likuiditas": "={{ $json.liquidity }}",
+            "Volume 24j": "={{ $json.volume_24h }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "sheets",
+      "name": "Catat ke Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1340, 220],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "GANTI_CREDENTIAL_ID", "name": "Google Sheets" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Gabung semua aset jadi 1 laporan\nconst items = $input.all();\nlet total = 0;\nlet pesan = '📈 *LAPORAN PORTFOLIO HARIAN*\\n';\npesan += 'Tanggal: ' + items[0].json.tanggal + '\\n';\npesan += '━━━━━━━━━━━━━━━━━━\\n\\n';\n\nfor (const it of items) {\n  const j = it.json;\n  total += j.nilai;\n  const tanda = j.change_24h >= 0 ? '📈' : '📉';\n  pesan += tanda + ' *' + j.simbol + '*\\n';\n  pesan += '   Jumlah: ' + Number(j.jumlah).toLocaleString('en-US') + '\\n';\n  pesan += '   Harga: $' + Number(j.harga).toPrecision(6) + '\\n';\n  pesan += '   Nilai: $' + j.nilai.toFixed(2) + '\\n';\n  pesan += '   24j: ' + j.change_24h.toFixed(2) + '%\\n\\n';\n}\n\npesan += '━━━━━━━━━━━━━━━━━━\\n';\npesan += '💰 *TOTAL NILAI: $' + total.toFixed(2) + '*';\n\nreturn [{ json: { laporan: pesan, total_nilai: total } }];"
+      },
+      "id": "report",
+      "name": "Gabung Laporan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "GANTI_CHAT_ID",
+        "text": "={{ $json.laporan }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send",
+      "name": "Kirim Laporan",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1780, 300],
+      "credentials": {
+        "telegramApi": { "id": "GANTI_CREDENTIAL_ID", "name": "Telegram Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## CRYPTO 05 — Daily Portfolio Report\n\n**Alur:**\nSetiap jam 9 malam → cek harga semua aset → catat ke Sheets → kirim laporan Telegram\n\n**Yang diedit:**\n- `portfolio` di node *Portfolio Saya* — daftar aset + jumlah lo\n- `GANTI_SPREADSHEET_ID` — ID Google Sheet\n\n**Sheet harus punya tab *Portfolio* dengan header:**\nTanggal, Aset, Jumlah, Harga, Nilai USD, Perubahan 24j, Likuiditas, Volume 24j\n\n**Hasil:**\n- Riwayat nilai portfolio tiap hari (bisa dibuat chart)\n- Laporan Telegram tiap malam\n\n**Cocok buat:**\n- Investor yang mau tracking rutin\n- Airdrop farmer (pantau nilai holding)\n- Siapa pun yang butuh catatan rapi",
+        "height": 400,
+        "width": 620,
+        "color": 4
+      },
+      "id": "note",
+      "name": "Panduan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [160, 100]
+    }
+  ],
+  "connections": {
+    "Setiap Jam 9 Malam": { "main": [[{ "node": "Portfolio Saya", "type": "main", "index": 0 }]] },
+    "Portfolio Saya": { "main": [[{ "node": "Pecah Per Aset", "type": "main", "index": 0 }]] },
+    "Pecah Per Aset": { "main": [[{ "node": "Ambil Harga", "type": "main", "index": 0 }]] },
+    "Ambil Harga": { "main": [[{ "node": "Hitung Nilai Aset", "type": "main", "index": 0 }]] },
+    "Hitung Nilai Aset": { "main": [[{ "node": "Catat ke Sheets", "type": "main", "index": 0 }]] },
+    "Catat ke Sheets": { "main": [[{ "node": "Gabung Laporan", "type": "main", "index": 0 }]] },
+    "Gabung Laporan": { "main": [[{ "node": "Kirim Laporan", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}
