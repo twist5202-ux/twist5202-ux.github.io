@@ -520,7 +520,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
 @media(max-width:580px){#harga .pgrid{grid-template-columns:minmax(0,1fr);gap:26px}#harga .pk{padding:27px 20px 22px}#harga .pk .pk-amt{font-size:32px}}
 
 </style>
-<link rel="stylesheet" href="/automation/twist-unified-v1.css?v=8">
+<link rel="stylesheet" href="/automation/twist-unified-v1.css?v=9">
 <script src="/automation/twist-unified-v1.js?v=1" defer></script>
 </head>
 <body>
@@ -1187,7 +1187,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv">
-      <button class="acc-h">1. Siapin apa aja yang dibutuhin <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Siapin apa aja yang dibutuhin <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <table>
           <tr><th>Komponen</th><th>Buat apa</th><th>Biaya</th></tr>
@@ -1200,7 +1200,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv rv-d1">
-      <button class="acc-h">2. Install n8n <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Install n8n <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <p><b>Cara termudah — n8n Cloud:</b></p>
         <ol>
@@ -1217,7 +1217,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv rv-d2">
-      <button class="acc-h">3. Connect Google Sheets <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Connect Google Sheets <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <ol>
           <li>Di n8n, klik ikon <b>kunci</b> (Credential) di panel kiri</li>
@@ -1232,7 +1232,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv rv-d3">
-      <button class="acc-h">4. Daftar Gateway WhatsApp &amp; ambil token <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Daftar Gateway WhatsApp &amp; ambil token <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <table>
           <tr><th>Gateway</th><th>Harga</th><th>Catatan</th></tr>
@@ -1254,7 +1254,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv rv-d4">
-      <button class="acc-h">5. Import template <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Import template <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <ol>
           <li>Buka n8n lo</li>
@@ -1268,7 +1268,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv rv-d5">
-      <button class="acc-h">6. Ganti token &amp; nomor WA (paling penting) <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Ganti token &amp; nomor WA (paling penting) <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <ol>
           <li>Klik <b>2x</b> kotak yang namanya ada <b>"WhatsApp"</b> atau <b>"Kirim"</b></li>
@@ -1291,7 +1291,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv rv-d6">
-      <button class="acc-h">7. Aktifin &amp; tes <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Aktifin &amp; tes <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <ol>
           <li>Klik <b>Save</b> (pojok kanan atas)</li>
@@ -1305,7 +1305,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="acc rv">
-      <button class="acc-h">8. Struktur Google Sheets <span class="pm">+</span></button>
+      <button class="acc-h" type="button" aria-expanded="false">Struktur Google Sheets <span class="pm">+</span></button>
       <div class="acc-b"><div class="acc-b-in">
         <p><b>Sheet "Data Order"</b> (template 02, 04, 06, 08):</p>
         <table>
@@ -1522,11 +1522,23 @@ document.querySelectorAll('.tpl,.pk').forEach(function(c){
 })();
 
 /* ============ ACCORDION (panduan) ============ */
-document.querySelectorAll('.acc-h').forEach(function(h){
+document.querySelectorAll('#panduan .acc-h').forEach(function(h, i){
+  var panel = h.parentElement.querySelector('.acc-b');
+  if (!panel) return;
+  panel.id = 'panduan-step-panel-' + (i + 1);
+  h.setAttribute('aria-controls', panel.id);
+  h.setAttribute('aria-expanded', String(h.parentElement.classList.contains('open')));
   h.addEventListener('click', function(){
-    h.parentElement.classList.toggle('open');
+    var expanded = h.parentElement.classList.toggle('open');
+    h.setAttribute('aria-expanded', String(expanded));
+    panel.style.maxHeight = expanded ? panel.scrollHeight + 'px' : '0px';
   });
 });
+window.addEventListener('resize', function(){
+  document.querySelectorAll('#panduan .acc.open .acc-b').forEach(function(panel){
+    panel.style.maxHeight = panel.scrollHeight + 'px';
+  });
+}, {passive:true});
 
 /* ============ FAQ ============ */
 document.querySelectorAll('.faq-q').forEach(function(q){
