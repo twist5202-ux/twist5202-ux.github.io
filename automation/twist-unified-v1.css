@@ -655,3 +655,175 @@ body .hero .tw-f-bottom b{color:#baf6de!important}
  body .hero .tw-f-pill{animation:none!important;transition:none!important}
  body .hero .tw-flow-step{opacity:1!important;transform:none!important}
 }
+
+
+/* V8 — premium price comparison section, scoped to main storefront */
+body #harga{
+ position:relative;isolation:isolate;
+ background:#0c0914!important;
+ background-image:radial-gradient(ellipse 54% 40% at 50% 10%,rgba(116,80,199,.18),transparent 78%),
+ linear-gradient(180deg,#100c1c 0%,#0a0811 100%)!important;
+ color:#f4effb!important;
+ border-block:1px solid rgba(194,170,255,.09);
+ overflow:visible!important;
+ padding-block:clamp(70px,8vw,110px)!important
+}
+body #harga::before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.28;
+ background-image:radial-gradient(#af97ec30 1px,transparent 1px);background-size:29px 29px;
+ mask-image:linear-gradient(to bottom,#000 0%,transparent 78%)
+}
+body #harga>.wrap{position:relative;z-index:1}
+body #harga .sec-head{margin-bottom:46px!important;max-width:780px!important}
+body #harga .sec-head .eyebrow{
+ display:inline-flex;color:#c5abff!important;-webkit-text-fill-color:#c5abff!important;
+ font:600 11px 'DM Mono',monospace!important;letter-spacing:.22em!important;
+ margin-bottom:22px
+}
+body #harga .sec-head h2{
+ color:#f4effb!important;-webkit-text-fill-color:#f4effb!important;
+ font-size:clamp(38px,5.5vw,66px)!important;
+ line-height:1.08!important;font-weight:700!important;
+ letter-spacing:-.065em!important;margin-bottom:20px!important
+}
+body #harga .sec-head p{
+ max-width:670px!important;margin-inline:auto!important;
+ color:#b9adc9!important;-webkit-text-fill-color:#b9adc9!important;
+ font-size:15px!important;line-height:1.85!important
+}
+body #harga .sec-head p a{
+ color:#d7c8ff!important;-webkit-text-fill-color:#d7c8ff!important;
+ text-decoration:underline;text-decoration-color:#9f88e6;text-underline-offset:4px;
+ font-weight:600
+}
+body #harga .pgrid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:clamp(16px,2vw,24px)!important;align-items:stretch;
+ max-width:1140px;margin-inline:auto
+}
+body #harga .pk{
+ position:relative;isolation:isolate;min-width:0;
+ display:flex;flex-direction:column;
+ background:linear-gradient(145deg,#1b1627,#130f1d)!important;
+ border:1px solid #403451!important;
+ border-radius:22px!important;
+ padding:clamp(25px,3vw,34px) clamp(20px,2.5vw,30px) 26px!important;
+ box-shadow:0 14px 35px rgba(0,0,0,.18),inset 0 1px 0 #ffffff0b!important;
+ overflow:visible!important;
+ color:#f4effb!important;
+ transform:none;
+ transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s!important
+}
+body #harga .pk:hover{
+ transform:translateY(-8px)!important;border-color:#a48ae7!important;
+ box-shadow:0 27px 65px rgba(58,35,111,.35),inset 0 1px 0 #ffffff20!important
+}
+body #harga .pk::before{
+ content:"";position:absolute;inset:0;border-radius:inherit;
+ background:radial-gradient(ellipse at top,rgba(157,121,238,.12),transparent 58%);
+ opacity:1!important;pointer-events:none;z-index:-1
+}
+body #harga .pk::after{pointer-events:none;z-index:-1}
+body #harga .pk-best{
+ background:linear-gradient(155deg,#2e2149,#1b142b 75%)!important;
+ border:1.5px solid #aa8af8!important;
+ box-shadow:0 22px 58px rgba(109,72,194,.18),0 0 0 1px #a88ce92e!important;
+ animation:none!important
+}
+body #harga .pk-best:hover{
+ box-shadow:0 30px 75px rgba(129,89,211,.32),0 0 30px rgba(160,125,236,.15)!important
+}
+body #harga .pk-badge{
+ position:absolute;z-index:5;top:-15px!important;left:50%;transform:translateX(-50%);
+ display:inline-flex;align-items:center;justify-content:center;
+ padding:8px 18px!important;min-height:30px;
+ background:#c6afff!important;color:#1b112b!important;
+ border:1px solid #e2d4ff!important;border-radius:999px!important;
+ box-shadow:0 8px 28px rgba(150,110,235,.28)!important;
+ white-space:nowrap!important;letter-spacing:.10em;font-size:10px!important;font-weight:800!important
+}
+body #harga .pk h3{
+ color:#f1eafa!important;-webkit-text-fill-color:#f1eafa!important;
+ font-size:17px!important;font-weight:650!important;letter-spacing:-.02em!important;
+ margin:0 0 12px!important
+}
+body #harga .pk .pk-amt{
+ color:#e4d7ff!important;-webkit-text-fill-color:#e4d7ff!important;
+ font:700 clamp(28px,3vw,39px)/1.2 'Space Grotesk',sans-serif!important;
+ font-variant-numeric:tabular-nums!important;
+ letter-spacing:-.075em!important;white-space:normal!important;
+ overflow-wrap:anywhere!important;margin-bottom:10px!important
+}
+body #harga .pk-best .pk-amt{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:0 0 30px rgba(202,177,255,.30)
+}
+body #harga .pk .pk-note{
+ color:#b8abc9!important;-webkit-text-fill-color:#b8abc9!important;
+ font-size:12px!important;line-height:1.55!important;
+ min-height:38px;margin:0 0 18px!important
+}
+body #harga .pk ul{
+ list-style:none;flex:1;margin:0 0 23px!important;padding:0!important;
+ min-width:0
+}
+body #harga .pk li{
+ display:flex;align-items:flex-start;gap:10px;
+ color:#d0c5dc!important;-webkit-text-fill-color:#d0c5dc!important;
+ font-size:13px!important;line-height:1.65!important;
+ padding:10px 0!important;border-bottom:1px solid rgba(211,192,255,.105)!important;
+ overflow-wrap:anywhere
+}
+body #harga .pk li::before{
+ content:"✓";display:grid;place-items:center;flex:0 0 18px;
+ color:#d8c3ff!important;-webkit-text-fill-color:#d8c3ff!important;
+ font-weight:800;font-size:14px
+}
+body #harga .pk li.no{
+ color:#90849e!important;-webkit-text-fill-color:#90849e!important
+}
+body #harga .pk li.no::before{
+ content:"—";color:#887b98!important;-webkit-text-fill-color:#887b98!important
+}
+body #harga .pk .btn{
+ display:flex!important;justify-content:center;align-items:center;
+ margin-top:auto!important;width:100%!important;min-height:52px!important;
+ border-radius:9px!important;font-weight:700!important;font-size:13px!important;
+ text-decoration:none!important;letter-spacing:.01em;
+ position:relative;z-index:2;white-space:normal!important
+}
+body #harga .pk .btn-s{
+ background:#292136!important;color:#f2eafa!important;
+ -webkit-text-fill-color:#f2eafa!important;
+ border:1px solid #645174!important
+}
+body #harga .pk .btn-p{
+ background:#e2d5ff!important;color:#1a1127!important;
+ -webkit-text-fill-color:#1a1127!important;
+ border:1px solid #e2d5ff!important
+}
+body #harga .pk-best .btn-p{
+ background:#b99afa!important;color:#171020!important;
+ -webkit-text-fill-color:#171020!important;border-color:#b99afa!important
+}
+body #harga .pk .btn:hover{filter:brightness(1.09);transform:translateY(-2px)!important}
+body #harga .pgrid+p{
+ color:#a99cb9!important;-webkit-text-fill-color:#a99cb9!important;
+ font-size:13px!important;line-height:1.7!important
+}
+body #harga .pgrid+p a{color:#d6c3ff!important;-webkit-text-fill-color:#d6c3ff!important}
+@media(max-width:900px){
+ body #harga .pgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ body #harga .pk:last-child{grid-column:1/-1;max-width:530px;width:100%;justify-self:center}
+}
+@media(max-width:600px){
+ body #harga .pgrid{grid-template-columns:minmax(0,1fr)!important;gap:27px!important}
+ body #harga .pk:last-child{grid-column:auto;max-width:none}
+ body #harga .sec-head{margin-bottom:36px!important}
+ body #harga .pk .pk-amt{font-size:clamp(29px,8vw,38px)!important}
+ body #harga{padding-block:64px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body #harga .pk{transition:none!important;animation:none!important}
+ body #harga .pk:hover{transform:none!important}
+}
