@@ -1649,3 +1649,158 @@ body:has(#tplGrid)>footer .footer-brand{color:#eee6fa!important}
   body:has(#tplGrid) .tw-flow-step{gap:10px!important;padding:10px!important}
   body:has(#tplGrid) .cs-actions button{font-size:10px!important;padding:8px!important}
 }
+
+
+/* V15 — fix right-side empty gutter seen on Galaxy mobile screenshot.
+   Full viewport-width shells + independent centered content; no desktop changes. */
+@media screen and (max-width: 900px){
+  :root{--tw-mobile-gutter:clamp(15px,4vw,24px)}
+  html,body{
+    display:block!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:100%!important;
+    max-width:100%!important;
+    margin:0!important;padding:0!important;
+    overflow-x:clip!important
+  }
+  body>nav,
+  body>header.hero,
+  body>section,
+  body>footer,
+  body>footer.contact-footer,
+  body>footer.site-footer{
+    display:block;
+    box-sizing:border-box!important;
+    width:100vw!important;
+    width:100dvw!important;
+    min-width:100vw!important;
+    min-width:100dvw!important;
+    max-width:100vw!important;
+    max-width:100dvw!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    left:0!important;
+    right:0!important;
+    transform:none!important
+  }
+  body>nav{display:block!important;position:fixed!important;top:0!important}
+  body>header.hero,
+  body>section{position:relative!important}
+  body>nav>.nav-in,
+  body>nav>.wrap,
+  body>header.hero>.wrap,
+  body>section>.wrap,
+  body>footer>.wrap{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:var(--tw-mobile-gutter)!important;
+    padding-right:var(--tw-mobile-gutter)!important
+  }
+  body:has(#tplGrid) header.hero>.wrap{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:0!important;
+    grid-template-columns:none!important;
+    grid-template-rows:none!important;
+    width:100%!important
+  }
+  body:has(#tplGrid) header.hero>.wrap > *{
+    min-width:0!important;
+    max-width:100%!important;
+    grid-column:auto!important;
+    grid-row:auto!important
+  }
+  body:has(#tplGrid) header.hero .badge{
+    align-self:center!important;
+    width:max-content!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    text-align:center!important
+  }
+  body:has(#tplGrid) header.hero h1{
+    width:100%!important;
+    min-width:0!important;
+    text-align:center!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    line-height:1.13!important
+  }
+  body:has(#tplGrid) header.hero h1 .ln{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important
+  }
+  body:has(#tplGrid) header.hero .sub{
+    width:100%!important;
+    max-width:560px!important;
+    align-self:center!important;
+    text-align:center!important
+  }
+  body:has(#tplGrid) header.hero .cta-row{
+    width:100%!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    justify-content:center!important;
+    max-width:600px!important;
+    align-self:center!important
+  }
+  body:has(#tplGrid) header.hero .cta-row .btn{
+    flex:1 1 145px!important;
+    min-width:0!important;
+    max-width:100%!important;
+    white-space:normal!important
+  }
+  body:has(#tplGrid) header.hero .twist-feature{
+    width:100%!important;
+    max-width:600px!important;
+    min-width:0!important;
+    align-self:center!important;
+    margin-left:auto!important;margin-right:auto!important;
+    margin-top:36px!important;
+    box-sizing:border-box!important;
+  }
+  body:has(#tplGrid) header.hero .twist-feature .tw-flow{
+    min-width:0!important;
+    width:100%!important;
+  }
+  body:has(#tplGrid) header.hero .twist-feature .tw-flow-step{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  body:has(#tplGrid) header.hero .hero-stats{
+    width:100%!important;
+    max-width:600px!important;
+    margin-left:auto!important;
+    margin-right:auto!important
+  }
+  /* Avoid a phantom width from fixed visual layers. */
+  #stars,#glow,.tw-ambient{
+    width:100vw!important;
+    width:100dvw!important;
+    max-width:100vw!important;
+    max-width:100dvw!important;
+    left:0!important;
+    right:auto!important;
+    pointer-events:none!important
+  }
+}
+@media screen and (max-width: 430px){
+  body:has(#tplGrid) header.hero{padding-top:105px!important}
+  body:has(#tplGrid) header.hero h1{font-size:clamp(31px,8.2vw,42px)!important}
+  body:has(#tplGrid) header.hero .sub{font-size:14px!important}
+  body:has(#tplGrid) header.hero .cta-row{gap:10px!important}
+  body:has(#tplGrid) header.hero .cta-row .btn{
+    padding:12px 10px!important;min-height:48px!important;font-size:13px!important
+  }
+  body:has(#tplGrid) header.hero .twist-feature{margin-top:30px!important;padding:18px!important}
+}
