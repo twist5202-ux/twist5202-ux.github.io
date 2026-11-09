@@ -406,3 +406,62 @@ input::placeholder,textarea::placeholder{color:#a49ab3!important;opacity:1}
  #csDashboard .cs-metrics>div{padding:12px 8px!important}
  #csDashboard .cs-actions button{max-width:100%;white-space:normal}
 }
+
+
+/* V5 — heading and copy contrast: defeat legacy blue-on-black rules */
+body #demo .sec-head h2,
+body #template .sec-head h2,
+body #harga .sec-head h2,
+body #panduan .sec-head h2,
+body #faq .sec-head h2,
+body section .sec-head h2,
+body .sec-head h2,
+body .section h2{
+ color:#f3edff!important;
+ -webkit-text-fill-color:#f3edff!important;
+ opacity:1!important;
+ text-shadow:none!important
+}
+body #demo .sec-head p,
+body #template .sec-head p,
+body #harga .sec-head p,
+body #panduan .sec-head p,
+body #faq .sec-head p,
+body section .sec-head p,
+body .sec-head p{
+ color:#beb3ce!important;
+ -webkit-text-fill-color:#beb3ce!important;
+ opacity:1!important
+}
+body #demo .sec-head .eyebrow,
+body #template .sec-head .eyebrow,
+body #harga .sec-head .eyebrow,
+body #panduan .sec-head .eyebrow,
+body #faq .sec-head .eyebrow,
+body .sec-head .eyebrow{
+ color:#c6aeff!important;
+ -webkit-text-fill-color:#c6aeff!important
+}
+body #demo .dbox h3,body #demo .dbox strong,
+body #template .tpl h3,body #harga .pk h3,
+body #panduan .acc-h,body #faq .faq-q{
+ color:#f1edf7!important;
+ -webkit-text-fill-color:#f1edf7!important
+}
+body #demo .dbox p,body #demo .dbox li,
+body #template .tpl p,body #harga .pk li,
+body #panduan .acc-b-in,body #faq .faq-a{
+ color:#bbb0ca!important;
+ -webkit-text-fill-color:#bbb0ca!important
+}
+body #template .tpl-price,body #harga .pk-amt{
+ color:#d6c4ff!important;
+ -webkit-text-fill-color:#d6c4ff!important
+}
+body #demo .btn,body #template .btn,body #harga .btn{
+ text-shadow:none!important
+}
+@media print{
+ body #demo .sec-head h2,body #template .sec-head h2,body #harga .sec-head h2,body #panduan .sec-head h2,body #faq .sec-head h2{color:#111!important;-webkit-text-fill-color:#111!important}
+ body #demo .sec-head p,body #template .sec-head p,body #harga .sec-head p,body #panduan .sec-head p,body #faq .sec-head p{color:#444!important;-webkit-text-fill-color:#444!important}
+}
