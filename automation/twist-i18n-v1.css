@@ -1,0 +1,10 @@
+
+/* Bilingual toggle — matches TWIST V13 */
+nav .tw-lang-switch{display:inline-flex!important;align-items:center;gap:3px;flex:0 0 auto;border:1px solid #5c4972;background:#171021;padding:4px;border-radius:9px;z-index:2}
+nav .tw-lang-switch button{appearance:none;border:0;background:transparent!important;color:#baadce!important;-webkit-text-fill-color:#baadce!important;cursor:pointer;border-radius:6px;padding:6px 9px;font:700 11px 'DM Mono',monospace!important;letter-spacing:.05em;min-height:30px}
+nav .tw-lang-switch button.active{background:#ddccff!important;color:#190f27!important;-webkit-text-fill-color:#190f27!important}
+nav .tw-lang-switch button:focus-visible{outline:2px solid #e1caff;outline-offset:2px}
+.tw-currency-note{font-size:12px!important;color:#c4b5d5!important;-webkit-text-fill-color:#c4b5d5!important;text-align:center!important;line-height:1.65!important;margin:15px auto!important;max-width:800px}
+.tw-currency-note[hidden]{display:none!important}
+@media(max-width:860px){nav .tw-lang-switch{margin-left:5px}}
+@media(max-width:470px){nav .tw-lang-switch button{padding:5px 6px;font-size:10px!important} nav .tw-lang-switch{padding:3px;gap:1px}}
