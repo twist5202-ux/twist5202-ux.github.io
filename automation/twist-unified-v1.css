@@ -174,3 +174,131 @@ a{color:#c7b4ff}a:hover{color:#e6ddff}
 /* Keep state colors meaningful without introducing random neon accents */
 :where(.error,.danger,.invalid){color:#e9a6bc}
 :where(.success,.online,.active-indicator){color:#b8d6be}
+
+
+/* V3 — LEGIBILITY + CLIPPING REPAIRS. Keep structure, interactivity and motion intact. */
+:root{--tw-text:#f1edf7;--tw-muted:#b9afc8;--tw-panel:#171320;--tw-edge:#3b314a;--tw-accent:#cbb9ff}
+html,body{max-width:100%}
+body{overflow-x:clip}
+.wrap,.container,.section-wrap,.nav-in,.hero-inner,.hero-grid,.grid,.pgrid,.cards,.stats,
+.demo-grid,.demo-shell,.cs-dashboard,.contact-clean,.twist-feature{min-width:0}
+.grid>*,.pgrid>*,.cards>*,.stats>*,.demo-grid>*,.hero-grid>*,.contact-clean>*{min-width:0}
+h1,h2,h3,h4,p,li,small,.cnt,.tag,.eyebrow,.stat .l,.sub,.description,
+.card,.tpl,.pk,.tier,.pcard,.fcard,.price-card,.seg-card,.seg,.bundle,.cmp,.cmp-row,
+.contact-clean-number,.contact-clean-detail{
+ overflow-wrap:anywhere;word-break:normal
+}
+.btn,.btn-p,.btn-wa,.btn-gold,.btn-ghost,.btn-s,.btn-primary,
+.nav-cta,.contact-clean-primary,.contact-clean-secondary{
+ max-width:100%;white-space:normal;text-align:center;overflow-wrap:anywhere
+}
+#harga .pk-amt,#template .tpl-price,.pk-amt,.tpl-price,.tier-price,.price,.amount,
+.cost,.price-card .amount,.pcard .price{
+ max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;
+ word-break:normal!important;color:#d5c5ff!important
+}
+#harga .pk,#template .tpl,.pk,.tpl,.tier,.pcard,.bundle,.seg-card,
+.card,.price-card,.feature-card,.fcard,.pain,.svc,.step,.flow-step,
+.contact-clean,.contact-clean-detail,.cs-dashboard,.demo-shell,.trig,.pbox,.box,.tip,.warn,.tpl-i{
+ color:var(--tw-text)!important;border-color:var(--tw-edge)!important
+}
+#harga .pk,#template .tpl,.pk,.tpl,.tier,.pcard,.bundle,.seg-card,.card,.price-card,
+.feature-card,.fcard,.pain,.svc,.step,.flow-step,.contact-clean,.contact-clean-detail,
+.cs-dashboard,.demo-shell,.trig,.pbox,.box,.tip,.warn,.tpl-i,.cmp,.faq-item,.acc{
+ background-color:var(--tw-panel)!important
+}
+#harga .pk h3,#template .tpl h3,.pk h3,.tpl h3,.tier h3,.tier h4,
+.pcard h3,.fcard h3,.svc h3,.pain h3,.step h3,.flow-step h3,
+.seg-card h3,.bundle h3,.card h3,.faq-q,.acc-h,
+.cs-dashboard h3,.cs-dashboard strong,.contact-clean h2,.trig strong,
+.cmp-row strong,.pbox h3,.box h3,.tpl-i b{
+ color:var(--tw-text)!important
+}
+#harga .pk li,#harga .pk-note,#template .tpl p,#template .tpl-nodes,
+.pk li,.pk-note,.tpl p,.tpl-nodes,.tier li,.pcard p,.fcard p,
+.svc p,.pain p,.step p,.flow-step p,.seg-card p,.bundle p,
+.card p,.faq-a-in,.acc-b-in,.trig-row .d,.pbox p,.box p,
+.cmp-row .f,.contact-clean p,.contact-clean-detail p,
+.cs-dashboard p,.cs-dashboard small,.cs-dashboard label,.demo-side p,.dbox p,
+.note,.muted,.stat .l,.tpl-i span{
+ color:var(--tw-muted)!important
+}
+#template .tag,#template .chip,.chip,.tag,.hot-tag,.pk-badge,
+.tier-badge,.seg-badge,.label,.pill{
+ color:#e2d7ff!important;border-color:#665284!important;
+ background:#302540!important
+}
+#harga .pk-badge,.hot-tag,.pk-best .pk-badge{
+ background:#5d487e!important;color:#fff!important
+}
+#template .chip.on,#template .chip:hover,.chip.on,.chip.active{
+ color:#110d19!important;background:#dfd2ff!important
+}
+#demo .cs-dashboard,#demo .cs-dashboard *:not(button):not(svg):not(path),
+.cs-dashboard,.cs-dashboard .cs-contact,.cs-dashboard .cs-conversation,
+.cs-dashboard .cs-pane,.cs-dashboard .cs-item,.cs-dashboard .cs-label,
+.demo-mode-line,.admin-tools,.cmp-row,.trig-row,.faq-q,.acc-h{
+ border-color:#3b314a!important
+}
+.cs-dashboard,.cs-dashboard .cs-contact,.cs-dashboard .cs-conversation,
+.cs-dashboard .cs-pane,.cs-dashboard .cs-item,.demo-mode-line,.admin-tools,
+.cmp-row,.trig-row,.faq-q,.acc-h{
+ background-color:#1c1627!important;color:#eee7f6!important
+}
+.cs-dashboard .cs-contact strong,.cs-dashboard .cs-label strong,
+.cs-dashboard .cs-pane strong,.cs-dashboard .who,.cs-dashboard .who b,
+.demo-side strong,.trig-row strong,.cmp-row strong{
+ color:#f1edf7!important
+}
+.cs-dashboard small,.cs-dashboard .cs-contact small,.cs-dashboard .cs-label span,
+.demo-mode-line span,.admin-tools small,.trig-row .d,.cmp-row .f{
+ color:#b9afc8!important
+}
+.phone-bar,.chat-header,.phone-header{background-color:#392b52!important;color:#f1edf7!important}
+.phone-bar *,.chat-header *,.phone-header *{color:#f1edf7!important}
+.msg.in,.msg.out,.bubble,.chat-bubble{overflow-wrap:anywhere;max-width:90%}
+.msg.in{background-color:#2a2238!important;color:#f1edf7!important}
+.msg.out{background-color:#614a89!important;color:#fff!important}
+input,textarea,select,.twist-search,.input-row input{
+ background-color:#201927!important;color:#f1edf7!important;border-color:#4a3a5c!important
+}
+input::placeholder,textarea::placeholder{color:#a49ab3!important;opacity:1}
+.quick button,.try-list button,.seg button,.filter button{color:#e7dff5!important;border-color:#4b3a5e!important}
+.quick button:hover,.try-list button:hover,.seg button:hover,.filter button:hover{
+ color:#fff!important;border-color:#a58ddf!important
+}
+#harga .pk-best .btn-p,.btn-p,.btn-gold,.btn-primary,.p-btn,.nav-cta,
+#kontak .contact-clean-primary{
+ background:#ded0ff!important;color:#120e1c!important;border-color:#ded0ff!important
+}
+#harga .pk-best .btn-p:hover,.btn-p:hover,.btn-gold:hover,.btn-primary:hover,.p-btn:hover{
+ background:#f1eaff!important;color:#120e1c!important
+}
+.btn-wa,.btn-s,.btn-ghost,#kontak .contact-clean-secondary{
+ background-color:#2b2238!important;color:#eee6f8!important;border-color:#625075!important
+}
+.btn-wa:hover,.btn-s:hover,.btn-ghost:hover{color:#fff!important;background-color:#3c2c50!important}
+@media(max-width:760px){
+ .grid,.pgrid,.cards,.stats,.demo-grid,.hero-grid{max-width:100%}
+ .hero h1,h1{overflow-wrap:anywhere}
+ .nav-in,nav .wrap{min-width:0}
+ .nav-links{max-width:100%;overflow-x:auto;scrollbar-width:thin}
+ .cs-dashboard,.demo-shell,.cmp{max-width:100%;overflow-x:auto}
+ .contact-clean,.cta-box{max-width:100%}
+ .btn,.btn-p,.btn-wa,.btn-s,.btn-gold,.btn-ghost{min-width:0}
+ .twist-feature{max-width:100%}
+}
+@media(max-width:480px){
+ .pgrid,.grid,.cards,.demo-grid{grid-template-columns:minmax(0,1fr)}
+ #harga .pk-amt,#template .tpl-price,.pk-amt,.tpl-price,.price,.amount{
+ font-size:clamp(23px,8vw,34px)!important;line-height:1.25!important
+ }
+ .btn,.btn-p,.btn-wa,.btn-s,.btn-gold,.btn-ghost{padding-inline:14px}
+}
+/* Print exports must stay light, distinct from dark-screen theme. */
+@media print{
+ body{background:#fff!important;color:#111!important}
+ .card,.pk,.tpl,.tier,.pcard,.fcard,.cmp,.box,.pbox,.faq-item,.acc{background:#fff!important;color:#111!important}
+ .card h3,.pk h3,.tpl h3,.tier h3,.pcard h3,.fcard h3{color:#111!important}
+ .card p,.pk li,.tpl p,.tier li,.pcard p{color:#444!important}
+}
