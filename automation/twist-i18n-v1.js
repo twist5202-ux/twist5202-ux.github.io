@@ -47,6 +47,7 @@ function transformNode(node){
  if(!textOriginal.has(node))textOriginal.set(node,node.nodeValue);
  const orig=textOriginal.get(node),base=clean(orig);if(!base)return;
  const translated=lang==='en'?translate(base):base;
+ if(lang==='id'){lastRendered.set(node,orig);if(node.nodeValue!==orig)node.nodeValue=orig;return;}
  const leading=orig.match(/^\s*/)[0],trailing=orig.match(/\s*$/)[0];
  const value=leading+translated+trailing;lastRendered.set(node,value);if(node.nodeValue!==value)node.nodeValue=value;
 }
