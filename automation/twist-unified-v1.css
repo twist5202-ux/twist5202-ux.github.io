@@ -465,3 +465,47 @@ body #demo .btn,body #template .btn,body #harga .btn{
  body #demo .sec-head h2,body #template .sec-head h2,body #harga .sec-head h2,body #panduan .sec-head h2,body #faq .sec-head h2{color:#111!important;-webkit-text-fill-color:#111!important}
  body #demo .sec-head p,body #template .sec-head p,body #harga .sec-head p,body #panduan .sec-head p,body #faq .sec-head p{color:#444!important;-webkit-text-fill-color:#444!important}
 }
+
+
+/* V6 — precise hero contrast fix: top badge + workflow card */
+body .hero .badge,body header.hero .badge{
+ background:#2d2142!important;
+ border:1px solid #7863a4!important;
+ color:#f2e9ff!important;
+ -webkit-text-fill-color:#f2e9ff!important;
+ opacity:1;
+ text-shadow:none!important;
+ box-shadow:0 4px 24px #0002
+}
+body .hero .badge .dot{background:#baa4ff!important;box-shadow:0 0 9px #b8a6ff}
+body .hero .twist-feature{
+ background:linear-gradient(145deg,#292347,#352760)!important;
+ border:1px solid #6e5b9d!important;color:#fff!important
+}
+body .hero .twist-feature .tw-f-top,
+body .hero .twist-feature .tw-f-top>span:first-child{
+ color:#e9e2ff!important;-webkit-text-fill-color:#e9e2ff!important
+}
+body .hero .twist-feature .tw-f-pill{
+ color:#cefce9!important;-webkit-text-fill-color:#cefce9!important;
+ background:#254d49!important;border:1px solid #4a8a7e!important
+}
+body .hero .twist-feature .tw-f-heading{
+ color:#fff!important;-webkit-text-fill-color:#fff!important
+}
+body .hero .twist-feature .tw-flow-step{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ background:rgba(255,255,255,.11)!important;border-color:rgba(226,214,255,.26)!important
+}
+body .hero .twist-feature .tw-flow-arrow{
+ color:#d9cfff!important;-webkit-text-fill-color:#d9cfff!important
+}
+body .hero .twist-feature .tw-f-bottom{
+ color:#e0d9f8!important;-webkit-text-fill-color:#e0d9f8!important
+}
+body .hero .twist-feature .tw-f-bottom b{
+ color:#b9f4e0!important;-webkit-text-fill-color:#b9f4e0!important
+}
+@media print{
+ body .hero .badge{background:#fff!important;color:#332350!important;-webkit-text-fill-color:#332350!important}
+}
