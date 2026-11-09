@@ -509,3 +509,149 @@ body .hero .twist-feature .tw-f-bottom b{
 @media print{
  body .hero .badge{background:#fff!important;color:#332350!important;-webkit-text-fill-color:#332350!important}
 }
+
+
+/* V7 — cinematic animated workflow presentation, scoped to existing hero widget */
+body .hero .twist-feature{
+ position:relative!important;isolation:isolate;
+ background:linear-gradient(145deg,#201a35 0%,#30254f 58%,#3e2d69 100%)!important;
+ border:1px solid rgba(190,166,255,.4)!important;
+ border-radius:26px!important;
+ box-shadow:0 26px 75px rgba(34,17,68,.34),inset 0 1px 0 #ffffff22!important;
+ overflow:hidden!important;
+ animation:twCardBreathe 7s ease-in-out infinite!important;
+ transition:box-shadow .4s ease,border-color .4s ease!important;
+}
+body .hero .twist-feature:hover{
+ border-color:rgba(208,189,255,.72)!important;
+ box-shadow:0 32px 85px rgba(79,47,150,.44),0 0 32px rgba(158,126,234,.16),inset 0 1px 0 #ffffff35!important
+}
+body .hero .twist-feature::before{
+ content:"";position:absolute;z-index:0;top:-85px;right:-70px;
+ width:320px;height:320px;border-radius:50%;
+ background:radial-gradient(circle,rgba(182,155,255,.28),rgba(148,114,239,.12) 40%,transparent 70%)!important;
+ animation:twOrbGlow 9s ease-in-out infinite alternate!important;
+ pointer-events:none
+}
+body .hero .twist-feature::after{
+ content:"";position:absolute;z-index:0;inset:-100% -65%;
+ width:auto;height:auto;top:-100%;left:-65%;right:-65%;bottom:-100%;
+ background:linear-gradient(102deg,transparent 45%,rgba(255,255,255,.08) 49.5%,transparent 54%)!important;
+ animation:twSoftSweep 9s ease-in-out infinite!important;
+ pointer-events:none
+}
+body .hero .tw-f-top{
+ position:relative;z-index:2;gap:10px;flex-wrap:wrap;
+ padding-bottom:20px;border-bottom:1px solid rgba(217,199,255,.18)!important;
+ letter-spacing:.08em
+}
+body .hero .tw-f-top>span:first-child{font-size:clamp(10px,1.1vw,12px);font-weight:650}
+body .hero .tw-f-pill{
+ display:inline-flex;align-items:center;gap:5px;
+ border:1px solid rgba(142,231,192,.43)!important;
+ color:#c7f9e2!important;background:rgba(37,105,82,.24)!important;
+ box-shadow:0 0 18px rgba(76,218,157,.08);
+ white-space:normal;line-height:1.4;
+ animation:twStatusPulse 3.5s ease-in-out infinite!important
+}
+body .hero .tw-f-heading{
+ position:relative;z-index:2;
+ font-size:clamp(23px,2.5vw,30px)!important;
+ line-height:1.18!important;letter-spacing:-.065em!important;
+ margin:26px 0 22px!important
+}
+body .hero .tw-flow{
+ position:relative;z-index:2;gap:10px!important
+}
+body .hero .tw-flow-step{
+ position:relative;isolation:isolate;overflow:hidden;
+ display:flex;align-items:center;gap:13px;
+ padding:16px!important;border-radius:15px!important;
+ border:1px solid rgba(208,191,255,.22)!important;
+ background:linear-gradient(110deg,rgba(255,255,255,.10),rgba(189,167,255,.085))!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+ font-size:clamp(12px,1.1vw,14px)!important;line-height:1.5!important;
+ transition:background .3s,border-color .3s,transform .3s,box-shadow .3s!important;
+ animation:twStepEnter .75s cubic-bezier(.19,1,.22,1) both!important
+}
+body .hero .tw-flow-step:nth-of-type(1){animation-delay:.2s!important}
+body .hero .tw-flow-step:nth-of-type(3){animation-delay:.65s!important}
+body .hero .tw-flow-step:nth-of-type(5){animation-delay:1.1s!important}
+body .hero .tw-flow-step:hover{
+ transform:translateX(5px)!important;
+ border-color:rgba(209,188,255,.65)!important;
+ background:linear-gradient(110deg,rgba(207,188,255,.20),rgba(189,167,255,.11))!important;
+ box-shadow:0 10px 28px rgba(9,5,21,.17)!important
+}
+body .hero .tw-flow-step::after{
+ content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;
+ background:linear-gradient(90deg,transparent,rgba(226,214,255,.11),transparent);
+ transform:translateX(-120%);animation:twStepScan 7.2s linear infinite!important
+}
+body .hero .tw-flow-step:nth-of-type(3)::after{animation-delay:1.4s!important}
+body .hero .tw-flow-step:nth-of-type(5)::after{animation-delay:2.8s!important}
+body .hero .tw-flow-icon{
+ display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;
+ border-radius:12px!important;
+ background:linear-gradient(140deg,rgba(199,180,255,.26),rgba(163,129,232,.14))!important;
+ border:1px solid rgba(225,211,255,.15);
+ box-shadow:0 6px 18px rgba(17,8,40,.18)
+}
+body .hero .tw-flow-arrow{
+ position:relative;z-index:2;display:grid;place-items:center;
+ height:18px!important;line-height:18px!important;font-size:18px!important;
+ color:#d5bfff!important;
+ animation:twArrowMove 1.9s ease-in-out infinite!important
+}
+body .hero .tw-flow-arrow:nth-of-type(2){animation-delay:.25s!important}
+body .hero .tw-flow-arrow:nth-of-type(4){animation-delay:.9s!important}
+body .hero .tw-f-bottom{
+ position:relative;z-index:2;
+ margin-top:22px!important;padding-top:14px;
+ border-top:1px solid rgba(215,197,255,.15);
+ font-size:11px!important;line-height:1.7!important
+}
+body .hero .tw-f-bottom b{color:#baf6de!important}
+@keyframes twCardBreathe{
+ 0%,100%{filter:brightness(1)}
+ 50%{filter:brightness(1.055)}
+}
+@keyframes twOrbGlow{
+ from{transform:translate(-16px,12px) scale(.93);opacity:.7}
+ to{transform:translate(10px,-10px) scale(1.2);opacity:1}
+}
+@keyframes twSoftSweep{
+ 0%,55%,100%{transform:translateX(-85%);opacity:0}
+ 67%{opacity:.7}
+ 85%{transform:translateX(85%);opacity:0}
+}
+@keyframes twStepEnter{
+ from{opacity:0;transform:translateY(16px) scale(.98)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes twStepScan{
+ 0%,45%{transform:translateX(-120%);opacity:0}
+ 54%{opacity:.9}
+ 72%,100%{transform:translateX(120%);opacity:0}
+}
+@keyframes twArrowMove{
+ 0%,100%{opacity:.45;transform:translateY(-3px)}
+ 55%{opacity:1;transform:translateY(3px)}
+}
+@keyframes twStatusPulse{
+ 0%,100%{box-shadow:0 0 0 0 rgba(115,239,184,.06)}
+ 50%{box-shadow:0 0 0 5px rgba(115,239,184,.07),0 0 22px rgba(115,239,184,.12)}
+}
+@media(max-width:620px){
+ body .hero .twist-feature{border-radius:20px!important}
+ body .hero .tw-f-heading{font-size:24px!important}
+ body .hero .tw-flow-step{padding:12px!important}
+ body .hero .tw-flow-icon{width:36px;height:36px;flex-basis:36px}
+ body .hero .tw-f-top{align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+ body .hero .twist-feature,body .hero .twist-feature::before,body .hero .twist-feature::after,
+ body .hero .tw-flow-step,body .hero .tw-flow-step::after,body .hero .tw-flow-arrow,
+ body .hero .tw-f-pill{animation:none!important;transition:none!important}
+ body .hero .tw-flow-step{opacity:1!important;transform:none!important}
+}
