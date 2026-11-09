@@ -850,7 +850,7 @@ body #panduan .acc{
  box-shadow:0 7px 22px rgba(0,0,0,.09)!important;
  transition:border-color .28s,background .28s,box-shadow .28s!important
 }
-body #panduan .sec-head{counter-reset:panduan-step}
+body #panduan>.wrap{counter-reset:panduan-step}
 body #panduan .acc:hover{
  border-color:#8069b0!important;box-shadow:0 12px 30px rgba(72,43,120,.16)!important
 }
