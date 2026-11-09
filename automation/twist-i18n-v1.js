@@ -1,0 +1,115 @@
+/* TWIST bilingual storefront — IDR values remain the pricing source of truth. */
+(()=>{'use strict';
+const USD_IDR=18100; // indicative mid-market reference, 8 Nov 2026; not a live rate
+const dictionary={"Coba Demo":"Try Demo","Template":"Templates","Harga":"Pricing","Panduan":"Guide","Chat WhatsApp":"Chat on WhatsApp","TEMPLATE N8N SIAP PAKAI":"READY-TO-USE N8N TEMPLATES","Automasi cerdas.":"Smarter automation.","Bisnis makin cepat.":"Faster business.","Otomatiskan pekerjaan berulang. Pilih template, coba demonya, dan mulai lebih cepat.":"Automate repetitive work. Choose a template, try the demo, and move faster.","Lihat Paket":"View Packages","Bisnis berjalan.":"Business running.","Otomatis.":"Automatically.","Customer mengirim pesan":"Customer sends a message","n8n memproses workflow":"n8n processes the workflow","Balasan & data terkirim":"Reply and data delivered","Workflow siap diintegrasikan":"Workflow ready to integrate","template siap pakai":"ready-to-use templates","node terpasang":"nodes included","jalan nonstop":"always running","bayar, bukan langganan":"one-time payment, no subscription","COBA GRATIS · TANPA DAFTAR":"FREE DEMO · NO SIGN-UP","Coba chatbot langsung.":"Try the chatbot live.","Simulasikan chat AI dan layanan admin manusia.":"Simulate AI chat and human support.","Toko Online Lo":"Your Online Store","● AI Bot aktif":"● AI bot active","DEMO INTERAKTIF · BUKAN CHAT WHATSAPP LIVE":"INTERACTIVE DEMO · NOT A LIVE WHATSAPP CHAT","↩ Kembali ke AI":"↩ Return to AI","Halo! Selamat datang di Toko Online Lo 👋":"Hi! Welcome to Your Online Store 👋","Saya bot otomatis. Ketik":"I'm an automated bot. Type","buat liat pilihan.":"to see your options.","harga":"pricing","jam buka":"opening hours","alamat":"address","order":"order","admin":"human agent","makasih":"thanks","apa itu n8n":"what is n8n","Simulasi balasan admin manusia":"Simulated human agent replies","Balas sebagai admin":"Reply as agent","Panel ini hanya untuk demonstrasi. Tidak terhubung ke staf atau WhatsApp asli.":"This panel is a simulation, not connected to real staff or WhatsApp.","🧪 Coba kirim pesan ini":"🧪 Try sending these messages","⚡ Alur AI → Admin → AI":"⚡ AI → Human → AI workflow","AI menanggapi pertanyaan otomatis":"AI answers questions automatically","Customer minta berbicara dengan admin":"Customer asks to speak to a human","Bot berhenti dan chat masuk mode manusia":"Bot pauses and switches to human mode","Timer 15 menit menunggu balasan admin":"15-minute timer waits for agent reply","Tanpa balasan, AI kembali aktif otomatis":"Without a reply, AI resumes automatically","Semua dalam":"All in","kurang dari 2 detik":"under 2 seconds","24 jam.":"24 hours a day.","📊 Manfaatnya buat toko lo":"📊 Benefits for your store","cepat bales":"fast responses","Hemat 2-3 jam admin per hari":"Save 2–3 admin hours daily","Customer gak pergi gara-gara gak dibales":"Keep customers from leaving due to slow replies","Jawaban konsisten, gak ada yang lupa":"Consistent replies, nothing forgotten","Dashboard Admin":"Admin Dashboard","● Demo Live":"● Live Demo","Kelola percakapan pelanggan dari satu panel.":"Manage customer conversations in one dashboard.","Aktif":"Active","Mode AI":"AI Mode","Ditangani CS":"Handled by Agent","INBOX":"INBOX","1 percakapan":"1 conversation","Pelanggan Demo":"Demo Customer","Halo! Mau tanya soal template...":"Hi! I'd like to ask about a template...","Ini data simulasi, bukan chat WhatsApp sungguhan.":"Simulated data, not actual WhatsApp messages.","● Dijawab AI":"● Answered by AI","Halo! Ada yang bisa dibantu?":"Hello! How can I help?","Ambil alih ke manusia":"Switch to human agent","Aktifkan AI":"Enable AI","Kirim ↗":"Send ↗","AI sedang menangani chat. Admin dapat mengambil alih kapan saja.":"AI is handling this chat. An agent can take over anytime.","KATALOG AUTOMASI":"AUTOMATION CATALOG","Temukan automasi":"Find the right","yang cocok.":"automation.","Cari workflow yang sesuai kebutuhan bisnis lo.":"Find workflows that fit your business.","Semua (59)":"All (59)","Properti (3)":"Real Estate (3)","Produktivitas (3)":"Productivity (3)","satu template":"a single template","atau":"or","— jauh lebih murah.":"— save more with bundles.","HARGA":"PRICING","Harga simpel.":"Simple pricing.","Sekali bayar.":"Pay once.","File JSON siap import ke n8n lo. Bukan langganan. Mau yang langsung jadi?":"Import-ready JSON files for n8n. No subscription. Need a done-for-you setup?","Lihat paket jasa setup →":"See setup services →","Single":"Single","Bundle 10":"Bundle 10","All Access":"All Access","coba dulu, 1 template":"Try it with 1 template","hemat 70% dari harga satuan":"Save 70% compared with individual pricing","semua 59 template, lifetime":"All 59 templates, lifetime access","1 template pilihan lo (dari 59 template)":"Choose 1 of 59 templates","File JSON siap import":"Import-ready JSON file","Panduan ganti placeholder":"Placeholder replacement guide","Daftar GANTI_... yang harus diisi":"Checklist of required GANTI_... fields","Setup jadi":"Done-for-you setup","Custom prompt / keyword":"Custom prompts / keywords","10 template pilihan lo (campur kategori boleh)":"Choose any 10 templates across categories","Semua file JSON siap import":"All import-ready JSON files","Panduan lengkap tiap template":"Complete guide for each template","Struktur Google Sheets":"Google Sheets structure","Update template gratis 6 bulan":"6 months of free template updates","Semua 59 template (13 kategori)":"All 59 templates across 13 categories","Template baru masuk gratis":"New templates included free","Panduan lengkap + struktur Sheets":"Complete guides + Sheets structure","Update selamanya":"Lifetime updates","Prioritas request template baru":"Priority requests for new templates","Pilih Basic":"Choose Basic","Pilih Standard":"Choose Standard","Pilih Premium":"Choose Premium","PALING WORTH":"BEST VALUE","Butuh custom?":"Need something custom?","Chat aja":"Let's chat","— workflow khusus sesuai kebutuhan bisnis lo.":"— custom workflows for your needs.","PANDUAN SETUP":"SETUP GUIDE","Mulai dalam beberapa langkah.":"Get started in a few steps.","Klik tiap langkah buat liat detailnya. Semua ada gambar penjelas.":"Open each step for detailed instructions and illustrations.","Siapin apa aja yang dibutuhin":"Gather your requirements","Install n8n":"Install n8n","Connect Google Sheets":"Connect Google Sheets","Daftar Gateway WhatsApp & ambil token":"Register a WhatsApp gateway & get a token","Import template":"Import a template","Ganti token & nomor WA (paling penting)":"Replace the token & WhatsApp number (important)","Aktifin & tes":"Activate & test","Komponen":"Component","Buat apa":"Purpose","Biaya":"Cost","Aplikasi automation-nya":"The automation platform","Nyimpen data order, stok, customer":"Stores orders, inventory and customer data","Buat kirim pesan WA otomatis":"Sends automated WhatsApp messages","Gratis":"Free","Paling murah, ada node n8n resmi, free trial 15 hari":"Affordable option with an official n8n node and 15-day trial","Paling gampang":"Easiest option","Masih ada pertanyaan?":"Still have questions?","Saya gak ngerti coding. Bisa pakai?":"I can't code. Can I use this?","n8n itu apa? Harus install apa?":"What is n8n? Do I need to install it?","Beda sama Zapier / Make?":"How is it different from Zapier or Make?","Perlu bayar gateway WhatsApp berapa?":"How much does the WhatsApp gateway cost?","Bayar gimana?":"How can I pay?","Kalau rusak setelah jadi?":"What if something breaks afterward?","Bisa. Gue yang setup semuanya. Lo tinggal pakai. Kalau ada yang perlu diubah (harga, alamat, nama toko), gue ajarin lewat training.":"Yes. I can set everything up for you. You just use it. I'll show you how to update prices, addresses, or business details.","n8n itu aplikasi automation gratis. Gue yang install dan setup — bisa di komputer lo atau di server (VPS). Kalau mau yang paling simpel, gue setup di VPS biar jalan 24 jam tanpa perlu nyalain komputer.":"n8n is an automation platform with a free self-hosted option. Setup can run on your computer or a VPS server for 24/7 operation without keeping your PC on.","Zapier bayar bulanan dan makin mahal kalau makin banyak. n8n sekali setup, gak ada biaya bulanan ke platform. Plus data lo tetap di server lo sendiri.":"Unlike per-task subscription tools, self-hosted n8n can run on your own server. Hosting and optional services may still have ongoing costs.","Mulai Rp 22rb/bulan (Wablas) atau bayar per saldo. Satu pesan sekitar Rp 150-300. Untuk UMKM kecil, realistis Rp 50-100rb/bulan.":"Gateway plans may start around Rp 22,000/month, with usage-based alternatives. Costs depend on provider and volume.","Transfer bank, e-wallet (DANA/GoPay/OVO), atau USDC. Bisa DP 50% dulu, pelunasan setelah setup jalan.":"Pay by bank transfer, e-wallet (DANA/GoPay/OVO), or USDC. A 50% deposit may be arranged, with the balance due after setup.","Paket Premium dapat support 1 bulan penuh. Kalau ada masalah, chat aja — gue benerin gratis selama masa support.":"Premium includes one month of support. Reach out during the support period if anything stops working.","HUBUNGI TWIST AUTOMATION":"CONTACT TWIST AUTOMATION","Butuh bantuan pilih template?":"Need help choosing a template?","Ceritakan kebutuhan automasi lo. Kita bantu pilih paket atau workflow yang cocok.":"Tell us what you want to automate. We'll help you find the right package or workflow.","Chat via WhatsApp":"Chat on WhatsApp","Coba demo chatbot":"Try chatbot demo","KONTAK RESMI":"OFFICIAL CONTACT","WhatsApp untuk konsultasi template dan permintaan workflow custom.":"WhatsApp for template advice and custom workflow requests.","Butuh automation untuk bisnis lo?":"Need automation for your business?","Ceritain kebutuhan lo. Kita pilih template atau workflow custom yang paling pas.":"Tell us what you need. We'll find the best template or custom workflow.","KONSULTASI GRATIS":"FREE CONSULTATION","Mulai Konsultasi":"Start Consulting","Deskripsi produk, caption, dan copy iklan pakai AI.":"AI-powered product descriptions, captions, and ad copy.","Bantu kreator: komentar, ide konten, laporan engagement.":"Help creators monitor comments, content ideas, and engagement.","Pantau harga, wallet, gas, dan peluang on-chain otomatis.":"Automatically track prices, wallets, gas fees, and on-chain opportunities.","Customer service hybrid — AI jawab, eskalasi ke manusia, auto-tutup.":"Hybrid support: AI responses, human handoff, and auto-close.","Pantau uptime, SSL, dan rilis repo otomatis.":"Monitor uptime, SSL expiry, and repository releases.","Pendaftaran, reminder kelas, tagihan, kehadiran siswa.":"Enrollment, class reminders, billing, and attendance.","RSVP, countdown, check-in, dan doorprize.":"RSVPs, countdowns, check-in, and prize draws.","Reservasi, menu harian, dan tracking delivery.":"Reservations, daily menus, and delivery tracking.","Tagihan, lead, dan deadline biar gak ada yang telat.":"Manage invoices, leads, and deadlines.","Sinkron order, stok, dan chat Shopee/Tokopedia.":"Sync orders, inventory, and chats across marketplaces.","Briefing pagi, catat pengeluaran, ingatkan istirahat.":"Morning briefings, expense tracking, and break reminders.","Lead qualify, jadwal viewing, laporan listing.":"Lead qualification, viewing schedules, and listing reports.","Otomasi untuk toko online dan UMKM — chat, order, invoice, laporan.":"Automation for small businesses: chat, orders, invoices, reports.","AI Content":"AI Content","Produktivitas":"Productivity","Properti":"Real Estate","UMKM":"Small Business","Saya bot otomatis. Ketik menu buat liat pilihan.":"I'm an automated bot. Type menu to see your options.","Tidak terhubung ke WhatsApp asli.":"Not connected to real WhatsApp.","Deskripsi Produk Otomatis (Marketplace Ready)":"Automated Product Descriptions (Marketplace Ready)","Caption Sosmed Harian (IG/TikTok/FB)":"Daily Social Captions (IG/TikTok/FB)","Copy Iklan Multi-Variasi (A/B Test Ready)":"Multi-Variant Ad Copy (A/B Test Ready)","YouTube Comment Monitor (Komentar Baru → Notif)":"YouTube Comment Monitor (New Comment → Alert)","Trending Topic Harian (Ide Konten)":"Daily Trending Topics (Content Ideas)","Laporan Engagement Mingguan (Multi Platform)":"Weekly Engagement Report (Multi-Platform)","Gas Price Monitor + Alert Murah":"Gas Fee Monitor + Low-Fee Alert","Staking Reward Tracker (Harian)":"Daily Staking Reward Tracker","Airdrop Deadline Reminder (Jangan Sampai Kelewat)":"Airdrop Deadline Reminder","Funding Rate Scanner (Cari Peluang Arbitrage)":"Funding Rate Scanner (Arbitrage Opportunities)","Whale Alert (Transfer Besar di BSC)":"Whale Alert (Large BSC Transfers)","DCA Reminder (Pengingat Beli Berkala)":"DCA Reminder (Recurring Buys)","Bridge / Tx Status Monitor (Pantau Sampai Selesai)":"Bridge / Transaction Status Monitor","AI CS + Switch ke Manusia + Auto-Tutup":"AI Customer Support + Human Handoff + Auto-Close","Watchdog + Auto-Tutup":"Watchdog + Auto-Close","Website Uptime Monitor (Down → Alert)":"Website Uptime Monitor (Outage → Alert)","GitHub Release Notifier (Rilis Baru → Notif)":"GitHub Release Notifier (New Release → Alert)","Pendaftaran Siswa Baru (Auto Konfirmasi)":"Student Enrollment (Automatic Confirmation)","Reminder Kelas + Tagihan Siswa":"Class Reminders + Student Billing","Laporan Kehadiran Mingguan (Orang Tua)":"Weekly Attendance Report (Parents)","RSVP + Reminder Undangan (Wedding/Event)":"RSVP + Invitation Reminders (Wedding/Event)","Countdown Reminder (H-3 & H-1 ke Tamu)":"Countdown Reminders (3 & 1 Days Before)","Seating Plan + Doorprize Draw Otomatis":"Seating Plan + Automatic Prize Draw","Reservasi Meja":"Table Reservations","Menu Harian Broadcast (Pelanggan Setia)":"Daily Menu Broadcast (Loyal Customers)","Delivery Order Tracker (Status ke Pelanggan)":"Delivery Order Tracker (Customer Updates)","Invoice Reminder (Klien Telat Bayar)":"Invoice Reminder (Overdue Clients)","Project Deadline Tracker (Jangan Telat Delivery)":"Project Deadline Tracker","Stok Multi-Platform Sync (Habis → Alert)":"Multi-Platform Inventory Sync (Out-of-Stock Alerts)","Morning Briefing (Cuaca + Crypto + Berita)":"Morning Briefing (Weather + Crypto + News)","Water & Break Reminder (Jangan Lupa Minum)":"Hydration & Break Reminders","Lead Qualify + Follow-Up Otomatis":"Lead Qualification + Automated Follow-Up","Jadwal Viewing + Reminder Otomatis":"Viewing Schedule + Automatic Reminders","Laporan Performa Listing Mingguan":"Weekly Listing Performance Report","Order Masuk → Notifikasi + Google Sheets":"New Order → Notification + Google Sheets","Invoice Otomatis":"Automatic Invoices","Laporan Harian Otomatis (Rekap Penjualan)":"Automated Daily Sales Report","Form Order (Google Form) → Notifikasi + Sheets":"Order Form → Notification + Sheets","Minta Review Google (Setelah Order Selesai)":"Request Google Reviews After Orders","Stok Alert (Inventory Monitor)":"Inventory Low-Stock Alerts","Order Status Tracker (Cek Pesanan)":"Order Status Tracker","Birthday Wish (Ucapan + Diskon Otomatis)":"Birthday Greetings + Automatic Discounts","Cek Ongkir Otomatis (Customer Chat → Tarif)":"Automatic Shipping Rate Lookup","Follow-Up Pembayaran (Belum Bayar → Ingatkan)":"Payment Follow-Up (Unpaid → Reminder)","Absensi Karyawan":"Employee Attendance","Auto Post Marketplace (Sheets → Format Iklan)":"Auto-Post Marketplace Listings from Sheets","Rekap Pajak & Pendapatan (Bulanan)":"Monthly Tax & Revenue Summary"};
+const textOriginal=new WeakMap(),placeholderOriginal=new WeakMap(),scanTargets='body';
+const ignoreSelector='script,style,noscript,code,pre,svg,textarea,[contenteditable="true"],.tw-intro';
+let lang='id',syncing=false;
+try{lang=localStorage.getItem('twist-language')==='en'?'en':'id'}catch(e){}
+const clean=s=>s.replace(/\s+/g,' ').trim();
+const special=[
+ [/^(\d+)\.\s*(.+)$/,(m,n,t)=>n+'. '+translate(t)],
+ [/^(\d+)\s+nodes?$/i,(m,n)=>n+' nodes'],
+ [/^([\w &/]+)\s·\s(\d+)$/,(m,name,n)=>translate(name)+' · '+n],
+ [/^(\d+)\s+template tersedia$/i,(m,n)=>n+' templates available'],
+ [/^Lihat semua (\d+) template$/i,(m,n)=>'View all '+n+' templates'],
+ [/^Rp\s*([\d.,]+)\s*(rb|ribu|jt|juta)?$/i,(m,n,u)=>usdAmount(Number(n.replace(/\./g,'').replace(',','.'))*(u&&/rb|ribu/i.test(u)?1000:u?1000000:1))],
+ [/^(.+)\s+\((\d+)\)$/,(m,name,n)=>translate(name)+' ('+n+')']
+];
+function usdAmount(idr){const n=idr/USD_IDR;return '≈ US$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function convertEmbedded(s){
+ return s.replace(/Rp\s*([\d.,]+)\s*(rb|ribu|jt|juta)?/gi,(full,n,u)=>{
+ const x=Number(n.replace(/\./g,'').replace(',','.'));return usdAmount(x*(u&&/rb|ribu/i.test(u)?1000:u?1000000:1));
+ });
+}
+function translate(s){
+ if(Object.prototype.hasOwnProperty.call(dictionary,s))return dictionary[s];
+ for(const [pat,fn] of special){const m=s.match(pat);if(m)return fn(...m)}
+ return convertEmbedded(s)
+  .replace(/Harga di bawah = harga/gi,'Prices below are for')
+  .replace(/kalau beli satuan/gi,'when purchased individually')
+  .replace(/tergantung kompleksitas/gi,'depending on complexity')
+  .replace(/\. Ambil /g,'. Choose ')
+  .replace(/Cari template:/gi,'Search templates:')
+  .replace(/Tampilkan lebih sedikit/gi,'Show fewer')
+  .replace(/Coba kirim/gi,'Try sending')
+  .replace(/Sedang mengetik/gi,'Typing')
+  .replace(/Selesai/gi,'Completed')
+  .replace(/Mulai /gi,'Start ')
+  .replace(/Laporan /gi,'Report ')
+  .replace(/Otomatis/gi,'Automated')
+  .replace(/Pelanggan/gi,'Customer')
+  .replace(/Kembali ke AI/gi,'Return to AI');
+}
+function transformNode(node){
+ if(!node.parentElement||node.parentElement.closest(ignoreSelector))return;
+ if(!textOriginal.has(node))textOriginal.set(node,node.nodeValue);
+ const orig=textOriginal.get(node),base=clean(orig);if(!base)return;
+ const translated=lang==='en'?translate(base):base;
+ const leading=orig.match(/^\s*/)[0],trailing=orig.match(/\s*$/)[0];
+ const value=leading+translated+trailing;if(node.nodeValue!==value)node.nodeValue=value;
+}
+function updateTree(root){
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ let n;while(n=walker.nextNode())transformNode(n);
+}
+function transformPlaceholders(){
+ document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
+ if(!placeholderOriginal.has(el))placeholderOriginal.set(el,el.placeholder);
+ const orig=placeholderOriginal.get(el);
+ const dict={
+ 'Cari template: WhatsApp, invoice, crypto...':'Search templates: WhatsApp, invoice, crypto...',
+ 'Ketik pesan...':'Type a message...',
+ 'Ambil alih untuk membalas...':'Take over to reply...',
+ 'Balas sebagai admin...':'Reply as an agent...',
+ 'Tulis pesan...':'Write a message...'
+ };
+ el.placeholder=lang==='en'?(dict[orig]||translate(orig)):orig;
+ });
+}
+function updateButtons(){
+ if(!document.getElementById('tw-lang-switch'))return;
+ document.querySelectorAll('#tw-lang-switch button').forEach(b=>{
+ const selected=b.dataset.lang===lang;
+ b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));
+ });
+}
+function note(){
+ let el=document.getElementById('tw-currency-note');
+ if(!el){el=document.createElement('p');el.id='tw-currency-note';el.className='tw-currency-note';
+ const sec=document.querySelector('#harga .pgrid');if(sec)sec.after(el);else document.querySelector('#template .twist-tools')?.after(el);}
+ if(el){el.hidden=lang!=='en';el.textContent='USD prices are estimates (1 USD ≈ Rp18,100). Final amount confirmed at checkout.';}
+}
+function render(){if(syncing)return;syncing=true;
+ document.documentElement.lang=lang;
+ updateTree(document.body);transformPlaceholders();updateButtons();note();
+ syncing=false;
+}
+function setLanguage(value){
+ lang=value==='en'?'en':'id';try{localStorage.setItem('twist-language',lang)}catch(e){}
+ render();window.dispatchEvent(new CustomEvent('twist:language',{detail:{language:lang}}));
+}
+function init(){
+ const nav=document.querySelector('nav .nav-in')||document.querySelector('nav .wrap')||document.querySelector('nav');
+ if(nav&&!document.getElementById('tw-lang-switch')){
+ const controls=document.createElement('div');controls.id='tw-lang-switch';controls.className='tw-lang-switch';controls.setAttribute('role','group');controls.setAttribute('aria-label','Website language');
+ for(const [id,label] of [['id','ID'],['en','EN']]){
+ const b=document.createElement('button');b.type='button';b.dataset.lang=id;b.textContent=label;
+ b.setAttribute('aria-label',id==='id'?'Bahasa Indonesia':'English');b.addEventListener('click',()=>setLanguage(id));controls.append(b);
+ }
+ nav.append(controls);
+ }
+ render();
+ // Capture dynamically rendered template counts and bot status strings without touching user-typed inputs.
+ const observer=new MutationObserver(records=>{
+ if(syncing)return;const changes=new Set();
+ for(const r of records){
+ if(r.type==='characterData'){if(r.target.parentElement?.closest('#tw-lang-switch,#tw-currency-note'))continue;textOriginal.set(r.target,r.target.nodeValue);changes.add(r.target.parentElement||document.body)}
+ else for(const n of r.addedNodes){if(n.nodeType===Node.ELEMENT_NODE&&!n.closest('#tw-lang-switch,#tw-currency-note'))changes.add(n);else if(n.nodeType===Node.TEXT_NODE&&n.parentElement)changes.add(n.parentElement)}
+ }
+ if(changes.size){syncing=true;changes.forEach(n=>updateTree(n));syncing=false;}
+ });
+ observer.observe(document.body,{childList:true,characterData:true,subtree:true});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
