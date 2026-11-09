@@ -947,3 +947,98 @@ body #panduan .acc-b-in code{
  transition:none!important
  }
 }
+
+
+/* V10 — FAQ visual consistency / readability / accessible accordion */
+body #faq {
+ position:relative;isolation:isolate;
+ background:radial-gradient(ellipse 65% 40% at 50% 4%,rgba(127,87,205,.13),transparent 80%),#0a0811!important;
+ color:#f4eefb!important;
+ padding-block:clamp(70px,8vw,102px)!important;
+ border-top:1px solid rgba(179,151,225,.12)
+}
+body #faq .wrap{max-width:1080px}
+body #faq .sec-head{margin:0 auto 38px!important;max-width:790px!important}
+body #faq .sec-head .eyebrow{
+ color:#c9b5ff!important;-webkit-text-fill-color:#c9b5ff!important;
+ font:600 11px 'DM Mono',monospace!important;letter-spacing:.21em!important;
+ margin-bottom:18px
+}
+body #faq .sec-head h2 {
+ color:#f4eefb!important;-webkit-text-fill-color:#f4eefb!important;
+ font-size:clamp(36px,5vw,60px)!important;
+ letter-spacing:-.07em!important;font-weight:700!important;line-height:1.12!important;
+ text-shadow:none!important;opacity:1!important
+}
+body #faq .faq-item{
+ position:relative;isolation:isolate;overflow:hidden!important;
+ background:linear-gradient(110deg,#1d1729,#17121f)!important;
+ color:#f4eefb!important;
+ border:1px solid #41344e!important;border-radius:15px!important;
+ margin:0 0 13px!important;
+ box-shadow:0 6px 22px rgba(0,0,0,.09)!important;
+ transition:border-color .3s,box-shadow .3s,background .3s!important
+}
+body #faq .faq-item:hover{
+ border-color:#846cb5!important;
+ box-shadow:0 14px 34px rgba(64,37,114,.17)!important
+}
+body #faq .faq-item.open{
+ background:linear-gradient(115deg,#2a1e3d,#1c1629)!important;
+ border-color:#9a7cd5!important;
+ box-shadow:0 14px 34px rgba(84,55,145,.20)!important
+}
+body #faq .faq-q{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:16px!important;width:100%;min-height:76px;
+ padding:18px clamp(17px,3vw,26px)!important;
+ background:transparent!important;color:#f1eafa!important;
+ -webkit-text-fill-color:#f1eafa!important;
+ font-size:clamp(14px,1.4vw,16px)!important;line-height:1.5!important;
+ font-weight:650!important;letter-spacing:-.02em!important;
+ opacity:1!important;overflow-wrap:anywhere;
+ transition:background .25s!important
+}
+body #faq .faq-q:hover{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ background:rgba(195,167,255,.05)!important
+}
+body #faq .faq-q::after{
+ content:"+"!important;flex:0 0 34px;
+ display:grid;place-items:center;width:34px;height:34px;
+ border-radius:10px!important;
+ background:#30233f!important;border:1px solid #5b4672!important;
+ color:#ddccff!important;-webkit-text-fill-color:#ddccff!important;
+ font:500 23px/1 'Space Grotesk',sans-serif!important;
+ transition:transform .3s,background .3s,border-color .3s!important
+}
+body #faq .faq-item.open .faq-q::after{
+ transform:rotate(45deg)!important;
+ background:#654b8e!important;border-color:#ac8ddd!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important
+}
+body #faq .faq-a{
+ max-height:0;overflow:hidden!important;
+ transition:max-height .4s cubic-bezier(.22,1,.36,1)!important
+}
+body #faq .faq-item.open .faq-a{max-height:3000px}
+body #faq .faq-a-in{
+ border-top:1px solid rgba(193,168,234,.16)!important;
+ padding:18px clamp(18px,3vw,27px) 24px!important;
+ color:#c8bdd7!important;-webkit-text-fill-color:#c8bdd7!important;
+ font-size:14px!important;line-height:1.85!important;
+ overflow-wrap:anywhere
+}
+body #faq .faq-a-in a{color:#dec9ff!important;-webkit-text-fill-color:#dec9ff!important;text-decoration:underline}
+body #faq .faq-a-in strong,body #faq .faq-a-in b{color:#f1eafa!important;-webkit-text-fill-color:#f1eafa!important}
+@media(max-width:620px){
+ body #faq .faq-q{min-height:65px;padding:14px 16px!important}
+ body #faq .faq-q::after{flex-basis:30px;width:30px;height:30px}
+ body #faq .faq-a-in{padding:15px 17px 19px!important}
+ body #faq .sec-head{margin-bottom:27px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body #faq .faq-item,body #faq .faq-q,body #faq .faq-q::after,body #faq .faq-a{
+ transition:none!important
+ }
+}
