@@ -302,3 +302,107 @@ input::placeholder,textarea::placeholder{color:#a49ab3!important;opacity:1}
  .card h3,.pk h3,.tpl h3,.tier h3,.pcard h3,.fcard h3{color:#111!important}
  .card p,.pk li,.tpl p,.tier li,.pcard p{color:#444!important}
 }
+
+
+/* V4 — TARGETED CS CONTROL CENTER REPAIR (from screenshot).
+   Scoped to #csDashboard so other demo interfaces are unaffected. */
+#csDashboard{
+ background:#12101a!important;color:#f4f0fb!important;
+ border:1px solid #40334f!important;border-radius:22px!important;
+ box-shadow:0 24px 65px rgba(0,0,0,.28)!important;overflow:hidden
+}
+#csDashboard .cs-head{
+ background:linear-gradient(115deg,#1d1729,#171321)!important;
+ border-bottom:1px solid #40334f!important;
+ color:#f4f0fb!important
+}
+#csDashboard .cs-head h3{color:#f4f0fb!important;text-shadow:none!important}
+#csDashboard .cs-head p{color:#bcb1c9!important}
+#csDashboard .cs-overline{color:#bda6ff!important}
+#csDashboard .cs-live{
+ display:inline-flex;vertical-align:middle;align-items:center;
+ color:#c9f3dc!important;background:#203d35!important;
+ border:1px solid #3d6955!important;font-size:10px
+}
+#csDashboard .cs-avatar{background:#41305e!important;color:#eee3ff!important}
+#csDashboard .cs-metrics{
+ background:#171320!important;border-bottom:1px solid #40334f!important
+}
+#csDashboard .cs-metrics>div{border-right:1px solid #40334f!important;background:transparent!important}
+#csDashboard .cs-metrics>div:last-child{border-right:0!important}
+#csDashboard .cs-metrics span{color:#bdb1cb!important}
+#csDashboard .cs-metrics strong{color:#e3d6ff!important}
+#csDashboard .cs-workspace{background:#15111f!important;min-width:0}
+#csDashboard .cs-inbox{
+ background:#191424!important;border-right:1px solid #40334f!important
+}
+#csDashboard .cs-label{color:#c6b5ef!important}
+#csDashboard .cs-label span{color:#a99db8!important}
+#csDashboard .cs-contact{color:#f4f0fb!important;border:1px solid transparent!important}
+#csDashboard .cs-contact.selected{
+ background:#302442!important;border-color:#594270!important
+}
+#csDashboard .cs-contact-av{background:#7860d4!important;color:#fff!important}
+#csDashboard .cs-contact strong{color:#fff!important}
+#csDashboard .cs-contact small{color:#c8bdda!important}
+#csDashboard .cs-inbox p{color:#a99cb6!important}
+#csDashboard .cs-unread{background:#a68ae9!important;color:#100d17!important}
+#csDashboard .cs-thread{background:#15111f!important;color:#f4f0fb!important;min-width:0}
+#csDashboard .cs-thread-head{
+ background:#1e182a!important;color:#f4f0fb!important;
+ border-bottom:1px solid #40334f!important
+}
+#csDashboard .cs-thread-head strong{color:#f4f0fb!important}
+#csDashboard .cs-thread-head small{color:#afdeb7!important}
+#csDashboard .cs-thread-head>span{color:#a99ab9!important}
+#csDashboard .cs-log{
+ background:#110e19!important;
+ background-image:radial-gradient(#a997d60c 1px,transparent 1px)!important;
+ background-size:18px 18px!important;
+ color:#f4f0fb!important
+}
+#csDashboard .cs-bubble{
+ background:#2a2239!important;color:#f1eafa!important;
+ border:1px solid #4a395e!important;max-width:min(82%,550px);
+ box-shadow:none!important
+}
+#csDashboard .cs-bubble.out{
+ background:#57417c!important;color:#fff!important;border-color:#6d5294!important
+}
+#csDashboard .cs-bubble.system{
+ background:transparent!important;color:#a99cb8!important;border:0!important
+}
+#csDashboard .cs-actions{background:#1a1525!important;border-top:1px solid #40334f!important}
+#csDashboard .cs-actions button,#csDashboard .cs-compose button{
+ background:#a893ee!important;color:#110c1a!important;
+ border:1px solid #a893ee!important;box-shadow:none!important
+}
+#csDashboard .cs-actions .cs-secondary{
+ background:#32283f!important;color:#e9dcff!important;border-color:#56446b!important
+}
+#csDashboard .cs-actions button:disabled,#csDashboard .cs-compose button:disabled{
+ background:#393142!important;color:#b7aabc!important;
+ border-color:#393142!important;opacity:.7!important;cursor:not-allowed!important
+}
+#csDashboard .cs-compose{background:#1a1525!important}
+#csDashboard .cs-compose input{
+ background:#110e19!important;color:#f4f0fb!important;
+ border:1px solid #50405f!important;opacity:1!important
+}
+#csDashboard .cs-compose input:disabled{
+ background:#211a2b!important;color:#ab9fb7!important;
+ border-color:#40344c!important;opacity:1!important
+}
+#csDashboard .cs-compose input::placeholder{color:#ac9fb9!important;opacity:1!important}
+#csDashboard .cs-hint{background:#1a1525!important;color:#b6a9c8!important}
+#csDashboard .cs-head>div:first-child,#csDashboard .cs-contact>span:nth-child(2),
+#csDashboard .cs-thread-head>div{min-width:0}
+#csDashboard .cs-head h3,#csDashboard .cs-thread-head strong,#csDashboard .cs-contact strong{
+ overflow-wrap:anywhere
+}
+@media(max-width:690px){
+ #csDashboard .cs-inbox{border-right:0!important;border-bottom:1px solid #40334f!important}
+ #csDashboard .cs-head{gap:12px}
+ #csDashboard .cs-metrics>div{padding:12px 8px!important}
+ #csDashboard .cs-actions button{max-width:100%;white-space:normal}
+}
