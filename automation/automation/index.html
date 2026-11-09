@@ -520,7 +520,7 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
 @media(max-width:580px){#harga .pgrid{grid-template-columns:minmax(0,1fr);gap:26px}#harga .pk{padding:27px 20px 22px}#harga .pk .pk-amt{font-size:32px}}
 
 </style>
-<link rel="stylesheet" href="/automation/twist-unified-v1.css?v=9">
+<link rel="stylesheet" href="/automation/twist-unified-v1.css?v=10">
 <script src="/automation/twist-unified-v1.js?v=1" defer></script>
 </head>
 <body>
@@ -1339,32 +1339,32 @@ body{background:#f7f9ff;color:#17213a;line-height:1.55}
     </div>
 
     <div class="faq-item rv">
-      <button class="faq-q">Saya gak ngerti coding. Bisa pakai?</button>
+      <button class="faq-q" type="button" aria-expanded="false">Saya gak ngerti coding. Bisa pakai?</button>
       <div class="faq-a"><div class="faq-a-in">Bisa. Gue yang setup semuanya. Lo tinggal pakai. Kalau ada yang perlu diubah (harga, alamat, nama toko), gue ajarin lewat training.</div></div>
     </div>
 
     <div class="faq-item rv rv-d1">
-      <button class="faq-q">n8n itu apa? Harus install apa?</button>
+      <button class="faq-q" type="button" aria-expanded="false">n8n itu apa? Harus install apa?</button>
       <div class="faq-a"><div class="faq-a-in">n8n itu aplikasi automation gratis. Gue yang install dan setup — bisa di komputer lo atau di server (VPS). Kalau mau yang paling simpel, gue setup di VPS biar jalan 24 jam tanpa perlu nyalain komputer.</div></div>
     </div>
 
     <div class="faq-item rv rv-d2">
-      <button class="faq-q">Beda sama Zapier / Make?</button>
+      <button class="faq-q" type="button" aria-expanded="false">Beda sama Zapier / Make?</button>
       <div class="faq-a"><div class="faq-a-in">Zapier bayar bulanan dan makin mahal kalau makin banyak. n8n sekali setup, gak ada biaya bulanan ke platform. Plus data lo tetap di server lo sendiri.</div></div>
     </div>
 
     <div class="faq-item rv rv-d3">
-      <button class="faq-q">Perlu bayar gateway WhatsApp berapa?</button>
+      <button class="faq-q" type="button" aria-expanded="false">Perlu bayar gateway WhatsApp berapa?</button>
       <div class="faq-a"><div class="faq-a-in">Mulai Rp 22rb/bulan (Wablas) atau bayar per saldo. Satu pesan sekitar Rp 150-300. Untuk UMKM kecil, realistis Rp 50-100rb/bulan.</div></div>
     </div>
 
     <div class="faq-item rv rv-d4">
-      <button class="faq-q">Bayar gimana?</button>
+      <button class="faq-q" type="button" aria-expanded="false">Bayar gimana?</button>
       <div class="faq-a"><div class="faq-a-in">Transfer bank, e-wallet (DANA/GoPay/OVO), atau USDC. Bisa DP 50% dulu, pelunasan setelah setup jalan.</div></div>
     </div>
 
     <div class="faq-item rv rv-d5">
-      <button class="faq-q">Kalau rusak setelah jadi?</button>
+      <button class="faq-q" type="button" aria-expanded="false">Kalau rusak setelah jadi?</button>
       <div class="faq-a"><div class="faq-a-in">Paket Premium dapat support 1 bulan penuh. Kalau ada masalah, chat aja — gue benerin gratis selama masa support.</div></div>
     </div>
 
@@ -1541,14 +1541,34 @@ window.addEventListener('resize', function(){
 }, {passive:true});
 
 /* ============ FAQ ============ */
-document.querySelectorAll('.faq-q').forEach(function(q){
+document.querySelectorAll('#faq .faq-q').forEach(function(q, index){
+  var item = q.parentElement;
+  var panel = item.querySelector('.faq-a');
+  if (!panel) return;
+  panel.id = 'faq-answer-' + (index + 1);
+  q.setAttribute('aria-controls', panel.id);
+  q.setAttribute('aria-expanded', String(item.classList.contains('open')));
   q.addEventListener('click', function(){
-    var item = q.parentElement;
-    var wasOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
-    if (!wasOpen) item.classList.add('open');
+    var shouldOpen = !item.classList.contains('open');
+    document.querySelectorAll('#faq .faq-item').forEach(function(other){
+      other.classList.remove('open');
+      var button = other.querySelector('.faq-q');
+      var body = other.querySelector('.faq-a');
+      if(button) button.setAttribute('aria-expanded', 'false');
+      if(body) body.style.maxHeight = '0px';
+    });
+    if (shouldOpen){
+      item.classList.add('open');
+      q.setAttribute('aria-expanded', 'true');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+    }
   });
 });
+window.addEventListener('resize', function(){
+  document.querySelectorAll('#faq .faq-item.open .faq-a').forEach(function(panel){
+    panel.style.maxHeight = panel.scrollHeight + 'px';
+  });
+}, {passive:true});
 
 /* ============ AI / HUMAN HANDOFF INTERACTIVE DEMO ============ */
 (function(){
