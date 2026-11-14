@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twist Automation Workflow Preview</title>
+<style>
+:root{color-scheme:dark;--bg:#0c111a;--card:#141c29;--line:#263244;--gold:#e8b339;--txt:#e6edf3;--dim:#94a1b2;--green:#35d49f}
+*{box-sizing:border-box}html,body{margin:0;background:transparent;color:var(--txt);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}button,select{font:inherit}
+.app{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--bg);box-shadow:0 22px 50px #0002}
+.heading{text-align:center;background:radial-gradient(ellipse at top,#49371552,transparent 76%);padding:26px 18px;border-bottom:1px solid var(--line)}
+.kicker{font:11px ui-monospace,monospace;letter-spacing:2px;color:var(--gold)}
+.heading h2{font-size:clamp(24px,4vw,36px);line-height:1.2;letter-spacing:-1px;margin:9px 0}
+.heading h2 span{color:var(--gold)}.heading p{margin:0;color:var(--dim);font-size:13px}
+.main{display:grid;grid-template-columns:minmax(220px,34%) minmax(0,1fr)}
+.picker{padding:22px;border-right:1px solid var(--line)}
+.label{font:10px ui-monospace,monospace;letter-spacing:1.1px;color:var(--dim)}
+#flow{width:100%;margin:14px 0 12px;padding:13px;border:1px solid #504426;border-radius:10px;background:var(--card);color:var(--txt);outline:none}
+#flow:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.filters button{border-radius:30px;border:1px solid #394251;background:none;color:var(--dim);padding:7px 10px;font-size:11px;cursor:pointer}
+.filters button.selected{background:#382d1b;color:#ffd16a;border-color:var(--gold)}
+#run{width:100%;padding:13px;border:0;border-radius:10px;background:linear-gradient(110deg,#f5cb68,#d69f28);color:#11130e;font-weight:750;cursor:pointer}
+#run:disabled{opacity:.6;cursor:default}.hint{font-size:11px;color:var(--dim);margin-top:13px}
+.viewer{min-width:0;padding:22px;background:#0a0f16}
+.terminal{display:flex;gap:6px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.terminal i{width:8px;height:8px;border-radius:50%;background:#fa6969}.terminal i:nth-child(2){background:#eeb94b}.terminal i:nth-child(3){background:#36cf94}
+.terminal span{margin-left:8px;color:var(--dim);font:11px ui-monospace,monospace}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:16px 0}
+.ready{font:10px ui-monospace,monospace;color:var(--green)}.ready:before{content:"● ";animation:blink 1.5s infinite}
+.name{font-weight:750;font-size:16px}.desc{color:var(--dim);font-size:11px;margin-top:4px}
+.diagram{display:flex;gap:4px;align-items:center;margin:24px 0}
+.node{flex:1;min-width:0;border:1px solid #354053;border-radius:10px;padding:13px 3px;background:#151d29;text-align:center;transition:.3s}
+.node.on{border-color:var(--gold);background:#362c1b;box-shadow:0 0 22px #e8b33925}
+.node .ico{display:block;font-size:21px}.node .nm{display:block;font-size:11px;font-weight:700;margin-top:7px;overflow-wrap:anywhere}
+.wire{height:2px;flex:0 0 7%;position:relative;background:#4b4639}
+.wire:after{content:"";position:absolute;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:travel 1.55s linear infinite}
+.wire.delay:after{animation-delay:.8s}
+.log{height:114px;overflow:auto;background:#080b10;border:1px solid var(--line);border-radius:10px;padding:13px;font:11px/1.85 ui-monospace,monospace;color:#aab7c5}
+.log .ok{color:var(--green)}
+.monitor{border-top:1px solid var(--line);margin-top:18px;padding-top:14px}
+.monitorhead{display:flex;justify-content:space-between;gap:8px;color:var(--dim);font:10px ui-monospace,monospace}.monitorhead strong{color:var(--txt)}
+.workers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0}
+.worker{min-width:0;border:1px solid #343c48;border-radius:10px;padding:9px 7px;background:#10141b;transition:.3s}
+.worker.active{border-color:#088264;background:#09221c}
+.worker .id{font:10px ui-monospace,monospace;color:var(--dim)}
+.worker .status{color:#777e89;font-size:11px;font-weight:650;margin-top:5px}
+.worker .status:before{content:"● ";font-size:9px}
+.worker.active .status{color:var(--green)}
+.worker.active .status:before{animation:blink 1.3s infinite}
+.track{height:5px;background:#242934;border-radius:10px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#00af85,#e8b339);transition:width .35s}
+@keyframes blink{50%{opacity:.35}}@keyframes travel{0%{left:0;opacity:0}15%,85%{opacity:1}100%{left:calc(100% - 8px);opacity:0}}
+@media(max-width:620px){.main{grid-template-columns:1fr}.picker{padding:16px;border-right:0;border-bottom:1px solid var(--line)}.viewer{padding:16px}.filters{margin-bottom:13px}.heading{padding:24px 14px}.workers{gap:5px}.worker{padding:8px 5px}.worker .id,.worker .status{font-size:9px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="app">
+<div class="heading"><div class="kicker">TWIST / AUTOMATION</div><h2>Work less. <span>Automate more.</span></h2><p>Explore how intelligent automation works in real time — as a simulation.</p></div>
+<div class="main"><div class="picker"><label class="label" for="flow">SELECT YOUR AUTOMATION</label><select id="flow"></select>
+<div class="filters"><button type="button" class="selected" data-filter="all">All</button><button type="button" data-filter="ai">AI &amp; Bots</button><button type="button" data-filter="sales">Sales</button><button type="button" data-filter="business">Business</button></div>
+<button id="run" type="button">▶ Run Simulation</button><div class="hint">Simulasi visual saja. Tidak mengirim pesan, membuat order, atau menjalankan workflow n8n asli.</div></div>
+<div class="viewer"><div class="terminal"><i></i><i></i><i></i><span>twist@automation : workflow-engine</span></div>
+<div class="top"><span class="label">WORKFLOW PREVIEW</span><span class="ready">DEMO READY</span></div>
+<div class="name" id="title">AI Agent Assistant</div><div class="desc" id="desc">Trigger → AI → Reply</div>
+<div class="diagram"><div class="node"><span class="ico">⚡</span><span class="nm">Trigger</span></div><div class="wire"></div><div class="node"><span class="ico">🧠</span><span class="nm">AI Agent</span></div><div class="wire delay"></div><div class="node"><span class="ico">💬</span><span class="nm">Reply</span></div></div>
+<div class="log" id="log" role="status" aria-live="polite"></div>
+<div class="monitor"><div class="monitorhead"><span id="process">automation · AI Agent</span><strong id="executions">0 executions</strong></div>
+<div class="workers"><div class="worker"><div class="id">worker-1</div><div class="status">idle</div></div><div class="worker"><div class="id">worker-2</div><div class="status">idle</div></div><div class="worker"><div class="id">worker-3</div><div class="status">idle</div></div><div class="worker"><div class="id">worker-4</div><div class="status">idle</div></div></div>
+<div class="track"><div class="fill" id="progress"></div></div>
+</div></div></div></div>
+<script>
+(function(){
+'use strict';
+const flows=[
+['agent','🧠 AI Agent','ai','AI Agent Assistant','Trigger → Reason → Reply',[['⚡','Trigger'],['🧠','AI Agent'],['💬','Reply']]],
+['wa','💬 WhatsApp CS','ai','WhatsApp AI Customer Service','Message → AI Agent → Reply',[['💬','Message'],['🧠','AI Agent'],['✅','Reply']]],
+['telegram','🤖 Telegram Bot','ai','Telegram Bot','Command → AI → Response',[['✈️','Command'],['🧠','AI Logic'],['🤖','Bot']]],
+['lead','🎯 Lead Capture','sales','Automated Lead Capture','Form → Qualification → CRM',[['📝','Form'],['🔎','Qualify'],['🗃️','CRM']]],
+['email','📨 Email Marketing','sales','Email Marketing','Audience → Personalize → Campaign',[['👥','Audience'],['✨','AI Copy'],['📧','Email']]],
+['follow','🔔 Auto Follow-up','sales','Customer Follow-up','Customer → Schedule → Reminder',[['👤','Customer'],['⏰','Schedule'],['🔔','Reminder']]],
+['order','📦 Order Processing','sales','Order Processing','Checkout → Validate → Fulfillment',[['🛒','Order'],['✅','Validate'],['📦','Fulfill']]],
+['review','⭐ Review Request','sales','Customer Review Request','Order → Feedback → Review',[['✅','Complete'],['💌','Feedback'],['⭐','Review']]],
+['invoice','🧾 Auto Invoice','business','Automatic Invoice','Order → Invoice → Email',[['🛒','Order'],['🧾','Invoice'],['📧','Email']]],
+['report','📊 Smart Report','business','Business Reporting','Data → Analyze → Report',[['📂','Data'],['⚙️','Analyze'],['📈','Report']]],
+['social','📱 Social Media','business','Social Media Automation','Content → AI Caption → Schedule',[['🖼️','Content'],['✍️','AI Caption'],['📅','Schedule']]],
+['sync','🔄 Data Sync','business','Data Synchronization','Source → Transform → Sync',[['☁️','Source'],['⚙️','Transform'],['🔄','Sync']]]
+];
+const $=s=>document.querySelector(s),select=$('#flow'),btn=$('#run'),log=$('#log'),nodes=[...document.querySelectorAll('.node')],workers=[...document.querySelectorAll('.worker')];let current=flows[0],epoch=0,count=0;
+function entry(message,good){const el=document.createElement('div');el.textContent=message;if(good)el.className='ok';log.appendChild(el);log.scrollTop=log.scrollHeight}
+function work(n){workers.forEach((el,i)=>{let on=i<n;el.classList.toggle('active',on);el.querySelector('.status').textContent=on?'running':'idle'})}
+function pick(){++epoch;current=flows.find(f=>f[0]===select.value)||flows[0];$('#title').textContent=current[3];$('#desc').textContent=current[4];$('#process').textContent='automation · '+current[3];nodes.forEach((node,i)=>{node.classList.remove('on');node.querySelector('.ico').textContent=current[5][i][0];node.querySelector('.nm').textContent=current[5][i][1]});work(0);$('#progress').style.width='0%';log.replaceChildren();entry('> '+current[3]+' loaded');entry('✓ Ready for simulation',true);btn.disabled=false;btn.textContent='▶ Run Simulation'}
+function filter(cat){select.replaceChildren();flows.filter(f=>cat==='all'||f[2]===cat).forEach(f=>{const opt=document.createElement('option');opt.value=f[0];opt.textContent=f[1];select.appendChild(opt)});pick()}
+document.querySelectorAll('[data-filter]').forEach(el=>el.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('selected',b===el));filter(el.dataset.filter)}));
+select.addEventListener('change',pick);
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+btn.addEventListener('click',async()=>{const id=++epoch,flow=current;btn.disabled=true;btn.textContent='● Simulating';log.replaceChildren();entry('> Running '+flow[3]);nodes.forEach(n=>n.classList.remove('on'));work(1);$('#progress').style.width='0%';
+for(let i=0;i<3;i++){await wait(600);if(id!==epoch)return;nodes[i].classList.add('on');work(i===0?1:2);entry('✓ '+flow[5][i][1]+' completed',i===2);$('#progress').style.width=((i+1)*100/3)+'%'}
+await wait(360);if(id!==epoch)return;count++;$('#executions').textContent=count+' execution'+(count===1?'':'s');entry('✓ Simulation completed',true);work(0);btn.disabled=false;btn.textContent='↻ Run Again'});
+filter('all');
+})();
+</script></body></html>
