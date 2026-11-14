@@ -98,7 +98,8 @@ filter('all');
 <script>
 (function(){
   function reportHeight(){
-    var h=Math.ceil(document.documentElement.scrollHeight);
+    var panel=document.querySelector(".app");
+    var h=panel?Math.ceil(panel.getBoundingClientRect().height):Math.ceil(document.body.scrollHeight);
     if(window.parent!==window)window.parent.postMessage({type:'twist-workflow-height',height:h},window.location.origin);
   }
   window.addEventListener('load',reportHeight);
