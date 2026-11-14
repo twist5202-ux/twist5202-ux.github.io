@@ -2,15 +2,15 @@
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Twist Automation Workflow Preview</title>
 <style>
-:root{color-scheme:dark;--bg:#0c111a;--card:#141c29;--line:#263244;--gold:#e8b339;--txt:#e6edf3;--dim:#94a1b2;--green:#35d49f}
+:root{color-scheme:dark;--bg:#0a0e14;--bg2:#0f1520;--card:#141b26;--line:#1f2a38;--gold:#e8b339;--txt:#e6edf3;--dim:#8b98a8;--green:#3fb950}
 *{box-sizing:border-box}html,body{margin:0;background:transparent;color:var(--txt);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}button,select{font:inherit}
-.app{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--bg);box-shadow:0 22px 50px #0002}
-.heading{text-align:center;background:radial-gradient(ellipse at top,#49371552,transparent 76%);padding:26px 18px;border-bottom:1px solid var(--line)}
+.app{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--bg2);box-shadow:none}
+.heading{display:none;text-align:center;background:radial-gradient(ellipse at top,#49371552,transparent 76%);padding:26px 18px;border-bottom:1px solid var(--line)}
 .kicker{font:11px ui-monospace,monospace;letter-spacing:2px;color:var(--gold)}
 .heading h2{font-size:clamp(24px,4vw,36px);line-height:1.2;letter-spacing:-1px;margin:9px 0}
 .heading h2 span{color:var(--gold)}.heading p{margin:0;color:var(--dim);font-size:13px}
 .main{display:grid;grid-template-columns:minmax(220px,34%) minmax(0,1fr)}
-.picker{padding:22px;border-right:1px solid var(--line)}
+.picker{padding:22px;border-right:1px solid var(--line);background:var(--bg2)}
 .label{font:10px ui-monospace,monospace;letter-spacing:1.1px;color:var(--dim)}
 #flow{width:100%;margin:14px 0 12px;padding:13px;border:1px solid #504426;border-radius:10px;background:var(--card);color:var(--txt);outline:none}
 #flow:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
@@ -19,7 +19,7 @@
 .filters button.selected{background:#382d1b;color:#ffd16a;border-color:var(--gold)}
 #run{width:100%;padding:13px;border:0;border-radius:10px;background:linear-gradient(110deg,#f5cb68,#d69f28);color:#11130e;font-weight:750;cursor:pointer}
 #run:disabled{opacity:.6;cursor:default}.hint{font-size:11px;color:var(--dim);margin-top:13px}
-.viewer{min-width:0;padding:22px;background:#0a0f16}
+.viewer{min-width:0;padding:22px;background:var(--bg2)}
 .terminal{display:flex;gap:6px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .terminal i{width:8px;height:8px;border-radius:50%;background:#fa6969}.terminal i:nth-child(2){background:#eeb94b}.terminal i:nth-child(3){background:#36cf94}
 .terminal span{margin-left:8px;color:var(--dim);font:11px ui-monospace,monospace}
@@ -27,18 +27,18 @@
 .ready{font:10px ui-monospace,monospace;color:var(--green)}.ready:before{content:"● ";animation:blink 1.5s infinite}
 .name{font-weight:750;font-size:16px}.desc{color:var(--dim);font-size:11px;margin-top:4px}
 .diagram{display:flex;gap:4px;align-items:center;margin:24px 0}
-.node{flex:1;min-width:0;border:1px solid #354053;border-radius:10px;padding:13px 3px;background:#151d29;text-align:center;transition:.3s}
-.node.on{border-color:var(--gold);background:#362c1b;box-shadow:0 0 22px #e8b33925}
+.node{flex:1;min-width:0;border:1px solid #354053;border-radius:10px;padding:13px 3px;background:var(--card);text-align:center;transition:.3s}
+.node.on{border-color:var(--gold);background:rgba(232,179,57,.09);box-shadow:0 0 22px #e8b33925}
 .node .ico{display:block;font-size:21px}.node .nm{display:block;font-size:11px;font-weight:700;margin-top:7px;overflow-wrap:anywhere}
 .wire{height:2px;flex:0 0 7%;position:relative;background:#4b4639}
 .wire:after{content:"";position:absolute;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:travel 1.55s linear infinite}
 .wire.delay:after{animation-delay:.8s}
-.log{height:114px;overflow:auto;background:#080b10;border:1px solid var(--line);border-radius:10px;padding:13px;font:11px/1.85 ui-monospace,monospace;color:#aab7c5}
+.log{height:114px;overflow:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:13px;font:11px/1.85 ui-monospace,monospace;color:#aab7c5}
 .log .ok{color:var(--green)}
 .monitor{border-top:1px solid var(--line);margin-top:18px;padding-top:14px}
 .monitorhead{display:flex;justify-content:space-between;gap:8px;color:var(--dim);font:10px ui-monospace,monospace}.monitorhead strong{color:var(--txt)}
 .workers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0}
-.worker{min-width:0;border:1px solid #343c48;border-radius:10px;padding:9px 7px;background:#10141b;transition:.3s}
+.worker{min-width:0;border:1px solid #343c48;border-radius:10px;padding:9px 7px;background:var(--card);transition:.3s}
 .worker.active{border-color:#088264;background:#09221c}
 .worker .id{font:10px ui-monospace,monospace;color:var(--dim)}
 .worker .status{color:#777e89;font-size:11px;font-weight:650;margin-top:5px}
@@ -94,4 +94,20 @@ for(let i=0;i<3;i++){await wait(600);if(id!==epoch)return;nodes[i].classList.add
 await wait(360);if(id!==epoch)return;count++;$('#executions').textContent=count+' execution'+(count===1?'':'s');entry('✓ Simulation completed',true);work(0);btn.disabled=false;btn.textContent='↻ Run Again'});
 filter('all');
 })();
-</script></body></html>
+</script>
+<script>
+(function(){
+  function reportHeight(){
+    var h=Math.ceil(document.documentElement.scrollHeight);
+    if(window.parent!==window)window.parent.postMessage({type:'twist-workflow-height',height:h},window.location.origin);
+  }
+  window.addEventListener('load',reportHeight);
+  window.addEventListener('resize',reportHeight);
+  if('ResizeObserver' in window){
+    var ro=new ResizeObserver(reportHeight);
+    ro.observe(document.querySelector('.app'));
+  }
+  requestAnimationFrame(reportHeight);
+})();
+</script>
+</body></html>
